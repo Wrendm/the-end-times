@@ -80,7 +80,7 @@ body {
   cursor: pointer;
 }
 
-.Home, .NewPost, .PostPage, .About, .Missing {
+.Home, .PageNotFound {
   width: 100%;
   flex-grow: 1;
   padding: 1rem;
