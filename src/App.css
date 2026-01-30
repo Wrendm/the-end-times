@@ -83,10 +83,27 @@ body {
 .Home, .PageNotFound {
   width: 100%;
   flex-grow: 1;
-  padding: 1rem;
   overflow-y: auto;
   background-color: #c9ada7;
   color: #4a4e69;
 }
 
+.PostFeed{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
 
+.PostCard{
+  flex-direction: row;
+  flex-grow: 1;
+  width: 30%;
+  margin: 2%;
+  padding: 15px;
+  background-color: #f2e9e4;
+}
+
+.TopRow{
+  display: flex;
+  justify-content: space-between;
+}
