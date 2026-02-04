@@ -1,33 +1,31 @@
-import { useState, useEffect } from 'react';
+
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import type { PostType } from './types/index';
+import Paintings from './components/Paintings';
+import Photography from './components/Photography';
+import Poetry from './components/Poetry';
+import Essays from './components/Essays';
+import Fashion from './components/Fashion';
+
 import Home from './components/Home';
 import PageNotFound from './components/PageNotFound';
 import Layout from './components/Layout';
-import useAxiosFetch from './hooks/useAxiosFetch';
+
 
 
 function App() {
-  const [posts, setPosts] = useState<PostType[]>([]);
 
-  const {
-    data: postData,
-    fetchError,
-    isLoading,
-  } = useAxiosFetch<PostType[]>('http://localhost:3500/posts');
-
-  useEffect(() => {
-    if (postData) {
-      setPosts(postData);
-    }
-  }, [postData]);
 
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home posts={posts} isLoading={isLoading} fetchError={fetchError} />} />
+        <Route index element={<Home  />} />
         <Route path="*" element={<PageNotFound />} />
+        <Route path="paintings" element={<Paintings />} />
+        <Route path="photography" element={<Photography />} />
+        <Route path="poetry" element={<Poetry />} />
+        <Route path="essays" element={<Essays />} />
+        <Route path="fashion" element={<Fashion />} />
       </Route>
     </Routes>
   );

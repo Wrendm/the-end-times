@@ -7,6 +7,8 @@ interface PostProps {
 
 const Post = ({ post }: PostProps) => {
   const { username } = useUserById(post.userId);
+
+
   return (
     <>
       <div className="TopRow">
@@ -14,7 +16,8 @@ const Post = ({ post }: PostProps) => {
         <div><p>{post.postdate}</p></div>
       </div>
       <div className="ContentRow">
-        <p>{post.postContent}</p>
+        {post.postType === 'text' && (<p className='imagecontent'>{post.postContent}</p>)}
+        {post.postType === 'image' && (<p className='imagecontent'> <img src={post.imgSrc} height="400"/> </p>)}
       </div>
     </>
   )

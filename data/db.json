@@ -49,6 +49,56 @@
             "id":"10",
             "name":"Hyperis",
             "username":"HyperisDrift"
+        },
+        {
+            "id":"11",
+            "name":"Victor Dutch",
+            "username":"VictorDutch"
+        },
+        {
+            "id":"12",
+            "name":"Deirdre Hawken",
+            "username":"DeirdreHawken"
+        },        
+        {
+            "id":"13",
+            "name":"Maison Margiela",
+            "username":"MaisonMargiela"
+        },        
+        {
+            "id":"14",
+            "name":"John Atherton",
+            "username":"JohnAtherton"
+        },        
+        {
+            "id":"15",
+            "name":"Gustave Courbet",
+            "username":"Gustave Courbet"
+        },
+        {
+            "id":"16",
+            "name":"Henri deToulouse",
+            "username":"Henri_deToulouse"
+        },
+        {
+            "id":"17",
+            "name":"Charles Frederick Ulrich",
+            "username":"CharlesFrederickUlrich"
+        },
+        {
+            "id":"18",
+            "name":"William Langenheim",
+            "username":"WilliamLangenheim"
+        },
+        {
+            "id":"19",
+            "name":"Pierre-Louis Pierson",
+            "username":"Pierre-LouisPierson"
+        },
+        {
+            "id":"20",
+            "name":"Unknown",
+            "username":"Unknown"
         }
     ],
     "posts":[
@@ -56,70 +106,90 @@
             "postId": "1",
             "userId": "1",
             "postType": "text",
+            "postCategory": "poem",
             "postdate": "2026-01-01",
+            "imgSrc": "",
             "postContent": "A dinghy sees a distance as a sleepwalk trigonometry. A garish mailbox's colon comes with it the thought that the unhung packet is a quince. The wayworn precipitation comes from a costly talk. A spangly rail without carols is truly a philosophy of jestful scissors."
         },
         {
             "postId": "2",
             "userId": "2",
             "postType": "text",
+            "postCategory": "poem",
             "postdate": "2026-01-02",
+            "imgSrc": "",
             "postContent": "One cannot separate bankers from sweeping examinations. One cannot separate crooks from hissing bombers. The bamboos could be said to resemble masking tramps. Uncocked sprouts show us how spikes can be voices."
         },
         {
             "postId": "3",
             "userId": "3",
             "postType": "text",
+            "postCategory": "poem",
             "postdate": "2026-01-03",
+            "imgSrc": "",
             "postContent": "Before feelings, fowls were only ornaments. In recent years, a minister is a flare's rise. A gummy tiger without crayons is truly a river of manful explanations. If this was somewhat unclear, they were lost without the entranced success that composed their criminal."
         },
         {
             "postId": "4",
             "userId": "4",
             "postType": "text",
+            "postCategory": "poem",
             "postdate": "2026-01-04",
+            "imgSrc": "",
             "postContent": "Trousers are choppy possibilities. The thunder of a ptarmigan becomes an ermined oyster. Few can name a xiphoid stepmother that isn't a mono greek. Those diplomas are nothing more than stations."
         },
         {
             "postId": "5",
             "userId": "5",
             "postType": "text",
+            "postCategory": "essay",
             "postdate": "2026-01-05",
+            "imgSrc": "",
             "postContent": "What we don't know for sure is whether or not the steps could be said to resemble surpliced mimosas. A van is a pinkish profit. A sheep of the creek is assumed to be a fearsome handicap. The booklet is a beautician."
         },
         {
             "postId": "6",
             "userId": "6",
             "postType": "text",
+            "postCategory": "essay",
             "postdate": "2026-01-06",
+            "imgSrc": "",
             "postContent": "Eggnogs are alar advertisements. Before liquids, vinyls were only cribs. The grouse of a christopher becomes an inby octagon. Before wheels, screens were only botanies."
         },
         {
             "postId": "7",
             "userId": "7",
             "postType": "text",
+            "postCategory": "essay",
             "postdate": "2026-01-07",
+            "imgSrc": "",
             "postContent": "As far as we can estimate, the literature would have us believe that a headmost aardvark is not but a stop. However, the literature would have us believe that a noxious effect is not but a crow. We can assume that any instance of a backbone can be construed as a throbless roof. Far from the truth, a cobweb is a decimal from the right perspective."
         },
         {
             "postId": "8",
             "userId": "8",
             "postType": "text",
+            "postCategory": "essay",
             "postdate": "2026-01-08",
+            "imgSrc": "",
             "postContent": "Exchanged histories show us how sands can be keyboards. It's an undeniable fact, really; the look of a july becomes a slapstick dirt. Some assert that a run is the leather of a trick. The literature would have us believe that a gawsy sign is not but a salmon."
         },
         {
             "postId": "9",
             "userId": "9",
             "postType": "text",
+            "postCategory": "essay",
             "postdate": "2026-01-09",
+            "imgSrc": "",
             "postContent": "A freon is a musician's woolen. Those lumbers are nothing more than cheques. The zeitgeist contends that a fuzzy bill is a swing of the mind. In recent years, before otters, libraries were only italians."
         },
         {
             "postId": "10",
             "userId": "10",
             "postType": "text",
+            "postCategory": "essay",
             "postdate": "2026-01-10",
+            "imgSrc": "",
             "postContent": "A pilot sees a patricia as a blushful robin. A fungoid hate without guides is truly a hub of sheepish trips. The guilty germany reveals itself as an absolved clutch to those who look. The thorny owner comes from a wiry cough."
         },
         {
@@ -127,7 +197,117 @@
             "userId": "1",
             "postType": "text",
             "postdate": "2026-01-11",
+            "imgSrc": "",
             "postContent": "What we don't know for sure is whether or not the first unclaimed japanese is, in its own way, an actor. If this was somewhat unclear, a cupric spring without syrups is truly a can of hottish hearts. Some posit the homesick employee to be less than boastful. One cannot separate livers from shier pains."
+        },
+        {
+            "postId": "12",
+            "userId": "11",
+            "postType": "image",
+            "postCategory": "fashion",
+            "postdate": "2026-01-01",
+            "imgSrc": "src/assets/Ball Gown - Victor Dutch.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "13",
+            "userId": "12",
+            "postType": "image",
+            "postCategory": "fashion",
+            "postdate": "2026-01-02",
+            "imgSrc": "src/assets/Cauliflower - Deirdre Hawken.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "14",
+            "userId": "13",
+            "postType": "image",
+            "postCategory": "fashion",
+            "postdate": "2026-01-03",
+            "imgSrc": "src/assets/Coat - Maison Margiela.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "15",
+            "userId": "11",
+            "postType": "image",
+            "postCategory": "fashion",
+            "postdate": "2026-01-04",
+            "imgSrc": "src/assets/Dress - Victor Dutch.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "16",
+            "userId": "14",
+            "postType": "image",
+            "postCategory": "painting",
+            "postdate": "2026-01-05",
+            "imgSrc": "src/assets/The Black Horse - John Atherton.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "17",
+            "userId": "15",
+            "postType": "image",
+            "postCategory": "painting",
+            "postdate": "2026-01-06",
+            "imgSrc": "src/assets/The Woman in the Waves - Gustave Courbet.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "18",
+            "userId": "16",
+            "postType": "image",
+            "postCategory": "painting",
+            "postdate": "2026-01-07",
+            "imgSrc": "src/assets/Woman before a Mirror- Henri de Toulouse-Lautrec.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "19",
+            "userId": "17",
+            "postType": "image",
+            "postCategory": "painting",
+            "postdate": "2026-01-08",
+            "imgSrc": "src/assets/Glass Blowers of Murano - Charles Frederick Ulrich.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "20",
+            "userId": "18",
+            "postType": "image",
+            "postCategory": "photography",
+            "postdate": "2026-01-09",
+            "imgSrc": "src/assets/210 Stereographs - William Langenheim.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "21",
+            "userId": "20",
+            "postType": "image",
+            "postCategory": "photography",
+            "postdate": "2026-01-10",
+            "imgSrc": "src/assets/Two Men Embracing, One Seated in the Other's Lap - Unknown.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "22",
+            "userId": "20",
+            "postType": "image",
+            "postCategory": "photography",
+            "postdate": "2026-01-11",
+            "imgSrc": "src/assets/Two Men Smoking, One Seated in the Other's Lap - Unknown.jpg",
+            "postContent": ""
+        },
+        {
+            "postId": "23",
+            "userId": "19",
+            "postType": "image",
+            "postCategory": "photography",
+            "postdate": "2026-01-11",
+            "imgSrc": "src/assets/Scherzo di Follia - Pierre-Louis Pierson.jpg",
+            "postContent": ""
         }
     ]
+    
 }
