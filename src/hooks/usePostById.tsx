@@ -4,6 +4,9 @@ import type { PostType } from '../types/index';
 
 const usePostById = (postId: string) => {
   const { data, isLoading, fetchError } = useAxiosFetch<PostType[]>(`http://localhost:3500/posts?id=${postId}`);
+    if (!postId) {
+    return { post: null, isLoading: false, fetchError: '' };
+  }
 
   let post: PostType | null = null;
 

@@ -1,23 +1,22 @@
+import { Link } from 'react-router-dom';
 import type { PostType } from '../types/index';
-import useUserById from '../hooks/useUserById';
 
 interface PostProps {
   post: PostType;
 }
 
 const Post = ({ post }: PostProps) => {
-  const { username } = useUserById(post.userId);
-
 
   return (
     <>
       <div className="TopRow">
-        <div><p>{username}</p></div>
+        <div><p>{post.username}</p></div>
         <div><p>{post.postdate}</p></div>
       </div>
       <div className="ContentRow">
-        {post.postType === 'text' && (<p className='imagecontent'>{post.postContent}</p>)}
-        {post.postType === 'image' && (<p className='imagecontent'> <img src={post.imgSrc} height="400"/> </p>)}
+        {post.postType === 'image' && (<p className='imagecontent'><Link to={`/post/${post.id}`}> <img src={post.imgSrc} width="400px"/></Link> </p>)}
+        {post.postCategory === 'poem' && (<p className='textcontent' style={{width: "400px"}} >{post.postContent}</p>)}
+        {post.postCategory === 'essay' && (<><p className='textcontent' style={{width: "400px"}} >{post.postContent.slice(0, 270)}</p><Link to={`/post/${post.id}`}><p>Continue reading...</p></Link></>)}
       </div>
     </>
   )
