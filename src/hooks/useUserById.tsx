@@ -3,11 +3,17 @@ import type { UserType } from '../types/index';
 
 
 const useUserById = (userID: string) => {
-  const { data } = useAxiosFetch<UserType[]>(`http://localhost:3500/users?id=${userID}`);
+  const { data, isLoading, fetchError } = useAxiosFetch<UserType[]>(`http://localhost:3500/users?id=${userID}`);
+  
+  let user: UserType | null = null;
 
-  const user = data?.[0];
+  if (data && data.length > 0) {
+    user = data[0];
+  }
 
-  return { user, username:user?.username};
+  const username = user ? user.username : null;
+
+  return { user, username, isLoading, fetchError};
 };
 
 export default useUserById;

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios';
 
 const useAxiosFetch = <T,>(dataUrl: string) => {
@@ -8,24 +8,28 @@ const useAxiosFetch = <T,>(dataUrl: string) => {
 
     useEffect(() => {
         let isMounted = true;
-        const source = axios.CancelToken.source();
+        const controller = new AbortController();
 
         const fetchData = async (url: string) => {
             setIsLoading(true);
-            try{
-                const response = await axios.get(url, {cancelToken: source.token});
-                if(isMounted){
+            try {
+                const response = await axios.get(url, { signal: controller.signal });
+                if (isMounted) {
                     setData(response.data);
                     setFetchError('');
                 }
-            }catch (err: unknown){
-                if(isMounted){
-                    if(err instanceof Error){
-                        setFetchError(err.message);
-                    }
-                
-                setData(null);
+            } catch (err: unknown) {
+                if (!isMounted) return;
+
+                if (axios.isAxiosError(err)) {
+                    setFetchError(err.message);
+                } else if (err instanceof Error) {
+                    setFetchError(err.message);
+                } else {
+                    setFetchError('Unknown error');
                 }
+
+                setData(null);
             } finally {
                 isMounted && setIsLoading(false);
             }
@@ -34,11 +38,11 @@ const useAxiosFetch = <T,>(dataUrl: string) => {
 
         const cleanUp = () => {
             isMounted = false;
-            source.cancel();
+            controller.abort();
         }
         return cleanUp;
     }, [dataUrl]);
-    return {data, fetchError, isLoading};
+    return { data, fetchError, isLoading };
 }
 
 export default useAxiosFetch;
