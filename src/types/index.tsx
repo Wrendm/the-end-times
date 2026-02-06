@@ -4,11 +4,13 @@ interface UserType {
   username: string;
 }
 interface PostType {
-  postId: string;
+  id: string;
   userId: string;
+  username: string;
   postType: string;
   postCategory: string;
   postdate: string;
+  title: string,
   imgSrc: string;
   postContent: string;
 }
