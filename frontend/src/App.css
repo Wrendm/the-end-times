@@ -1,0 +1,123 @@
+body {
+  font-family: "Syne", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #efefef;
+}
+
+.App {
+  width: 100%;
+  height: 100vh;
+}
+
+.Header, .Footer {
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #607B7D;
+}
+
+.Footer {
+  padding: 0.75rem;
+  display: grid;
+  place-content: center;
+}
+
+.Header h1 a{
+  text-decoration: none;
+  color: #39383d;
+}
+
+.Header h1:hover, 
+.Header h1:focus, 
+.Header h1:hover a, 
+.Header h1:focus a  {
+  color: #E0E0E0;
+}
+
+.Header h1:hover a, 
+.Header h1:focus a {
+  cursor: pointer;
+}
+
+.Nav {
+  width: 100%;
+  background-color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.Nav ul {
+  color: #fff;
+  list-style-type: none;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.Nav li {
+  padding: 1rem;
+}
+
+.Nav li:hover, 
+.Nav li:focus {
+  padding: 1rem;
+}
+
+.Nav li a {
+  color: #828e82;
+  text-decoration: none;
+}
+
+.Nav li:hover, 
+.Nav li:focus, 
+.Nav li:hover a, 
+.Nav li:focus a  {
+  color: #E0E0E0;
+}
+
+.Nav li:hover a, 
+.Nav li:focus a {
+  cursor: pointer;
+}
+
+.Home, .PageNotFound {
+  width: 100%;
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #f4f4f4;
+  color: #4a4e69;
+}
+
+.PostFeed{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.PostCard{
+  flex-direction: row;
+  margin: 2%;
+  padding: 15px;
+  background-color: #fff;
+}
+
+.TopRow{
+  display: flex;
+  justify-content: space-between;
+}
+
+.PostContentArea{
+  width: 70%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
