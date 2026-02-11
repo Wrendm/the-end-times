@@ -1,14 +1,18 @@
-const express = require('express')
-const app = express()
+require('dotenv').config()
+const mongoose = require('mongoose')
+const app = require('./app')
 
 const PORT = process.env.PORT || 3500
 
-app.get(['/', '/index', '/index.html'], (req, res) => {
-    res.send('API is running...');
-});
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log('Connected to MongoDB')
 
-app.use((req, res) => {
-    res.status(404).json({ message: `Route ${req.originalUrl} not found`});
-});
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+        // Start server ONLY after DB connects
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`)
+        })
+    })
+    .catch((err) => {
+        console.error('MongoDB connection error:', err)
+    })
