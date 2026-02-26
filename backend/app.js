@@ -10,8 +10,7 @@ app.get(['/', '/index', '/index.html'], (req, res) => {
     res.send('API is running...');
 });
 
-app.use('/users', require('./routes/userRoutes.js'))
-
+app.use('/users', require('./routes/user.routes.js'))
 
 app.use((req, res) => {
     res.status(404).json({ message: `Route ${req.originalUrl} not found`});
