@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const usersController = require('../controllers/users.controller');
-const validate = require('../validators/validate');
-const { createUserSchema, updateUserSchema, userIdParamSchema } = require('../validators/user.validator');
+const usersController = require('../controllers/users.controller')
+const validate = require('../validators/validate')
+const { createUserSchema, updateUserSchema, userIdParamSchema } = require('../validators/user.validator')
 
 router.route('/')
   .get(usersController.getAllUsers)
@@ -24,4 +24,4 @@ router.route('/:id')
   )
   .delete(validate(userIdParamSchema, 'params'), usersController.deleteUser);
 
-module.exports = router;
+module.exports = router

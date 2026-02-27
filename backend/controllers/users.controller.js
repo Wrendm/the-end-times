@@ -10,8 +10,8 @@ const getAllUsers = async (req, res) => {
         if (!users?.length) return res.status(400).json({ message: 'No users found' })
         res.json(users)
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        console.error(err)
+        res.status(500).json({ message: 'Server error' })
     }
 }
 
@@ -24,8 +24,8 @@ const getSingleUser = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' })
         res.json(user)
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        console.error(err)
+        res.status(500).json({ message: 'Server error' })
     }
 }
 
@@ -43,9 +43,8 @@ const createNewUser = async (req, res) => {
         const user = await User.create({ username, name, email, "password": hashedPwd, roles })
         res.status(201).json({ message: `New user ${user.username} created` })
     } catch (err) {
-        console.error(err);
-        console.error('POST /users error:', err); // <--- add this
-        res.status(500).json({ message: 'Server error' });
+        console.error(err)
+        res.status(500).json({ message: 'Server error' })
     }
 }
 
@@ -54,10 +53,10 @@ const createNewUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params
-        const { username, name, email, password, roles } = req.body;
+        const { username, name, email, password, roles } = req.body
 
         const user = await User.findById(id)
-        if (!user) return res.status(400).json({ message: 'User not found' })
+        if (!user) return res.status(400).json({ message: `User with id ${id} not found` })
 
         const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
         if (duplicate && duplicate?._id.toString() !== id) {
@@ -74,7 +73,7 @@ const updateUser = async (req, res) => {
         res.json({ message: `${updatedUser.username} updated` })
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error' })
     }
 }
 
@@ -82,11 +81,11 @@ const updateUser = async (req, res) => {
 // @route PATCH /users/:id 
 const updateUserPartial = async (req, res) => {
     try {
-        const { id } = req.params;
-        const updates = req.body;
+        const { id } = req.params
+        const updates = req.body
 
         const user = await User.findById(id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!user) return res.status(404).json({ message: `User with id ${id} not found` })
 
         if (updates.username || updates.email) {
             const duplicate = await User.findOne({
@@ -96,19 +95,19 @@ const updateUserPartial = async (req, res) => {
         }
 
         if (updates.password) {
-            updates.password = await bcrypt.hash(updates.password, 10);
+            updates.password = await bcrypt.hash(updates.password, 10)
         }
 
         Object.keys(updates).forEach(key => {
-            user[key] = updates[key];
+            user[key] = updates[key]
         });
 
-        const updatedUser = await user.save();
+        const updatedUser = await user.save()
 
-        res.json({ message: `${updatedUser.username} updated`, user: updatedUser });
+        res.json({ message: `${updatedUser.username} updated`, user: updatedUser })
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        console.error(err)
+        res.status(500).json({ message: 'Server error' })
     }
 };
 
@@ -116,20 +115,20 @@ const updateUserPartial = async (req, res) => {
 // @route DELETE /users/:id 
 const deleteUser = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params
 
         const post = await Post.findOne({ user: id }).lean()
         if (post) return res.status(400).json({ message: 'User has posts that need to be deleted first' })
 
         const user = await User.findById(id)
-        if (!user) return res.status(400).json({ message: 'User not found' })
+        if (!user) return res.status(400).json({ message: `User with id ${id} not found` })
 
         const result = await user.deleteOne()
 
         res.json(`User deleted`)
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error' })
     }
 
 }
