@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const Post = require('../models/Post')
+const isValidObjectId = require('../utils/isValidObjectId')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 
@@ -18,6 +19,11 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // @route GET /users/:id 
 const getSingleUser = asyncHandler(async (req, res) => {
     const { id } = req.params
+
+    if (!isValidObjectId(id)) {
+        res.status(400)
+        throw new Error('Invalid user ID')
+    }
     const user = await User.findById(id).select('-password').lean()
     if (!user) {
         res.status(404)
@@ -46,6 +52,10 @@ const createNewUser = asyncHandler(async (req, res) => {
 // @route PUT /users/:id 
 const updateUser = asyncHandler(async (req, res) => {
     const { id } = req.params
+    if (!isValidObjectId(id)) {
+        res.status(400)
+        throw new Error('Invalid user ID')
+    }
     const { username, name, email, password, roles } = req.body
 
     const user = await User.findById(id)
@@ -75,6 +85,12 @@ const updateUser = asyncHandler(async (req, res) => {
 const updateUserPartial = asyncHandler(async (req, res) => {
 
     const { id } = req.params
+
+    if (!isValidObjectId(id)) {
+        res.status(400)
+        throw new Error('Invalid user ID')
+    }
+
     const updates = req.body
 
     const user = await User.findById(id);
@@ -109,23 +125,27 @@ const updateUserPartial = asyncHandler(async (req, res) => {
 // @desc -> delete user
 // @route DELETE /users/:id 
 const deleteUser = asyncHandler(async (req, res) => {
-        const { id } = req.params
+    const { id } = req.params
+    if (!isValidObjectId(id)) {
+        res.status(400)
+        throw new Error('Invalid user ID')
+    }
 
-        const post = await Post.findOne({ user: id }).lean()
-        if (post){
-            res.status(400)
-            throw new Error('User has posts that need to be deleted first')
-        }
+    const post = await Post.findOne({ user: id }).lean()
+    if (post) {
+        res.status(400)
+        throw new Error('User has posts that need to be deleted first')
+    }
 
-        const user = await User.findById(id)
-        if (!user){
-            res.status(400)
-            throw new Error(`User with id ${id} not found`)
-        }
+    const user = await User.findById(id)
+    if (!user) {
+        res.status(400)
+        throw new Error(`User with id ${id} not found`)
+    }
 
-        const result = await user.deleteOne()
+    const result = await user.deleteOne()
 
-        res.json(`User deleted`)
+    res.json(`User deleted`)
 })
 
 module.exports = {
