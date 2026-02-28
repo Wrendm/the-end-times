@@ -1,137 +1,132 @@
 const User = require('../models/User')
 const Post = require('../models/Post')
 const bcrypt = require('bcrypt')
+const asyncHandler = require('express-async-handler')
 
 // @desc -> all users
 // @route GET /users 
-const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find().select('-password').lean()
-        if (!users?.length) return res.status(400).json({ message: 'No users found' })
-        res.json(users)
-    } catch (err) {
-        console.error(err)
-        res.status(500).json({ message: 'Server error' })
+const getAllUsers = asyncHandler(async (req, res) => {
+    const users = await User.find().select('-password').lean()
+    if (!users?.length) {
+        res.status(400)
+        throw new Error('No users found')
     }
-}
+    res.json(users)
+})
 
 // @desc -> single user
 // @route GET /users/:id 
-const getSingleUser = async (req, res) => {
-    try {
-        const { id } = req.params
-        const user = await User.findById(id).select('-password').lean()
-        if (!user) return res.status(404).json({ message: 'User not found' })
-        res.json(user)
-    } catch (err) {
-        console.error(err)
-        res.status(500).json({ message: 'Server error' })
+const getSingleUser = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    const user = await User.findById(id).select('-password').lean()
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found')
     }
-}
+    res.json(user)
+})
 
 // @desc -> create user
 // @route POST /users 
-const createNewUser = async (req, res) => {
-    try {
-        const { username, name, email, password, roles } = req.body;
+const createNewUser = asyncHandler(async (req, res) => {
+    const { username, name, email, password, roles } = req.body;
 
-        const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
-        if (duplicate) return res.status(409).json({ message: 'Duplicate username or email not allowed' })
-
-        const hashedPwd = await bcrypt.hash(password, 10)
-
-        const user = await User.create({ username, name, email, "password": hashedPwd, roles })
-        res.status(201).json({ message: `New user ${user.username} created` })
-    } catch (err) {
-        console.error(err)
-        res.status(500).json({ message: 'Server error' })
+    const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
+    if (duplicate) {
+        res.status(409)
+        throw new Error('Duplicate username or email not allowed')
     }
-}
+    const hashedPwd = await bcrypt.hash(password, 10)
+
+    const user = await User.create({ username, name, email, "password": hashedPwd, roles })
+    res.status(201).json({ message: `New user ${user.username} created` })
+})
 
 // @desc -> update user entirely
 // @route PUT /users/:id 
-const updateUser = async (req, res) => {
-    try {
-        const { id } = req.params
-        const { username, name, email, password, roles } = req.body
+const updateUser = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    const { username, name, email, password, roles } = req.body
 
-        const user = await User.findById(id)
-        if (!user) return res.status(400).json({ message: `User with id ${id} not found` })
-
-        const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
-        if (duplicate && duplicate?._id.toString() !== id) {
-            return res.status(409).json({ message: 'Duplicate username or email' })
-        }
-
-        user.username = username
-        user.name = name
-        user.email = email
-        user.roles = roles
-        if (password) user.password = await bcrypt.hash(password, 10)
-
-        const updatedUser = await user.save()
-        res.json({ message: `${updatedUser.username} updated` })
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' })
+    const user = await User.findById(id)
+    if (!user) {
+        res.status(400)
+        throw new Error(`User with id ${id} not found`)
     }
-}
+
+    const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
+    if (duplicate && duplicate?._id.toString() !== id) {
+        res.status(409)
+        throw new Error('Duplicate username or email')
+    }
+
+    user.username = username
+    user.name = name
+    user.email = email
+    user.roles = roles
+    if (password) user.password = await bcrypt.hash(password, 10)
+
+    const updatedUser = await user.save()
+    res.json({ message: `${updatedUser.username} updated` })
+})
 
 // @desc -> update user in part
 // @route PATCH /users/:id 
-const updateUserPartial = async (req, res) => {
-    try {
-        const { id } = req.params
-        const updates = req.body
+const updateUserPartial = asyncHandler(async (req, res) => {
 
-        const user = await User.findById(id);
-        if (!user) return res.status(404).json({ message: `User with id ${id} not found` })
+    const { id } = req.params
+    const updates = req.body
 
-        if (updates.username || updates.email) {
-            const duplicate = await User.findOne({
-                $or: [{ username: updates.username }, { email: updates.email }]
-            }).lean();
-            if (duplicate && duplicate._id.toString() !== id) return res.status(409).json({ message: 'Duplicate username or email' });
-        }
-
-        if (updates.password) {
-            updates.password = await bcrypt.hash(updates.password, 10)
-        }
-
-        Object.keys(updates).forEach(key => {
-            user[key] = updates[key]
-        });
-
-        const updatedUser = await user.save()
-
-        res.json({ message: `${updatedUser.username} updated`, user: updatedUser })
-    } catch (err) {
-        console.error(err)
-        res.status(500).json({ message: 'Server error' })
+    const user = await User.findById(id);
+    if (!user) {
+        res.status(404)
+        throw new Error(`User with id ${id} not found`)
     }
-};
+
+    if (updates.username || updates.email) {
+        const duplicate = await User.findOne({
+            $or: [{ username: updates.username }, { email: updates.email }]
+        }).lean();
+        if (duplicate && duplicate._id.toString() !== id) {
+            res.status(409)
+            throw new Error('Duplicate username or email')
+        }
+    }
+
+    if (updates.password) {
+        updates.password = await bcrypt.hash(updates.password, 10)
+    }
+
+    Object.keys(updates).forEach(key => {
+        user[key] = updates[key]
+    })
+
+    const updatedUser = await user.save()
+
+    res.json({ message: `${updatedUser.username} updated`, user: updatedUser })
+})
 
 // @desc -> delete user
 // @route DELETE /users/:id 
-const deleteUser = async (req, res) => {
-    try {
+const deleteUser = asyncHandler(async (req, res) => {
         const { id } = req.params
 
         const post = await Post.findOne({ user: id }).lean()
-        if (post) return res.status(400).json({ message: 'User has posts that need to be deleted first' })
+        if (post){
+            res.status(400)
+            throw new Error('User has posts that need to be deleted first')
+        }
 
         const user = await User.findById(id)
-        if (!user) return res.status(400).json({ message: `User with id ${id} not found` })
+        if (!user){
+            res.status(400)
+            throw new Error(`User with id ${id} not found`)
+        }
 
         const result = await user.deleteOne()
 
         res.json(`User deleted`)
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' })
-    }
-
-}
+})
 
 module.exports = {
     getAllUsers,
