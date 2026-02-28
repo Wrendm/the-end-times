@@ -1,10 +1,10 @@
 const express = require('express')
-const cors = require('cors')
 const errorHandler = require('./middleware/errorHandler')
+const corsOptions = require('./middleware/cors')
 
 const app = express()
 
-app.use(cors())
+app.use(corsOptions)
 app.use(express.json())
 
 app.get(['/', '/index', '/index.html'], (req, res) => {
