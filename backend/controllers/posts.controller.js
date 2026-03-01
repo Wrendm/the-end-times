@@ -6,7 +6,7 @@ const asyncHandler = require('express-async-handler')
 // @desc -> all posts
 // @route GET /posts
 const getAllPosts = asyncHandler(async (req, res) => {
-    const posts = await Post.find().lean()
+    const posts = await Post.find().populate('user', 'username').lean()
     if (!posts?.length) {
         res.status(400)
         throw new Error('No posts found')
@@ -19,9 +19,9 @@ const getSinglePost = asyncHandler(async (req, res) => {
     const { id } = req.params
     if (!isValidObjectId(id)) {
         res.status(400)
-        throw new Error('Invalid user ID')
+        throw new Error('Invalid post ID')
     }
-    const post = await User.findById(id).lean()
+    const post = await Post.findById(id).populate('user', 'username').lean()
     if (!post) {
         res.status(404)
         throw new Error('Post not found')
@@ -30,8 +30,20 @@ const getSinglePost = asyncHandler(async (req, res) => {
 })
 //	POST /posts -> create post
 const createNewPost = asyncHandler(async (req, res) => {
-    const { userId, username, postType, postCategory, title, imgSrc, postContent, published } = req.body
-    const post = await Post.create({ userId, username, postType, postCategory, title, imgSrc, postContent, published })
+    const { user, postType, postCategory, title, imgSrc, postContent, published } = req.body
+
+    if (!isValidObjectId(user)) {
+        res.status(400)
+        throw new Error('Invalid user ID')
+    }
+
+    const dbUser = await User.findById(user)
+    if (!dbUser) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+
+    const post = await Post.create({ user: dbUser._id, postType, postCategory, title, imgSrc, postContent, published })
     res.status(201).json({ message: `New post ${post.title} created` })
 })
 //	PUT /posts/:id -> update post
@@ -39,9 +51,9 @@ const updatePost = asyncHandler(async (req, res) => {
     const { id } = req.params
     if (!isValidObjectId(id)) {
         res.status(400)
-        throw new Error('Invalid user ID')
+        throw new Error('Invalid post ID')
     }
-    const { username, postType, postCategory, title, imgSrc, postContent, published } = req.body
+    const { postType, postCategory, title, imgSrc, postContent, published } = req.body
 
     const post = await Post.findById(id)
     if (!post) {
@@ -49,7 +61,6 @@ const updatePost = asyncHandler(async (req, res) => {
         throw new Error(`Post with id ${id} not found`)
     }
 
-    post.username = username
     post.postType = postType
     post.postCategory = postCategory
     post.title = title
@@ -58,14 +69,14 @@ const updatePost = asyncHandler(async (req, res) => {
     post.published = published
 
     const updatedPost = await post.save()
-    res.json({ message: `${updatedPost.title} updated` })
+    res.json({ message: `${updatedPost.title} updated`, post: await updatedPost.populate('user', 'username') })
 })
 //	PATCH /posts/:id -> update post partially
 const updatePostPartial = asyncHandler(async (req, res) => {
     const { id } = req.params
     if (!isValidObjectId(id)) {
         res.status(400)
-        throw new Error('Invalid user ID')
+        throw new Error('Invalid post ID')
     }
     const updates = req.body
 
@@ -88,7 +99,7 @@ const deletePost = asyncHandler(async (req, res) => {
     const { id } = req.params
     if (!isValidObjectId(id)) {
         res.status(400)
-        throw new Error('Invalid user ID')
+        throw new Error('Invalid post ID')
     }
 
     const post = await Post.findById(id)
