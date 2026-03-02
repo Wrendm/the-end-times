@@ -10,7 +10,7 @@ const Paintings = () => {
     data,
     fetchError,
     isLoading,
-  } = useAxiosFetch<PostType[]>('http://localhost:3500/posts?postCategory=painting');
+  } = useAxiosFetch<PostType[]>('/posts?postCategory=painting');
 
   useEffect(() => {
     if (data) {

@@ -10,7 +10,7 @@ const Photography = () => {
     data,
     fetchError,
     isLoading,
-  } = useAxiosFetch<PostType[]>('http://localhost:3500/posts?postCategory=photography');
+  } = useAxiosFetch<PostType[]>('/posts?postCategory=photography');
 
   useEffect(() => {
     if (data) {

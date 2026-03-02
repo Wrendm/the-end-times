@@ -10,7 +10,7 @@ const Poetry = () => {
     data,
     fetchError,
     isLoading,
-  } = useAxiosFetch<PostType[]>('http://localhost:3500/posts?postCategory=poem');
+  } = useAxiosFetch<PostType[]>('/posts?postCategory=poem');
 
   useEffect(() => {
     if (data) {

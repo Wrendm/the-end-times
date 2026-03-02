@@ -10,7 +10,7 @@ const Fashion = () => {
     data,
     fetchError,
     isLoading,
-  } = useAxiosFetch<PostType[]>('http://localhost:3500/posts?postCategory=fashion');
+  } = useAxiosFetch<PostType[]>('/posts?postCategory=fashion');
 
   useEffect(() => {
     if (data) {

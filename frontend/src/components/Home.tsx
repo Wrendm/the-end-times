@@ -10,7 +10,7 @@ const Home = () => {
     data,
     fetchError,
     isLoading,
-  } = useAxiosFetch<PostType[]>('http://localhost:3500/posts');
+  } = useAxiosFetch<PostType[]>('/posts');
 
   useEffect(() => {
     if (data) {
@@ -18,6 +18,7 @@ const Home = () => {
     }
   }, [data]);
 
+  if (!isLoading && posts.length === 0) return <p>No posts found.</p>;
   if (isLoading) return <p>Loading posts...</p>;
   if (fetchError) return <p>Error: {fetchError}</p>;
   return (
