@@ -1,8 +1,8 @@
 const cors = require('cors')
 
 const allowedOrigins = [
-  'http://localhost:3000',          // dev
-  'https://graceful-longma-d2fa65.netlify.app/' // production
+  'http://localhost:5173',       // dev
+  'https://graceful-longma-d2fa65.netlify.app' // production
 ]
 
 const corsOptions = {
