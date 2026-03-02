@@ -6,7 +6,14 @@ const asyncHandler = require('express-async-handler')
 // @desc -> all posts
 // @route GET /posts
 const getAllPosts = asyncHandler(async (req, res) => {
-    const posts = await Post.find().populate('user', 'username').lean()
+    const { postCategory } = req.query;
+
+    const filter = {
+    ...(postCategory ? { postCategory: { $regex: new RegExp(`^${postCategory}$`, 'i') } } : {}),
+    published: true
+    };
+
+    const posts = await Post.find(filter).populate('user', 'username').lean()
     if (!posts?.length) {
         res.status(400)
         throw new Error('No posts found')
