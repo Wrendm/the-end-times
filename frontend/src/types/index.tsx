@@ -1,18 +1,19 @@
 interface UserType {
-  id: string;
+  _id: string;
   name: string;
   username: string;
 }
 interface PostType {
-  id: string;
-  userId: string;
-  username: string;
+  _id: string;
+  user: UserType;
   postType: string;
   postCategory: string;
-  postdate: string;
   title: string,
-  imgSrc: string;
-  postContent: string;
+  imgSrc?: string;
+  postContent?: string;
+  published: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type {UserType, PostType};
