@@ -9,15 +9,13 @@ const getAllPosts = asyncHandler(async (req, res) => {
     const { postCategory } = req.query;
 
     const filter = {
-    ...(postCategory ? { postCategory: { $regex: new RegExp(`^${postCategory}$`, 'i') } } : {}),
-    published: true
+        ...(postCategory ? { postCategory: { $regex: new RegExp(`^${postCategory}$`, 'i') } } : {}),
+        published: true
     };
 
     const posts = await Post.find(filter).populate('user', 'username').lean()
-    if (!posts?.length) {
-        res.status(400)
-        throw new Error('No posts found')
-    }
+
+    // no error for empty arrays
     res.json(posts)
 })
 // @desc -> single post
