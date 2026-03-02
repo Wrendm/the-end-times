@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios';
+import { AxiosError } from 'axios';
+import api from '../api/axios';
 
 const useAxiosFetch = <T,>(dataUrl: string) => {
     const [data, setData] = useState<T | null>(null);
@@ -13,7 +14,7 @@ const useAxiosFetch = <T,>(dataUrl: string) => {
         const fetchData = async (url: string) => {
             setIsLoading(true);
             try {
-                const response = await axios.get(url, { signal: controller.signal });
+                const response = await api.get(url, { signal: controller.signal });
                 if (isMounted) {
                     setData(response.data);
                     setFetchError('');
@@ -21,7 +22,7 @@ const useAxiosFetch = <T,>(dataUrl: string) => {
             } catch (err: unknown) {
                 if (!isMounted) return;
 
-                if (axios.isAxiosError(err)) {
+                if (err instanceof AxiosError) {
                     setFetchError(err.message);
                 } else if (err instanceof Error) {
                     setFetchError(err.message);
