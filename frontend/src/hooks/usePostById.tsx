@@ -1,20 +1,12 @@
-import useAxiosFetch from './useAxiosFetch';
-import type { PostType } from '../types/index';
+import useAxiosFetch from './useAxiosFetch'
+import type { PostType } from '../types/index'
 
+const usePostById = (postId?: string) => {
+  if (!postId) return { post: null, isLoading: false, fetchError: '' }
 
-const usePostById = (postId: string) => {
-  const { data, isLoading, fetchError } = useAxiosFetch<PostType[]>(`http://localhost:3500/posts?id=${postId}`);
-    if (!postId) {
-    return { post: null, isLoading: false, fetchError: '' };
-  }
+  const { data: post, isLoading, fetchError } = useAxiosFetch<PostType>(`/posts/${postId}`)
 
-  let post: PostType | null = null;
+  return { post, isLoading, fetchError }
+}
 
-  if (data && data.length > 0) {
-    post = data[0];
-  }
-
-  return { post, isLoading, fetchError };
-};
-
-export default usePostById;
+export default usePostById
