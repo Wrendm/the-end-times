@@ -1,50 +1,52 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from 'react';
 import type { PostType } from '../types/index';
 import PostFeed from "./PostFeed";
+import DataState from "./DataState";
 import useUserById from '../hooks/useUserById';
 import useAxiosFetch from '../hooks/useAxiosFetch';
 
 const ProfilePage = () => {
   const { id } = useParams<{ id: string }>();
 
+  // Fetch the user by ID
   const { user, fetchError: fetchUserError, isLoading: isUserLoading } = useUserById(id ?? '');
 
-  const [posts, setPosts] = useState<PostType[]>([]);
+  // Determine posts URL only if user exists
   const postsUrl = user ? `/posts?user=${user._id}` : null;
+  const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } = useAxiosFetch<PostType[]>(postsUrl);
 
-  const {data, fetchError: fetchPostsError, isLoading: isPostsLoading} = useAxiosFetch<PostType[]>(postsUrl);
+  // Normalize posts so PostFeed always gets an array
+  const posts: PostType[] = postsData ?? [];
 
-  useEffect(() => {
-    if (data) {
-      setPosts(data);
-    }
-  }, [data]);
-
-  if (isUserLoading) return <div className="loader"></div>;
-  if (fetchUserError) return <div className="FetchError"><h1>Error: {fetchUserError}</h1></div>;
-
-  if (isPostsLoading) return <div className="loader"></div>;
-  if (fetchPostsError) return <div className="FetchError"><h1>Error: {fetchPostsError}</h1></div>;
-
-  
+  // Handle user-level loading/error/empty
   if (!id) return <h1>That user fell in the void!</h1>;
-  if (!user) return <h1>That user fell in the void!</h1>;
-  if (!data) return <h1>That user's posts fell in the void!</h1>;
 
   return (
-    <>
-      <div>
+    <DataState
+      isLoading={isUserLoading}
+      error={fetchUserError}
+      isEmpty={!user}
+      emptyMessage="That user could not be found!"
+    >
+      <div className="ProfilePage">
         <div className="ProfileHeader">
-          <h1>{user.username}</h1>
-          <h4>{user.name}</h4>
+          <h1>{user!.username}</h1>
+          <h4>{user!.name}</h4>
         </div>
-        <div className="ProfilePosts">
-          <PostFeed posts={posts} />
-        </div>
+
+        <DataState
+          isLoading={isPostsLoading}
+          error={fetchPostsError}
+          isEmpty={posts.length === 0}
+          emptyMessage="This user hasn't made any posts yet."
+        >
+          <div className="ProfilePosts">
+            <PostFeed posts={posts} />
+          </div>
+        </DataState>
       </div>
-    </>
-  )
-}
+    </DataState>
+  );
+};
 
 export default ProfilePage;

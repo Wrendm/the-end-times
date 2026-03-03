@@ -1,30 +1,24 @@
 import PostFeed from "./PostFeed";
 import type { PostType } from '../types/index';
-import { useState, useEffect } from 'react';
 import useAxiosFetch from '../hooks/useAxiosFetch';
+import DataState from '../components/DataState';
 
 const Home = () => {
-  const [posts, setPosts] = useState<PostType[]>([]);
+  // Fetch posts directly
+  const { data, fetchError, isLoading } = useAxiosFetch<PostType[]>('/posts');
 
-  const {
-    data,
-    fetchError,
-    isLoading,
-  } = useAxiosFetch<PostType[]>('/posts');
+  // Ensure posts is always an array
+  const posts = data ?? [];
 
-  useEffect(() => {
-    if (data) {
-      setPosts(data);
-    }
-  }, [data]);
-
-  if (!isLoading && posts.length === 0) return <h1 style={{  display: "flex", justifyContent: "center", paddingTop: "50px", minHeight:"80%"}}> No posts to display. You should make one!</h1>;
-  if (isLoading) return <div className="loader"></div>;
-  if (fetchError) return <div className="FetchError"><h1>Error: {fetchError}</h1></div>;
   return (
-    <div className="Home">
+    <DataState
+      isLoading={isLoading}
+      error={fetchError}
+      isEmpty={posts.length === 0}
+      emptyMessage="No posts to display. You should make one!"
+    >
       <PostFeed posts={posts} />
-    </div>
+    </DataState>
   );
 };
 
