@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import { AxiosError } from 'axios';
 import api from '../api/axios';
 
-const useAxiosFetch = <T,>(dataUrl: string) => {
+const useAxiosFetch = <T,>(dataUrl: string | null) => {
     const [data, setData] = useState<T | null>(null);
     const [fetchError, setFetchError] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
+        if (!dataUrl) return;
         let isMounted = true;
         const controller = new AbortController();
 
