@@ -21,10 +21,10 @@ const ProfilePage = () => {
     }
   }, [data]);
 
-  if (isUserLoading) return <p>Loading…</p>;
+  if (isUserLoading) return <div className="loader"></div>;
   if (fetchUserError) return <p>{fetchUserError}</p>;
 
-  if (isPostsLoading) return <p>Loading posts...</p>;
+  if (isPostsLoading) return <div className="loader"></div>;
   if (fetchPostsError) return <p>Error: {fetchPostsError}</p>;
 
   

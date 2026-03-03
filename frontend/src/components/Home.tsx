@@ -19,7 +19,7 @@ const Home = () => {
   }, [data]);
 
   if (!isLoading && posts.length === 0) return <p>No posts found.</p>;
-  if (isLoading) return <p>Loading posts...</p>;
+  if (isLoading) return <div className="loader"></div>;
   if (fetchError) return <p>Error: {fetchError}</p>;
   return (
     <div className="Home">
