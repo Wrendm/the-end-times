@@ -1,73 +1,33 @@
-\documentclass{article}
-\usepackage[margin=1in]{geometry}
-\usepackage{hyperref}
+# The End Times
 
-\title{The End Times}
-\author{}
-\date{}
+**The End Times** is a full-stack MERN creative platform for publishing and exploring art.  
+Frontend: React + TypeScript (Vite) | Backend: Node + Express + MongoDB
 
-\begin{document}
+---
 
-\maketitle
+## Current Status
 
-\section*{Overview}
-\textbf{The End Times} is a full-stack MERN creative platform for publishing and exploring art.  
-Frontend: React + TypeScript (Vite), Backend: Node + Express + MongoDB.
+- Fully connected frontend & backend
+- REST API for users and posts with full CRUD
+- Filtering by category and author implemented
+- Loading and error states handled in the UI
+- Seeded database for testing (3 users, 10 posts)
+- Environment variables manage API URLs
 
-\section*{Current Status}
-\begin{itemize}
-    \item Fully connected frontend \& backend
-    \item REST API for users and posts with full CRUD
-    \item Filtering by category and author implemented
-    \item Loading and error states handled in the UI
-    \item Seeded database for testing (3 users, 10 posts)
-    \item Environment variables manage API URLs
-\end{itemize}
+---
 
-\section*{Tech Stack}
-\textbf{Frontend:} React, React Router, Axios, TypeScript  
-\textbf{Backend:} Node.js, Express, MongoDB, Mongoose, CORS, custom middleware
+## Tech Stack
 
-\section*{Key Features}
-\begin{itemize}
-    \item Display posts by category or author
-    \item Single post and user profile pages
-    \item Responsive layout
-    \item Backend validation and error handling
-    \item Reusable hooks for API fetching
-\end{itemize}
+**Frontend:** React, React Router, Axios, TypeScript  
+**Backend:** Node.js, Express, MongoDB, Mongoose, CORS, custom middleware
 
-\section*{Project Structure}
-\begin{verbatim}
-frontend/
-  components/ hooks/ api/ types/
-backend/
-  controllers/ models/ routes/ middleware/ utils/
-\end{verbatim}
+---
 
-\section*{Getting Started}
-\textbf{Backend:}
-\begin{verbatim}
-cd backend
-npm install
-npm run dev
-\end{verbatim}
-\textbf{Frontend:}
-\begin{verbatim}
-cd frontend
-npm install
-npm run dev
-\end{verbatim}
+## Key Features
 
-\section*{Next Steps}
-\begin{itemize}
-    \item Authentication \& authorization
-    \item Role-based access control
-    \item Post creation/edit UI with image upload
-    \item Frontend feed sorting \& accessibility improvements
-\end{itemize}
+- Display posts by category or author
+- Single post and user profile pages
+- Responsive layout
+- Backend validation and error handling
+- Reusable hooks for API fetching
 
-\section*{Purpose}
-Built as a portfolio-ready full-stack project emphasizing maintainable structure, dynamic data, and professional API practices.
-
-\end{document}
