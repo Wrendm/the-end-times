@@ -8,6 +8,7 @@ import Essays from './components/Essays';
 import Fashion from './components/Fashion';
 import Home from './components/Home';
 import PostPage from './components/PostPage';
+import ProfilePage from './components/ProfilePage';
 import PageNotFound from './components/PageNotFound';
 import Layout from './components/Layout';
 
@@ -20,6 +21,9 @@ function App() {
         <Route index element={<Home  />} />
         <Route path="post">
           <Route path=":id" element={<PostPage />} />
+        </Route>
+        <Route path="users">
+          <Route path=":id" element={<ProfilePage />} />
         </Route>
         <Route path="paintings" element={<Paintings />} />
         <Route path="photography" element={<Photography />} />
