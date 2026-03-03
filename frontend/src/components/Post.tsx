@@ -10,7 +10,7 @@ const Post = ({ post }: PostProps) => {
   return (
     <>
       <div className="TopRow">
-        <div><p>{post.user.username}</p></div>
+        <div><Link to={`/users/${post.user._id}`}><p>{post.user.username}</p></Link></div>
         <div><p>{new Date(post.createdAt).toLocaleDateString()}</p></div>
       </div>
       <div className="ContentRow">

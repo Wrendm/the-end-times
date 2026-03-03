@@ -10,7 +10,16 @@ body {
   height: 100vh;
 }
 
-.Header, .Footer {
+a {
+  color: #828e82;
+}
+
+a:hover {
+  color: #333;
+}
+
+.Header,
+.Footer {
   width: 100%;
   padding: 1rem;
   display: flex;
@@ -25,19 +34,19 @@ body {
   place-content: center;
 }
 
-.Header h1 a{
+.Header h1 a {
   text-decoration: none;
-  color: #39383d;
+  color: #222;
 }
 
-.Header h1:hover, 
-.Header h1:focus, 
-.Header h1:hover a, 
-.Header h1:focus a  {
+.Header h1:hover,
+.Header h1:focus,
+.Header h1:hover a,
+.Header h1:focus a {
   color: #E0E0E0;
 }
 
-.Header h1:hover a, 
+.Header h1:hover a,
 .Header h1:focus a {
   cursor: pointer;
 }
@@ -63,7 +72,7 @@ body {
   padding: 1rem;
 }
 
-.Nav li:hover, 
+.Nav li:hover,
 .Nav li:focus {
   padding: 1rem;
 }
@@ -73,19 +82,20 @@ body {
   text-decoration: none;
 }
 
-.Nav li:hover, 
-.Nav li:focus, 
-.Nav li:hover a, 
-.Nav li:focus a  {
+.Nav li:hover,
+.Nav li:focus,
+.Nav li:hover a,
+.Nav li:focus a {
   color: #E0E0E0;
 }
 
-.Nav li:hover a, 
+.Nav li:hover a,
 .Nav li:focus a {
   cursor: pointer;
 }
 
-.Home, .PageNotFound {
+.Home,
+.PageNotFound {
   width: 100%;
   flex-grow: 1;
   overflow-y: auto;
@@ -93,7 +103,14 @@ body {
   color: #4a4e69;
 }
 
-.PostFeed{
+.PageNotFound {
+  display: flex;
+  height: 80%;
+  justify-content: center;
+  align-items: center;
+}
+
+.PostFeed {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -101,23 +118,39 @@ body {
   align-content: flex-start;
 }
 
-.PostCard{
+.PostCard {
   flex-direction: row;
   margin: 2%;
   padding: 15px;
   background-color: #fff;
 }
 
-.TopRow{
+.TopRow {
   display: flex;
   justify-content: space-between;
 }
 
-.PostContentArea{
+.ContentArea {
   width: 70%;
-  margin: auto;
+  margin: 40px auto;
+  min-height: 75%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  flex-grow: 1;
+}
+
+.ProfileHeader {
+  padding: 30px 60px 30px 40px;
+  background-color: #333;
+  color: #fafafa;
+}
+
+
+.Essays,
+.Fashion,
+.Home,
+.Paintings,
+.Photography,
+.Poetry{
+  min-height:80%;
 }
