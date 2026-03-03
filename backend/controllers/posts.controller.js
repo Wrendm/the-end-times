@@ -6,10 +6,16 @@ const asyncHandler = require('express-async-handler')
 // @desc -> all posts
 // @route GET /posts
 const getAllPosts = asyncHandler(async (req, res) => {
-    const { postCategory } = req.query;
+    const { postCategory, user } = req.query;
+    
+    if (user && !isValidObjectId(user)) {
+        res.status(400);
+        throw new Error('Invalid user ID');
+    }
 
     const filter = {
         ...(postCategory ? { postCategory: { $regex: new RegExp(`^${postCategory}$`, 'i') } } : {}),
+        ...(user ? { user } : {}),
         published: true
     };
 
