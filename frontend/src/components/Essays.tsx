@@ -19,7 +19,7 @@ const Essays = () => {
   }, [data]);
 
   if (isLoading) return <div className="loader"></div>;
-  if (fetchError) return <p>Error: {fetchError}</p>;
+  if (fetchError) return <div className="FetchError"><h1>Error: {fetchError}</h1></div>;
   return (
     <div className="Essays">
       <PostFeed posts={posts} />

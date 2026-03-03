@@ -22,10 +22,10 @@ const ProfilePage = () => {
   }, [data]);
 
   if (isUserLoading) return <div className="loader"></div>;
-  if (fetchUserError) return <p>{fetchUserError}</p>;
+  if (fetchUserError) return <div className="FetchError"><h1>Error: {fetchUserError}</h1></div>;
 
   if (isPostsLoading) return <div className="loader"></div>;
-  if (fetchPostsError) return <p>Error: {fetchPostsError}</p>;
+  if (fetchPostsError) return <div className="FetchError"><h1>Error: {fetchPostsError}</h1></div>;
 
   
   if (!id) return <h1>That user fell in the void!</h1>;

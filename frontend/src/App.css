@@ -40,6 +40,14 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 60%;
+}
+
+.FetchError{
+  display: flex;
+  justify-content: center;
+  padding-top: 50px; 
+  min-height: 80%;
 }
 
 .Header,

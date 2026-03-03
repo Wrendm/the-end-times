@@ -8,7 +8,7 @@ const PostPage = () => {
   const { post, isLoading, fetchError } = usePostById(id ?? '');
 
   if (isLoading) return <div className="loader"></div>;
-  if (fetchError) return <p>{fetchError}</p>;
+  if (fetchError) return <div className="FetchError"><h1>Error: {fetchError}</h1></div>;
   if (!id) return <h1>That post fell in the void!</h1>;
   if (!post) return <h1>That post fell in the void!</h1>;
 

@@ -18,9 +18,9 @@ const Home = () => {
     }
   }, [data]);
 
-  if (!isLoading && posts.length === 0) return <p>No posts found.</p>;
+  if (!isLoading && posts.length === 0) return <h1 style={{  display: "flex", justifyContent: "center", paddingTop: "50px", minHeight:"80%"}}> No posts to display. You should make one!</h1>;
   if (isLoading) return <div className="loader"></div>;
-  if (fetchError) return <p>Error: {fetchError}</p>;
+  if (fetchError) return <div className="FetchError"><h1>Error: {fetchError}</h1></div>;
   return (
     <div className="Home">
       <PostFeed posts={posts} />
