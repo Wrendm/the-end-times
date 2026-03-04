@@ -15,7 +15,7 @@ const PostPage = () => {
       emptyMessage="That post fell in the void!"
     >
       <div className="ContentArea">
-        <h1>{post!.title || 'Untitled'}</h1>
+        <h1>{post?.title || 'Untitled'}</h1>
 
         <div>
           <Link to={`/users/${post!.user._id}`}>
