@@ -14,31 +14,33 @@ const PostPage = () => {
       isEmpty={!post}
       emptyMessage="That post fell in the void!"
     >
-      <div className="ContentArea">
-        <h1>{post?.title || 'Untitled'}</h1>
+      {post && (
+        <div className="ContentArea">
+          <h1>{post.title || 'Untitled'}</h1>
 
-        <div>
-          <Link to={`/users/${post!.user._id}`}>
-            <h2>{post!.user.username}</h2>
-          </Link>
-        </div>
+          <div>
+            <Link to={`/users/${post.user?._id}`}>
+              <h2>{post.user?.username || 'Unknown User'}</h2>
+            </Link>
+          </div>
 
-        <div>
-          <h3>{new Date(post!.createdAt).toLocaleDateString()}</h3>
-        </div>
+          <div>
+            <h3>{post.createdAt ? new Date(post.createdAt).toLocaleDateString() : ''}</h3>
+          </div>
 
-        <div className="ContentRow">
-          {post!.imgSrc ? (
-            <p className="imagecontent">
-              <img src={post!.imgSrc} width="400px" />
-            </p>
-          ) : <br />}
-          
-          {post!.postContent ? (
-            <p className="textcontent">{post!.postContent}</p>
-          ) : <br />}
+          <div className="ContentRow">
+            {post.imgSrc ? (
+              <p className="imagecontent">
+                <img src={post.imgSrc} width="400px" />
+              </p>
+            ) : <br />}
+
+            {post.postContent ? (
+              <p className="textcontent">{post.postContent}</p>
+            ) : <br />}
+          </div>
         </div>
-      </div>
+      )}
     </DataState>
   );
 };

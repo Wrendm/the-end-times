@@ -18,7 +18,7 @@ const ProfilePage = () => {
   // Normalize posts so PostFeed always gets an array
   const posts: PostType[] = postsData ?? [];
 
-  // Handle user-level loading/error/empty
+  // Handle missing ID immediately
   if (!id) return <h1>That user fell in the void!</h1>;
 
   return (
@@ -28,23 +28,25 @@ const ProfilePage = () => {
       isEmpty={!user}
       emptyMessage="That user could not be found!"
     >
-      <div className="ProfilePage">
-        <div className="ProfileHeader">
-          <h1>{user!.username}</h1>
-          <h4>{user!.name}</h4>
-        </div>
-
-        <DataState
-          isLoading={isPostsLoading}
-          error={fetchPostsError}
-          isEmpty={posts.length === 0}
-          emptyMessage="This user hasn't made any posts yet."
-        >
-          <div className="ProfilePosts">
-            <PostFeed posts={posts} />
+      {user && (
+        <div className="ProfilePage">
+          <div className="ProfileHeader">
+            <h1>{user.username}</h1>
+            <h4>{user.name}</h4>
           </div>
-        </DataState>
-      </div>
+
+          <DataState
+            isLoading={isPostsLoading}
+            error={fetchPostsError}
+            isEmpty={posts.length === 0}
+            emptyMessage="This user hasn't made any posts yet."
+          >
+            <div className="ProfilePosts">
+              <PostFeed posts={posts} />
+            </div>
+          </DataState>
+        </div>
+      )}
     </DataState>
   );
 };
