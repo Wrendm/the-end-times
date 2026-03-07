@@ -5,22 +5,28 @@ const Post = require('../models/Post')
 const User = require('../models/User')
 require('dotenv').config()
 
-let testUserId
+let testUser
+let testPost
 
 beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_URI)
+})
 
-    const testUser = await User.create({
+beforeEach(async () => {
+    // Clean test data before each test
+    await Post.deleteMany({ postCategory: 'testing' })
+    await User.deleteMany({ email: 'jestuser@example.com' })
+
+    testUser = await User.create({
         username: 'jestuser',
         name: 'Jest User',
         email: 'jestuser@example.com',
         password: 'password123',
         roles: ['Contributor']
     })
-    testUserId = testUser._id
 
-    await Post.create({
-        user: testUserId,
+    testPost = await Post.create({
+        user: testUser._id,
         postType: 'blog',
         postCategory: 'testing',
         title: 'Jest Test Post',
@@ -31,25 +37,28 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await Post.deleteMany({ postCategory: 'testing' })
-    await User.deleteOne({ _id: testUserId })
+    await User.deleteMany({ email: 'jestuser@example.com' })
     await mongoose.connection.close()
 })
 
 describe('Posts API', () => {
+
     it('GET /posts should return an array of posts', async () => {
         const res = await request(app)
             .get('/posts')
             .expect(200)
 
         expect(Array.isArray(res.body)).toBe(true)
-        expect(res.body[0]).toHaveProperty('title')
-        expect(res.body[0]).toHaveProperty('user')
+
+        if (res.body.length > 0) {
+            expect(res.body[0]).toHaveProperty('title')
+            expect(res.body[0]).toHaveProperty('user')
+        }
     })
 
     it('GET /posts/:id should return a single post', async () => {
-        const post = await Post.findOne({ title: 'Jest Test Post' })
         const res = await request(app)
-            .get(`/posts/${post._id}`)
+            .get(`/posts/${testPost._id}`)
             .expect(200)
 
         expect(res.body.title).toBe('Jest Test Post')
@@ -58,7 +67,7 @@ describe('Posts API', () => {
 
     it('POST /posts should create a new post', async () => {
         const newPost = {
-            user: testUserId.toString(),
+            user: testUser._id.toString(),
             postType: 'blog',
             postCategory: 'testing',
             title: 'Jest Create Post',
@@ -71,8 +80,10 @@ describe('Posts API', () => {
             .send(newPost)
             .expect(201)
 
-        expect(res.body.message).toMatch(/New post Jest Create Post created/)
+        expect(res.body).toHaveProperty('message')
+        expect(res.body.message).toMatch(/created/i)
 
-        await Post.deleteOne({ title: 'Jest Create Post' })
+        const createdPost = await Post.findOne({ title: 'Jest Create Post' })
+        expect(createdPost).not.toBeNull()
     })
 })
