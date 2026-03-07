@@ -44,7 +44,7 @@ afterAll(async () => {
 describe('Posts API', () => {
 
     it('GET /posts should return an array of posts', async () => {
-        const res = await request(app)
+        const res = await request(process.env.API_URL)
             .get('/posts')
             .expect(200)
 
@@ -57,7 +57,7 @@ describe('Posts API', () => {
     })
 
     it('GET /posts/:id should return a single post', async () => {
-        const res = await request(app)
+        const res = await request(process.env.API_URL)
             .get(`/posts/${testPost._id}`)
             .expect(200)
 
@@ -75,7 +75,7 @@ describe('Posts API', () => {
             published: false
         }
 
-        const res = await request(app)
+        const res = await request(process.env.API_URL)
             .post('/posts')
             .send(newPost)
             .expect(201)
