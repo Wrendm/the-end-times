@@ -11,6 +11,8 @@ import PostPage from './components/PostPage';
 import ProfilePage from './components/ProfilePage';
 import PageNotFound from './components/PageNotFound';
 import Layout from './components/Layout';
+import Register from './components/Register';
+import Login from './components/Login';
 
 
 
@@ -25,6 +27,8 @@ function App() {
         <Route path="users">
           <Route path=":id" element={<ProfilePage />} />
         </Route>
+        <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
         <Route path="paintings" element={<Paintings />} />
         <Route path="photography" element={<Photography />} />
         <Route path="poetry" element={<Poetry />} />
