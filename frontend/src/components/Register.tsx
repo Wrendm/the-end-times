@@ -1,109 +1,85 @@
 import { useState } from "react";
-import api from '../api/axios';
+import api from "../api/axios";
 
-export default function Form() {
-    const [name, setName] = useState("");
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+export default function Register() {
+    const [form, setForm] = useState({
+        name: "",
+        username: "",
+        email: "",
+        password: ""
+    });
 
-    const [submitted, setSubmitted] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+    const [message, setMessage] = useState("");
 
-    const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
-        setSubmitted(false);
-    };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
 
-    const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUsername(e.target.value);
-        setSubmitted(false);
-    };
-
-    const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-        setSubmitted(false);
-    };
-
-    const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-        setSubmitted(false);
+        setForm((prev) => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         try {
-            const { data } = await api.post('/auth/register', {
-                name,
-                username,
-                email,
-                password
-            })
+            const { data } = await api.post("/auth/register", form);
 
-            setSuccess(true)
-            setSubmitted(true)
-            setError('')
-            setName('')
-            setUsername('')
-            setEmail('')
-            setPassword('')
+            setSuccess(true);
+            setError("");
+            setMessage(data.message);
 
-            console.log(data.message)
+            setForm({
+                name: "",
+                username: "",
+                email: "",
+                password: ""
+            });
+
         } catch (err: any) {
             if (err.response) {
-                // Backend responded with an error code
-                setError(err.response.data.message || 'Registration failed')
+                setError(err.response.data.message || "Registration failed");
             } else if (err.request) {
-                // Request made but no response
-                setError('No response from server')
+                setError("No response from server");
             } else {
-                setError('Network error')
+                setError("Network error");
             }
         }
-    }
-
-    // Showing success message
-    const successMessage = () => {
-        if (!submitted) return null;
-        return (
-            <div className="success">
-                <h1>User {name} successfully registered!</h1>
-            </div>
-        )
-    }
-
-    const errorMessage = () => {
-        if (!error) return null;
-        return (
-            <div className="error">
-                <h1>{error}</h1>
-            </div>
-        )
-    }
+    };
 
     return (
         <div className="Form">
-            <div>
-                <h1>User Registration</h1>
-            </div>
-            <div className="Messages">
-                {errorMessage()}
-                {success ? (submitted && successMessage()) : ''}
-            </div>
+            <h1>User Registration</h1>
+
+            {error && (
+                <div className="error">
+                    <h2>Error!</h2>
+                    <h2>{error}</h2>
+                </div>
+            )}
+
+            {success && (
+                <div className="success">
+                    <h2>Success!</h2>
+                    <h2>{message}</h2>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit}>
                 <label className="label">Name</label>
-                <input onChange={handleName} className="input" value={name} type="text"/>
+                <input className="input" type="text" name="name" value={form.name} onChange={handleChange} />
 
                 <label className="label">Username</label>
-                <input onChange={handleUsername} className="input" value={username} type="text"/>
+                <input className="input" type="text" name="username" value={form.username} onChange={handleChange} />
 
                 <label className="label">Email</label>
-                <input onChange={handleEmail} className="input" value={email} type="email"/>
+                <input className="input" type="email" name="email" value={form.email} onChange={handleChange} />
 
                 <label className="label">Password</label>
-                <input onChange={handlePassword} className="input" value={password} type="password"/>
+                <input className="input" type="password" name="password" value={form.password} onChange={handleChange} />
 
                 <button className="btn" type="submit">Submit</button>
             </form>

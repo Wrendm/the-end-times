@@ -1,42 +1,39 @@
 import { useState } from "react";
 import api from '../api/axios';
 
-export default function Form() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+export default function Login() {
+    const [form, setForm] = useState({
+        username: "",
+        password: ""
+    });
 
-    const [submitted, setSubmitted] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+    const [message, setMessage] = useState("");
 
-    const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUsername(e.target.value);
-        setSubmitted(false);
-    };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
 
-    const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-        setSubmitted(false);
+        setForm((prev) => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Sending login payload:", { username, password });
         try {
-            const { data } = await api.post('/auth/login', {
-                username,
-                password
-            })
+            const { data } = await api.post('/auth/login', form)
 
-            setSuccess(true)
-            setSubmitted(true)
-            setError('')
+            setSuccess(true);
+            setError("");
+            setMessage(data.message);
 
-            setUsername('')
-            setPassword('')
-
-            console.log(data.message)
-            console.log("JWT Token:", data.token)
+            setForm({
+                username: "",
+                password: ""
+            });
+            
         } catch (err: any) {
             if (err.response) {
                 // Backend responded with an error code
@@ -50,41 +47,32 @@ export default function Form() {
         }
     }
 
-    // Showing success message
-    const successMessage = () => {
-        if (!submitted) return null;
-        return (
-            <div className="success">
-                <h1>Login successful!</h1>
-            </div>
-        )
-    }
-
-    const errorMessage = () => {
-        if (!error) return null;
-        return (
-            <div className="error">
-                <h1>{error}</h1>
-            </div>
-        )
-    }
-
     return (
         <div className="Form">
             <div>
                 <h1>User Login</h1>
             </div>
-            <div className="Messages">
-                {errorMessage()}
-                {success ? (submitted && successMessage()) : ''}
-            </div>
+
+            {error && (
+                <div className="error">
+                    <h2>Error!</h2>
+                    <h2>{error}</h2>
+                </div>
+            )}
+
+            {success && (
+                <div className="success">
+                    <h2>Success!</h2>
+                    <h2>{message}</h2>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit}>
                 <label className="label">Username</label>
-                <input onChange={handleUsername} className="input" value={username} type="text"/>
+                <input onChange={handleChange} className="input" name="username" value={form.username} type="text" />
 
                 <label className="label">Password</label>
-                <input onChange={handlePassword} className="input" value={password} type="password"/>
+                <input onChange={handleChange} className="input" name="password" value={form.password} type="password" />
 
                 <button className="btn" type="submit">Login</button>
             </form>
