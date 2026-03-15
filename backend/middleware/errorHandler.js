@@ -1,4 +1,8 @@
 const errorHandler = (err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err)
+    }
+
     console.error(err.stack)
 
     // If no status code was set earlier in the request lifecycle,
