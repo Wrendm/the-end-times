@@ -9,10 +9,13 @@ const jwt = require('jsonwebtoken')
 const registerUser = asyncHandler(async (req, res) => {
     const { username, name, email, password } = req.body;
 
-    const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
-    if (duplicate) {
-        throw new Error('Duplicate username or email not allowed')
-    }
+    const duplicate = await User.findOne({
+    $or: [
+        { username: { $regex: new RegExp(`^${username}$`, 'i') } },
+        { email: { $regex: new RegExp(`^${email}$`, 'i') } }
+    ]
+    }).lean();
+    
     const hashedPwd = await bcrypt.hash(password, 10)
 
     const user = await User.create({ username, name, email, "password": hashedPwd, roles: ['Contributor'] })
