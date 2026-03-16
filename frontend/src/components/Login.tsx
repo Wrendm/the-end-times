@@ -1,81 +1,50 @@
-import { useState } from "react";
-import api from '../api/axios';
+import { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { loginUser } from "../api/authApi";
+import { AuthContext } from "../context/authcontext";
 
 export default function Login() {
-    const [form, setForm] = useState({
-        username: "",
-        password: ""
-    });
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState(false);
-    const [message, setMessage] = useState("");
+  const auth = useContext(AuthContext);
+  if (!auth) return <div>Loading auth...</div>;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+  const navigate = useNavigate();
 
-        setForm((prev) => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const { data } = await api.post('/auth/login', form)
-
-            setSuccess(true);
-            setError("");
-            setMessage(data.message);
-
-            setForm({
-                username: "",
-                password: ""
-            });
-            
-        } catch (err: any) {
-            if (err.response) {
-                // Backend responded with an error code
-                setError(err.response.data.message || 'Login failed')
-            } else if (err.request) {
-                // Request made but no response
-                setError('No response from server')
-            } else {
-                setError('Network error')
-            }
-        }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const data = await loginUser(form);
+      auth.login(data.user, data.token);
+      setSuccess(true);
+      setError("");
+      setForm({ username: "", password: "" });
+      navigate("/dashboard");
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Login failed");
     }
+  };
 
-    return (
-        <div className="Form">
-            <div>
-                <h1>User Login</h1>
-            </div>
-
-            {error && (
-                <div className="error">
-                    <h2>Error!</h2>
-                    <h2>{error}</h2>
-                </div>
-            )}
-
-            {success && (
-                <div className="success">
-                    <h2>Success!</h2>
-                    <h2>{message}</h2>
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit}>
-                <label className="label">Username</label>
-                <input onChange={handleChange} className="input" name="username" value={form.username} type="text" />
-
-                <label className="label">Password</label>
-                <input onChange={handleChange} className="input" name="password" value={form.password} type="password" />
-
-                <button className="btn" type="submit">Login</button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="Form">
+      <h1>Login</h1>
+      {success && <div className="success">Login successful!</div>}
+      {error && <div className="error">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <label>Username</label>
+        <input name="username" value={form.username} onChange={handleChange} />
+        <label>Password</label>
+        <input name="password" type="password" value={form.password} onChange={handleChange} />
+        <button className="btn" type="submit">Login</button>
+      </form>
+      <p>No Account?</p>
+      <button className="btn-secondary"><Link to='/register'>Register</Link></button>
+    </div>
+  );
 }
