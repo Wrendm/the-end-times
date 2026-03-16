@@ -6,13 +6,23 @@ body {
 }
 
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .App {
@@ -34,19 +44,20 @@ a:hover {
   border-top: 16px solid #607B7D;
   width: 100px;
   height: 100px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
+  -webkit-animation: spin 2s linear infinite;
+  /* Safari */
   animation: spin 2s linear infinite;
-  margin:auto;
+  margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 60%;
 }
 
-.FetchError{
+.FetchError {
   display: flex;
   justify-content: center;
-  padding-top: 50px; 
+  padding-top: 50px;
   min-height: 80%;
 }
 
@@ -126,11 +137,29 @@ a:hover {
   cursor: pointer;
 }
 
+.AccountActionNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.AccountAction {
+  background-color: #fff;
+  padding: .5rem;
+  margin: .5rem 0rem .5rem .5rem;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+}
+
 .Form {
   width: 60%;
-  min-height:75%;
+  min-height: 75%;
   padding: 40px;
-  margin:20px auto;
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -141,7 +170,9 @@ a:hover {
   border-radius: 8px;
 }
 
-label{display: block;}
+label {
+  display: block;
+}
 
 .btn {
   width: 100%;
@@ -153,6 +184,20 @@ label{display: block;}
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+.btn-secondary {
+  width: 100%;
+  display: block;
+  background-color: #d7d7d7;
+  padding: 14px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-secondary a{
+  color: #333;
+  text-decoration: none;
 }
 
 .Home,
@@ -212,6 +257,6 @@ label{display: block;}
 .Home,
 .Paintings,
 .Photography,
-.Poetry{
-  min-height:80%;
+.Poetry {
+  min-height: 80%;
 }
