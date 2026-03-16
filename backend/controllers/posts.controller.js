@@ -21,7 +21,6 @@ const getAllPosts = asyncHandler(async (req, res) => {
 
     const posts = await Post.find(filter).populate('user', 'username').lean()
 
-    // no error for empty arrays
     res.json(posts)
 })
 // @desc -> single post
