@@ -64,6 +64,11 @@ const updateUser = asyncHandler(async (req, res) => {
         throw new Error(`User with id ${id} not found`)
     }
 
+    if(!user.equals(req.user) && !req.roles.includes('Admin')){
+        res.status(403)
+        throw new Error(`User does not have credentials for this action`)
+    }
+
     const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
     if (duplicate && duplicate?._id.toString() !== id) {
         res.status(409)
@@ -97,6 +102,11 @@ const updateUserPartial = asyncHandler(async (req, res) => {
     if (!user) {
         res.status(404)
         throw new Error(`User with id ${id} not found`)
+    }
+
+    if(!user.equals(req.user) && !req.roles.includes('Admin')){
+        res.status(403)
+        throw new Error(`User does not have credentials for this action`)
     }
 
     if (updates.username || updates.email) {
@@ -141,6 +151,11 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (!user) {
         res.status(400)
         throw new Error(`User with id ${id} not found`)
+    }
+
+    if(!user.equals(req.user) && !req.roles.includes('Admin')){
+        res.status(403)
+        throw new Error(`User does not have credentials for this action`)
     }
 
     const result = await user.deleteOne()
