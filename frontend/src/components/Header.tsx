@@ -13,7 +13,7 @@ const Header = () => {
           {auth.user ? (
             <div className='AccountActionNav'>
               <h3 className='AccountAction'><Link to='/dashboard'>Profile</Link></h3>
-              <h3 className='AccountAction'><Link to='/logout'>Log Out</Link></h3>
+              <h3 ><button className='btn' onClick={auth.logout}>Log Out</button></h3>
            </div>
            ) : (
             <div className='AccountActionNav'>
