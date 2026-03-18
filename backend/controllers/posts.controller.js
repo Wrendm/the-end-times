@@ -23,6 +23,25 @@ const getAllPosts = asyncHandler(async (req, res) => {
 
     res.json(posts)
 })
+// @desc -> all posts (admin)
+// @route GET /admin/posts
+const getAllPostsAdmin = asyncHandler(async (req, res) => {
+    const { postCategory, user } = req.query;
+
+    if (user && !isValidObjectId(user)) {
+        res.status(400);
+        throw new Error('Invalid user ID');
+    }
+
+    const filter = {
+        ...(postCategory ? { postCategory: { $regex: postCategory, $options: 'i' } } : {}),
+        ...(user ? { user } : {})
+    };
+
+    const posts = await Post.find(filter).populate('user', 'username').lean()
+
+    res.json(posts)
+})
 // @desc -> single post
 // @route GET /posts/:id 
 const getSinglePost = asyncHandler(async (req, res) => {
@@ -134,6 +153,7 @@ const deletePost = asyncHandler(async (req, res) => {
 
 module.exports = {
     getAllPosts,
+    getAllPostsAdmin,
     getSinglePost,
     createNewPost,
     updatePost,

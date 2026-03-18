@@ -14,6 +14,16 @@ const getAllUsers = asyncHandler(async (req, res) => {
     }
     res.json(users)
 })
+// @desc -> all users (admin)
+// @route GET admin/users 
+const getAllUsersAdmin = asyncHandler(async (req, res) => {
+    const users = await User.find().select('-password').lean()
+    if (!users?.length) {
+        res.status(400)
+        throw new Error('No users found')
+    }
+    res.json(users)
+})
 
 // @desc -> single user
 // @route GET /users/:id 
@@ -165,6 +175,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 module.exports = {
     getAllUsers,
+    getAllUsersAdmin,
     getSingleUser,
     createNewUser,
     updateUser,
