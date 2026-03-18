@@ -29,11 +29,11 @@ const loginUser = asyncHandler(async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username: { $regex: `^${username}$`, $options: 'i' } })
     if (!user) {
-        res.status(400)
-        throw new Error(`User with username ${username} not found`)
+        res.status(401)
+        throw new Error(`Invalid username or password`)
     }
     const match = await bcrypt.compare(password, user.password)
-    if (!match) {
+    if (!user || !match) {
         res.status(401)
         throw new Error('Invalid username or password')
     }
