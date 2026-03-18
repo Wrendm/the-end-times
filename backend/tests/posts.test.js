@@ -1,11 +1,13 @@
 const request = require('supertest')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const app = require('../app')
 const Post = require('../models/Post')
 const User = require('../models/User')
 require('dotenv').config()
 
 let testUser
+let authToken
 let testPost
 
 beforeAll(async () => {
@@ -13,18 +15,29 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-    // Clean test data before each test
+    // Clean test data
     await Post.deleteMany({ postCategory: 'testing' })
-    await User.deleteMany({ email: 'jestuser@example.com' })
+    await User.deleteMany({ email: /jestuser/i })
 
+    // Create a unique test user
+    const hashedPassword = await bcrypt.hash('password123', 10)
+    const timestamp = Date.now()
     testUser = await User.create({
-        username: 'jestuser',
+        username: `jestuser_${timestamp}`,
         name: 'Jest User',
-        email: 'jestuser@example.com',
-        password: 'password123',
+        email: `jestuser_${timestamp}@example.com`,
+        password: hashedPassword,
         roles: ['Contributor']
     })
 
+    // Generate JWT for authenticated routes
+    const loginRes = await request(process.env.API_URL)
+        .post('/auth/login')
+        .send({ username: testUser.username, password: 'password123' })
+
+    authToken = loginRes.body?.accessToken || loginRes.body?.token
+
+    // Create a test post
     testPost = await Post.create({
         user: testUser._id,
         postType: 'blog',
@@ -37,19 +50,17 @@ beforeEach(async () => {
 
 afterAll(async () => {
     await Post.deleteMany({ postCategory: 'testing' })
-    await User.deleteMany({ email: 'jestuser@example.com' })
+    await User.deleteMany({ email: /jestuser/i })
     await mongoose.connection.close()
 })
 
 describe('Posts API', () => {
-
     it('GET /posts should return an array of posts', async () => {
-        const res = await request(process.env.API_URL)
+        const res = await request(app)
             .get('/posts')
             .expect(200)
 
         expect(Array.isArray(res.body)).toBe(true)
-
         if (res.body.length > 0) {
             expect(res.body[0]).toHaveProperty('title')
             expect(res.body[0]).toHaveProperty('user')
@@ -57,7 +68,7 @@ describe('Posts API', () => {
     })
 
     it('GET /posts/:id should return a single post', async () => {
-        const res = await request(process.env.API_URL)
+        const res = await request(app)
             .get(`/posts/${testPost._id}`)
             .expect(200)
 
@@ -75,8 +86,9 @@ describe('Posts API', () => {
             published: false
         }
 
-        const res = await request(process.env.API_URL)
+        const res = await request(app)
             .post('/posts')
+            .set('Authorization', `Bearer ${authToken}`) // include auth
             .send(newPost)
             .expect(201)
 
