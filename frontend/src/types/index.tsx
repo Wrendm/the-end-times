@@ -2,6 +2,7 @@ interface UserType {
   _id: string;
   name: string;
   username: string;
+  roles: string[];
 }
 interface PostType {
   _id: string;
