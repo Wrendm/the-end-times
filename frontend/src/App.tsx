@@ -14,6 +14,7 @@ import Layout from './components/Layout';
 import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/AccountDashboard';
+import AdminDashboard from './components/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/authprovider';
 
@@ -38,6 +39,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
               </ProtectedRoute>
             }
           />

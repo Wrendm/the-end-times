@@ -1,44 +1,29 @@
 import { useContext } from "react";
-import { Link } from 'react-router-dom';
 import { AuthContext } from "../context/authcontext";
 import PostFeed from "./PostFeed";
 import DataState from "./DataState";
 import useAxiosFetch from "../hooks/useAxiosFetch";
 import type { PostType } from "../types/index";
 
-const Dashboard = () => {
+const AdminDashboard = () => {
     const auth = useContext(AuthContext);
     if (!auth) throw new Error("AuthContext not found");
 
-    // Only fetch posts if the user is loaded
-    const userId = auth.user?._id || null;
+    const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } = useAxiosFetch<PostType[]>('/posts');
 
-    const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } =
-        useAxiosFetch<PostType[]>(
-            userId ? "/posts" : null,   // skip fetch if no user
-            userId ? { params: { user: userId } } : undefined // send query param safely
-        );
-
-    const posts: PostType[] = postsData ?? [];
-
-    console.log("AUTH USER:", auth.user);
+    const posts = postsData ?? [];    
 
     return (
         <div className="ProfilePage">
             <div className="ProfileHeader">
-                <h1>Welcome, {auth.user?.name}</h1>
-                {auth.user?.roles?.includes("Admin") && (
-                    <h3>
-                        <Link to="/admin-dashboard">Admin Dashboard</Link>
-                    </h3>
-                )}
+                <h1>Welcome, {auth.user?.roles?.join(', ')} {auth.user?.name}</h1>
             </div>
 
             <DataState
                 isLoading={isPostsLoading}
                 error={fetchPostsError}
                 isEmpty={posts.length === 0}
-                emptyMessage="This user hasn't made any posts yet."
+                emptyMessage="No posts to display"
             >
                 <div className="ProfilePosts">
                     <PostFeed posts={posts} />
@@ -53,4 +38,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default AdminDashboard;
