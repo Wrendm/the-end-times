@@ -16,14 +16,19 @@ router.route('/:id')
     verifyJWT,
     validate(userIdParamSchema, 'params'),
     validate(updateUserSchema),
+    checkOwnership(User, '_id'),
     usersController.updateUser
   )
   .patch(
     verifyJWT,
     validate(userIdParamSchema, 'params'),
     validate(updateUserSchema),
+    checkOwnership(User, '_id'),
     usersController.updateUserPartial
   )
-  .delete(verifyJWT, validate(userIdParamSchema, 'params'), usersController.deleteUser);
+  .delete(verifyJWT, 
+    validate(userIdParamSchema, 'params'), 
+    checkOwnership(User, '_id'),
+    usersController.deleteUser);
 
 module.exports = router
