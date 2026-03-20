@@ -1,6 +1,6 @@
 const User = require('../models/User')
 const Post = require('../models/Post')
-const isValidObjectId = require('../utils/isValidObjectId')
+const createError = require('../utils/createError')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 
@@ -8,36 +8,22 @@ const asyncHandler = require('express-async-handler')
 // @route GET /users 
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find().select('-password').lean()
-    if (!users?.length) {
-        res.status(400)
-        throw new Error('No users found')
-    }
-    res.json(users)
+    res.json(users ?? [])
 })
 // @desc -> all users (admin)
 // @route GET admin/users 
 const getAllUsersAdmin = asyncHandler(async (req, res) => {
     const users = await User.find().select('-password').lean()
-    if (!users?.length) {
-        res.status(400)
-        throw new Error('No users found')
-    }
-    res.json(users)
+    res.json(users ?? [])
 })
 
 // @desc -> single user
 // @route GET /users/:id 
 const getSingleUser = asyncHandler(async (req, res) => {
     const { id } = req.params
-
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid user ID')
-    }
     const user = await User.findById(id).select('-password').lean()
     if (!user) {
-        res.status(404)
-        throw new Error('User not found')
+        throw createError('User not found', 404)
     }
     res.json(user)
 })
@@ -49,8 +35,7 @@ const createNewUser = asyncHandler(async (req, res) => {
 
     const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
     if (duplicate) {
-        res.status(409)
-        throw new Error('Duplicate username or email not allowed')
+        throw createError('Duplicate username or email not allowed', 409)
     }
     const hashedPwd = await bcrypt.hash(password, 10)
 
@@ -62,70 +47,70 @@ const createNewUser = asyncHandler(async (req, res) => {
 // @route PUT /users/:id 
 const updateUser = asyncHandler(async (req, res) => {
     const { id } = req.params
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid user ID')
-    }
     const { username, name, email, password, roles } = req.body
 
     const user = await User.findById(id)
     if (!user) {
-        res.status(400)
-        throw new Error(`User with id ${id} not found`)
+        throw createError(`User with id ${id} not found`, 404)
     }
 
-    if(!user.equals(req.user) && !req.roles.includes('Admin')){
-        res.status(403)
-        throw new Error(`User does not have credentials for this action`)
+    if (username || email) {
+        const query = []
+        if (username) query.push({ username })
+        if (email) query.push({ email })
+
+        const duplicate = await User.findOne({ $or: query }).lean()
+        if (duplicate && duplicate._id.toString() !== id) {
+            throw createError('Duplicate username or email', 409)
+        }
     }
 
-    const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
-    if (duplicate && duplicate?._id.toString() !== id) {
-        res.status(409)
-        throw new Error('Duplicate username or email')
+    if (roles !== undefined && !req.roles.includes('Admin')) {
+        throw createError('Only admins can change roles', 403)
     }
 
-    user.username = username
-    user.name = name
-    user.email = email
-    user.roles = roles
-    if (password) user.password = await bcrypt.hash(password, 10)
+    if (password) {
+        user.password = await bcrypt.hash(password, 10)
+    }
+
+    const allowedUpdates = ['username', 'name', 'email']
+    allowedUpdates.forEach(field => {
+        if (req.body[field] !== undefined) {
+            user[field] = req.body[field]
+        }
+    })
+
+    if (roles !== undefined) {
+        user.roles = roles
+    }
 
     const updatedUser = await user.save()
-    res.json({ message: `${updatedUser.username} updated` })
+
+    res.json({
+        message: `${updatedUser.username} updated`,
+        user: updatedUser
+    })
 })
 
 // @desc -> update user in part
 // @route PATCH /users/:id 
 const updateUserPartial = asyncHandler(async (req, res) => {
-
     const { id } = req.params
-
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid user ID')
-    }
-
     const updates = req.body
 
     const user = await User.findById(id);
     if (!user) {
-        res.status(404)
-        throw new Error(`User with id ${id} not found`)
-    }
-
-    if(!user.equals(req.user) && !req.roles.includes('Admin')){
-        res.status(403)
-        throw new Error(`User does not have credentials for this action`)
+        throw createError(`User with id ${id} not found`, 404)
     }
 
     if (updates.username || updates.email) {
-        const duplicate = await User.findOne({
-            $or: [{ username: updates.username }, { email: updates.email }]
-        }).lean();
+        const query = []
+        if (updates.username) query.push({ username: updates.username })
+        if (updates.email) query.push({ email: updates.email })
+
+        const duplicate = await User.findOne({ $or: query }).lean()
         if (duplicate && duplicate._id.toString() !== id) {
-            res.status(409)
-            throw new Error('Duplicate username or email')
+            throw createError('Duplicate username or email', 409)
         }
     }
 
@@ -133,8 +118,11 @@ const updateUserPartial = asyncHandler(async (req, res) => {
         updates.password = await bcrypt.hash(updates.password, 10)
     }
 
-    Object.keys(updates).forEach(key => {
-        user[key] = updates[key]
+    const allowedUpdates = ['username', 'name', 'email', 'password']
+    allowedUpdates.forEach(field => {
+        if (updates[field] !== undefined) {
+            user[field] = updates[field]
+        }
     })
 
     const updatedUser = await user.save()
@@ -146,31 +134,20 @@ const updateUserPartial = asyncHandler(async (req, res) => {
 // @route DELETE /users/:id 
 const deleteUser = asyncHandler(async (req, res) => {
     const { id } = req.params
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid user ID')
-    }
 
     const post = await Post.findOne({ user: id }).lean()
     if (post) {
-        res.status(400)
-        throw new Error('User has posts that need to be deleted first')
+        throw createError('User has posts that need to be deleted first', 409)
     }
 
     const user = await User.findById(id)
     if (!user) {
-        res.status(400)
-        throw new Error(`User with id ${id} not found`)
-    }
-
-    if(!user.equals(req.user) && !req.roles.includes('Admin')){
-        res.status(403)
-        throw new Error(`User does not have credentials for this action`)
+        throw createError(`User with id ${id} not found`, 404)
     }
 
     const result = await user.deleteOne()
 
-    res.json(`User deleted`)
+    res.json({ message: 'User deleted' })
 })
 
 module.exports = {

@@ -7,9 +7,11 @@ const errorHandler = (err, req, res, next) => {
 
     // If no status code was set earlier in the request lifecycle,
     // default to 500 (Internal Server Error)
-    let statusCode = res.statusCode && res.statusCode !== 200
-        ? res.statusCode
-        : 500
+    let statusCode = err.status || (
+        res.statusCode && res.statusCode !== 200
+            ? res.statusCode
+            : 500
+    )
 
     let message = err.message || 'Internal Server Error'
 

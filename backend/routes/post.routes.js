@@ -15,24 +15,29 @@ router.route('/')
 
 
 router.route('/:id')
-  .get(validate(postIdParamSchema, 'params'), postsController.getSinglePost)
+  .get(
+    validate(postIdParamSchema, 'params'),
+    postsController.getSinglePost
+  )
   .put(
     verifyJWT,
     validate(postIdParamSchema, 'params'),
-    validate(updatePostSchema),
     checkOwnership(Post),
+    validate(updatePostSchema),
     postsController.updatePost
   )
   .patch(
     verifyJWT,
     validate(postIdParamSchema, 'params'),
-    validate(updatePostSchema),
     checkOwnership(Post),
+    validate(updatePostSchema),
     postsController.updatePostPartial
   )
-  .delete(verifyJWT, 
-    validate(postIdParamSchema, 'params'), 
+  .delete(
+    verifyJWT,
+    validate(postIdParamSchema, 'params'),
     checkOwnership(Post),
-    postsController.deletePost);
+    postsController.deletePost
+  )
 
 module.exports = router

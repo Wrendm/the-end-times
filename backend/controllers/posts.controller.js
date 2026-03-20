@@ -1,17 +1,12 @@
 const User = require('../models/User')
 const Post = require('../models/Post')
-const isValidObjectId = require('../utils/isValidObjectId')
+const createError = require('../utils/createError')
 const asyncHandler = require('express-async-handler')
 
 // @desc -> all posts
 // @route GET /posts
 const getAllPosts = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.query;
-
-    if (user && !isValidObjectId(user)) {
-        res.status(400);
-        throw new Error('Invalid user ID');
-    }
 
     const filter = {
         ...(postCategory ? { postCategory: { $regex: postCategory, $options: 'i' } } : {}),
@@ -28,11 +23,6 @@ const getAllPosts = asyncHandler(async (req, res) => {
 const getAllPostsAdmin = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.query;
 
-    if (user && !isValidObjectId(user)) {
-        res.status(400);
-        throw new Error('Invalid user ID');
-    }
-
     const filter = {
         ...(postCategory ? { postCategory: { $regex: postCategory, $options: 'i' } } : {}),
         ...(user ? { user } : {})
@@ -46,14 +36,9 @@ const getAllPostsAdmin = asyncHandler(async (req, res) => {
 // @route GET /posts/:id 
 const getSinglePost = asyncHandler(async (req, res) => {
     const { id } = req.params
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid post ID')
-    }
     const post = await Post.findById(id).populate('user', 'username').lean()
     if (!post) {
-        res.status(404)
-        throw new Error('Post not found')
+        throw createError('Post not found', 404)
     }
     res.json(post)
 })
@@ -64,8 +49,7 @@ const createNewPost = asyncHandler(async (req, res) => {
     const dbUser = await User.findById(req.user.id)
 
     if (!dbUser) {
-        res.status(404)
-        throw new Error('User not found')
+        throw createError('User not found', 404)
     }
 
     const post = await Post.create({ user: req.user.id, postType, postCategory, title, imgSrc, postContent, published })
@@ -74,21 +58,11 @@ const createNewPost = asyncHandler(async (req, res) => {
 //	PUT /posts/:id -> update post
 const updatePost = asyncHandler(async (req, res) => {
     const { id } = req.params
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid post ID')
-    }
-
     const { postType, postCategory, title, imgSrc, postContent, published } = req.body
 
     const post = await Post.findById(id)
     if (!post) {
-        res.status(404)
-        throw new Error(`Post with id ${id} not found`)
-    }
-    if(!post.user.equals(req.user.id) && !req.roles.includes('Admin')){
-        res.status(403)
-        throw new Error(`User does not have credentials for this action`)
+        throw createError(`Post with id ${id} not found`, 404)
     }
 
     post.postType = postType
@@ -104,20 +78,11 @@ const updatePost = asyncHandler(async (req, res) => {
 //	PATCH /posts/:id -> update post partially
 const updatePostPartial = asyncHandler(async (req, res) => {
     const { id } = req.params
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid post ID')
-    }
     const updates = req.body
 
     const post = await Post.findById(id);
     if (!post) {
-        res.status(404)
-        throw new Error(`Post with id ${id} not found`)
-    }
-    if(!post.user.equals(req.user.id) && !req.roles.includes('Admin')){
-        res.status(403)
-        throw new Error(`User does not have credentials for this action`)
+        throw createError(`Post with id ${id} not found`, 404)
     }
 
     Object.keys(updates).forEach(key => {
@@ -131,19 +96,10 @@ const updatePostPartial = asyncHandler(async (req, res) => {
 //	DELETE /posts/:id -> delete post
 const deletePost = asyncHandler(async (req, res) => {
     const { id } = req.params
-    if (!isValidObjectId(id)) {
-        res.status(400)
-        throw new Error('Invalid post ID')
-    }
-
+    
     const post = await Post.findById(id)
     if (!post) {
-        res.status(404)
-        throw new Error(`Post with id ${id} not found`)
-    }
-    if(!post.user.equals(req.user.id) && !req.roles.includes('Admin')){
-        res.status(403)
-        throw new Error(`User does not have credentials for this action`)
+        throw createError(`Post with id ${id} not found`, 404)
     }
 
     const result = await post.deleteOne()
