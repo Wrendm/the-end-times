@@ -70,7 +70,7 @@ describe('Auth API', () => {
             .expect(409) // controller should return 409 for duplicate
 
         expect(res.body).toHaveProperty('message')
-        expect(res.body.message).toMatch(/duplicate/i)
+        expect(res.body.message).toMatch(/already exists/i)
     })
 
     it('POST /auth/login should authenticate valid user', async () => {

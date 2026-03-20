@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const createError = require('../utils/createError')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
@@ -10,12 +11,16 @@ const registerUser = asyncHandler(async (req, res) => {
     const { username, name, email, password } = req.body;
 
     const duplicate = await User.findOne({
-    $or: [
-        { username: { $regex: new RegExp(`^${username}$`, 'i') } },
-        { email: { $regex: new RegExp(`^${email}$`, 'i') } }
-    ]
+        $or: [
+            { username: { $regex: new RegExp(`^${username}$`, 'i') } },
+            { email: { $regex: new RegExp(`^${email}$`, 'i') } }
+        ]
     }).lean();
-    
+
+    if (duplicate) {
+        throw createError('Username or email already exists', 409)
+    }
+
     const hashedPwd = await bcrypt.hash(password, 10)
 
     const user = await User.create({ username, name, email, "password": hashedPwd, roles: ['Contributor'] })
@@ -29,13 +34,11 @@ const loginUser = asyncHandler(async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username: { $regex: `^${username}$`, $options: 'i' } })
     if (!user) {
-        res.status(401)
-        throw new Error(`Invalid username or password`)
+        throw createError(`Invalid username or password`, 401)
     }
     const match = await bcrypt.compare(password, user.password)
-    if (!user || !match) {
-        res.status(401)
-        throw new Error('Invalid username or password')
+    if (!match) {
+        throw createError('Invalid username or password', 401)
     }
 
     const payload = {
@@ -47,7 +50,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
 
     const refreshToken = jwt.sign(
-        { "username": user.username },
+        { id: user._id },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '1d' }
     )
@@ -75,8 +78,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const refreshUser = asyncHandler(async (req, res) => {
     const cookies = req.cookies
     if (!cookies?.jwt) {
-        res.status(401)
-        throw new Error('Unauthorized')
+        throw createError('Unauthorized: No cookie found', 401)
     }
 
     const refreshToken = cookies.jwt
@@ -86,15 +88,13 @@ const refreshUser = asyncHandler(async (req, res) => {
     try {
         decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
     } catch (err) {
-        res.status(403)
-        throw new Error('Forbidden')
+        throw createError('Forbidden: Invalid token', 403)
     }
 
-    const user = await User.findOne({ username: decoded.username }).lean()
+    const user = await User.findById(decoded.id).lean()
 
     if (!user) {
-        res.status(401)
-        throw new Error('Unauthorized')
+        throw createError('Unauthorized: User not found', 401)
     }
 
     const accessToken = jwt.sign(
@@ -124,33 +124,21 @@ const logoutUser = (req, res) => {
         sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
     });
 
-    return res.json({ message: 'Cookie cleared' })
+    return res.sendStatus(204)
 }
 
 // @desc Get current logged-in user
 // @route GET /auth/me
 // @access Protected via cookie (httpOnly JWT)
 const getCurrentUser = asyncHandler(async (req, res) => {
-    const cookies = req.cookies;
-
-    if (!cookies?.jwt) {
-        res.status(401);
-        throw new Error("Unauthorized: No cookie found");
+    if (!req.user) {
+        throw createError('Unauthorized', 401)
     }
 
-    let decoded;
-    try {
-        decoded = jwt.verify(cookies.jwt, process.env.REFRESH_TOKEN_SECRET);
-    } catch (err) {
-        res.status(403);
-        throw new Error("Forbidden: Invalid token");
-    }
-
-    const user = await User.findOne({ username: decoded.username }).lean();
+    const user = await User.findById(req.user.id).lean()
 
     if (!user) {
-        res.status(401);
-        throw new Error("Unauthorized: User not found");
+        throw createError('User not found', 404)
     }
 
     res.json({
@@ -159,10 +147,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             username: user.username,
             roles: user.roles,
             name: user.name,
-            email: user.email,
-        },
-    });
-});
+            email: user.email
+        }
+    })
+})
 
 
 module.exports = {
