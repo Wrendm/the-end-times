@@ -1,10 +1,10 @@
 import { createContext } from "react";
-import type { UserType } from '../types/index';
+import type { UserType } from "../types";
 
-type AuthContextType = {
+export type AuthContextType = {
   user: UserType | null;
-  token: string | null;
-  login: (user: UserType, token: string) => void;
+  loading: boolean;
+  login: (user: UserType) => void;
   logout: () => void;
 };
 
