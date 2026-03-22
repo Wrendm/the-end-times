@@ -1,29 +1,28 @@
-const jwt = require('jsonwebtoken')
-const createError = require('../utils/createError')
+const jwt = require('jsonwebtoken');
+const createError = require('../utils/createError');
 
 const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization || req.headers.Authorization
+    const authHeader = req.headers.authorization;
 
     if (!authHeader?.startsWith('Bearer ')) {
-        throw createError('Unauthorized', 401)
+        throw createError('Unauthorized', 401);
     }
 
-    const token = authHeader.split(' ')[1]
+    const token = authHeader.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
         req.user = {
             id: decoded.id,
-            username: decoded.username
-        }
+            username: decoded.username,
+            roles: decoded.roles
+        };
 
-        req.roles = decoded.roles || []
-
-        next()
+        next();
     } catch (err) {
-        throw createError('Forbidden', 403)
+        throw createError('Forbidden', 403);
     }
-}
+};
 
-module.exports = verifyJWT
+module.exports = verifyJWT;

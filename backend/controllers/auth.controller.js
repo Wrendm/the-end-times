@@ -46,6 +46,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const payload = {
         id: user._id,
         username: user.username,
+        name: user.name, 
         roles: user.roles
     }
 
@@ -68,8 +69,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         maxAge: 24 * 60 * 60 * 1000
     })
 
@@ -78,6 +79,7 @@ const loginUser = asyncHandler(async (req, res) => {
         user: {
             id: user._id,
             username: user.username,
+            name: user.name, 
             roles: user.roles
         }
     })

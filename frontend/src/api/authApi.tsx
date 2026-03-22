@@ -2,6 +2,9 @@ import api from "./axios";
 
 export const loginUser = async (formData: { username: string; password: string }) => {
   const { data } = await api.post("/auth/login", formData);
+
+  api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
   return data;
 };
 
@@ -15,6 +18,13 @@ export const getCurrentUser = async () => {
     const { data } = await api.get("/auth/me");
     return data;
   } catch {
-    return null;
+    try {
+      await api.get("/auth/refresh");
+      
+      const { data } = await api.get("/auth/me");
+      return data;
+    } catch {
+      return null;
+    }
   }
 };

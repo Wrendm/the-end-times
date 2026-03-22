@@ -3,6 +3,7 @@ interface UserType {
   name: string;
   username: string;
   roles: string[];
+  refreshToken: string;
 }
 interface PostType {
   _id: string;

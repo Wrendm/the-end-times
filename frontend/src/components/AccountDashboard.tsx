@@ -10,8 +10,14 @@ const Dashboard = () => {
     const auth = useContext(AuthContext);
     if (!auth) throw new Error("AuthContext not found");
 
-    // Only fetch posts if the user is loaded
-    const userId = auth.user?._id || null;
+    if (auth.loading) {
+        return <div className="loader"></div>;
+    }
+
+    if (!auth.user) {
+        return <div>Not authenticated</div>;
+    }
+    const userId = auth.user._id;
 
     const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } =
         useAxiosFetch<PostType[]>(
