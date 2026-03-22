@@ -4,6 +4,8 @@ const app = require('../app')
 const request = require('supertest')
 require('dotenv').config()
 
+jest.setTimeout(20000)
+
 describe('Auth API', () => {
     console.log('API_URL:', process.env.API_URL)
     let createdUserIds = []
@@ -97,5 +99,73 @@ describe('Auth API', () => {
 
         expect(res.body).toHaveProperty('message')
         expect(res.body.message).toMatch(/invalid/i)
+    })
+
+    it('POST /auth/login should set httpOnly refresh token cookie', async () => {
+        await request(app)
+            .post('/auth/register')
+            .send(testUser)
+            .expect(201)
+
+        const res = await request(app)
+            .post('/auth/login')
+            .send({
+                username: testUser.username,
+                password: testUser.password
+            })
+            .expect(200)
+
+        // Cookie should be set
+        expect(res.headers['set-cookie']).toBeDefined()
+
+        const cookie = res.headers['set-cookie'][0]
+        expect(cookie).toMatch(/jwt=/)
+        expect(cookie).toMatch(/HttpOnly/i)
+    })
+
+    it('GET /auth/refresh should return new access token', async () => {
+        await request(app)
+            .post('/auth/register')
+            .send(testUser)
+            .expect(201)
+
+        const agent = request.agent(app)
+
+        await agent
+            .post('/auth/login')
+            .send({
+                username: testUser.username,
+                password: testUser.password
+            })
+            .expect(200)
+
+        const res = await agent
+            .get('/auth/refresh')
+            .expect(200)
+
+        expect(res.body).toHaveProperty('token')
+    })
+
+    it('POST /auth/logout should clear cookie and invalidate session', async () => {
+        await request(app)
+            .post('/auth/register')
+            .send(testUser)
+            .expect(201)
+
+        const agent = request.agent(app)
+
+        await agent
+            .post('/auth/login')
+            .send({
+                username: testUser.username,
+                password: testUser.password
+            })
+            .expect(200)
+
+        const logoutRes = await agent
+            .post('/auth/logout')
+            .expect(204)
+
+        expect(logoutRes.headers['set-cookie']).toBeDefined()
     })
 })

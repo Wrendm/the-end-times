@@ -31,8 +31,10 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route POST /auth/login
 // @access Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username: { $regex: `^${username}$`, $options: 'i' } })
+    const username = req.body.username.toLowerCase().trim()
+    const password = req.body.password
+
+    const user = await User.findOne({ username }).select('+refreshToken')
     if (!user) {
         throw createError(`Invalid username or password`, 401)
     }
@@ -47,13 +49,22 @@ const loginUser = asyncHandler(async (req, res) => {
         roles: user.roles
     }
 
-    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+    const token = jwt.sign(
+        payload,
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '1h' }
+    )
 
     const refreshToken = jwt.sign(
         { id: user._id },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '1d' }
     )
+
+    const hashedToken = await bcrypt.hash(refreshToken, 10)
+
+    user.refreshToken = hashedToken;
+    await user.save();
 
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
@@ -84,17 +95,22 @@ const refreshUser = asyncHandler(async (req, res) => {
     const refreshToken = cookies.jwt
 
     let decoded
-
     try {
         decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-    } catch (err) {
+    } catch {
         throw createError('Forbidden: Invalid token', 403)
     }
 
-    const user = await User.findById(decoded.id).lean()
+    const user = await User.findById(decoded.id).select('+refreshToken')
 
-    if (!user) {
-        throw createError('Unauthorized: User not found', 401)
+    if (!user || !user.refreshToken) {
+        throw createError('Unauthorized', 401)
+    }
+
+    const isMatch = await bcrypt.compare(refreshToken, user.refreshToken)
+
+    if (!isMatch) {
+        throw createError('Forbidden: Token mismatch', 403)
     }
 
     const accessToken = jwt.sign(
@@ -113,19 +129,45 @@ const refreshUser = asyncHandler(async (req, res) => {
 // @desc Logout
 // @route POST /auth/logout
 // @access Public - just to clear cookie if exists
-const logoutUser = (req, res) => {
-    const cookies = req.cookies
+const logoutUser = asyncHandler(async (req, res) => {
+    const cookies = req.cookies;
 
-    if (!cookies?.jwt) return res.sendStatus(204)
+    if (!cookies?.jwt) {
+        return res.sendStatus(204); 
+    }
+
+    const refreshToken = cookies.jwt;
+    let decoded
+    try {
+        decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    } catch (err) {
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
+        })
+        return res.sendStatus(204)
+    }
+
+    const user = await User.findById(decoded.id).select('+refreshToken')
+
+    if (user) {
+        const isMatch = await bcrypt.compare(refreshToken, user.refreshToken || '')
+        if (isMatch) {
+            user.refreshToken = null;
+            await user.save();
+        }
+    }
 
     res.clearCookie('jwt', {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
-    });
+    })
 
-    return res.sendStatus(204)
-}
+    res.sendStatus(204)
+})
+
 
 // @desc Get current logged-in user
 // @route GET /auth/me
