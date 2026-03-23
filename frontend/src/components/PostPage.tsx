@@ -19,7 +19,7 @@ const PostPage = () => {
           <h1>{post.title || 'Untitled'}</h1>
 
           <div>
-            <Link to={`/users/${post.user?._id}`}>
+            <Link to={`/users/${post.user?.id}`}>
               <h2>{post.user?.username || 'Unknown User'}</h2>
             </Link>
           </div>

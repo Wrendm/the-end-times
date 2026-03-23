@@ -17,12 +17,11 @@ const Dashboard = () => {
     if (!auth.user) {
         return <div>Not authenticated</div>;
     }
-    const userId = auth.user._id;
+    const userId = auth.user.id;
 
     const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } =
         useAxiosFetch<PostType[]>(
-            userId ? "/posts" : null,   // skip fetch if no user
-            userId ? { params: { user: userId } } : undefined // send query param safely
+            userId ? `/posts?user=${userId}` : null
         );
 
     const posts: PostType[] = postsData ?? [];

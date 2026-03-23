@@ -1,12 +1,11 @@
 interface UserType {
-  _id: string;
+  id: string;
   name: string;
   username: string;
   roles: string[];
-  refreshToken: string;
 }
 interface PostType {
-  _id: string;
+  id: string;
   user: UserType;
   postType: string;
   postCategory: string;

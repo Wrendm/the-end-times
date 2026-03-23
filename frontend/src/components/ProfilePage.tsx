@@ -12,7 +12,7 @@ const ProfilePage = () => {
   const { user, fetchError: fetchUserError, isLoading: isUserLoading } = useUserById(id ?? '');
 
   // Determine posts URL only if user exists
-  const postsUrl = user ? `/posts?user=${user._id}` : null;
+  const postsUrl = user ? `/posts?user=${user.id}` : null;
   const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } = useAxiosFetch<PostType[]>(postsUrl);
 
   // Normalize posts so PostFeed always gets an array

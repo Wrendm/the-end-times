@@ -1,6 +1,8 @@
 const User = require('../models/User')
 const Post = require('../models/Post')
+const { mapUser } = require('../utils/mappers/userMapper')
 const createError = require('../utils/createError')
+const isValidObjectId = require('../utils/isValidObjectId')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 
@@ -8,30 +10,36 @@ const asyncHandler = require('express-async-handler')
 // @route GET /users 
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find().select('-password').lean()
-    res.json(users ?? [])
+    res.json(users.map(mapUser))
 })
 // @desc -> all users (admin)
 // @route GET admin/users 
 const getAllUsersAdmin = asyncHandler(async (req, res) => {
     const users = await User.find().select('-password').lean()
-    res.json(users ?? [])
+    res.json(users.map(mapUser))
 })
 
 // @desc -> single user
 // @route GET /users/:id 
 const getSingleUser = asyncHandler(async (req, res) => {
     const { id } = req.params
+    if (!isValidObjectId(id)) {
+        throw createError('Invalid user ID', 400)
+    }
     const user = await User.findById(id).select('-password').lean()
     if (!user) {
         throw createError('User not found', 404)
     }
-    res.json(user)
+    res.json(mapUser(user))
 })
 
 // @desc -> create user
 // @route POST /users 
 const createNewUser = asyncHandler(async (req, res) => {
-    const { username, name, email, password, roles } = req.body;
+    const { username, name, email, password, roles } = req.body
+    if (!username || !name || !email || !password) {
+        throw createError('All fields are required', 400)
+    }
 
     const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
     if (duplicate) {
@@ -47,6 +55,9 @@ const createNewUser = asyncHandler(async (req, res) => {
 // @route PUT /users/:id 
 const updateUser = asyncHandler(async (req, res) => {
     const { id } = req.params
+    if (!isValidObjectId(id)) {
+        throw createError('Invalid user ID', 400)
+    }
     const { username, name, email, password, roles } = req.body
 
     const user = await User.findById(id)
@@ -88,7 +99,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
     res.json({
         message: `${updatedUser.username} updated`,
-        user: updatedUser
+        user: mapUser(updatedUser)
     })
 })
 
@@ -96,6 +107,9 @@ const updateUser = asyncHandler(async (req, res) => {
 // @route PATCH /users/:id 
 const updateUserPartial = asyncHandler(async (req, res) => {
     const { id } = req.params
+    if (!isValidObjectId(id)) {
+        throw createError('Invalid user ID', 400)
+    }
     const updates = req.body
 
     const user = await User.findById(id);
@@ -127,14 +141,19 @@ const updateUserPartial = asyncHandler(async (req, res) => {
 
     const updatedUser = await user.save()
 
-    res.json({ message: `${updatedUser.username} updated`, user: updatedUser })
+    res.json({
+        message: `${updatedUser.username} updated`,
+        user: mapUser(updatedUser)
+    })
 })
 
 // @desc -> delete user
 // @route DELETE /users/:id 
 const deleteUser = asyncHandler(async (req, res) => {
     const { id } = req.params
-
+    if (!isValidObjectId(id)) {
+        throw createError('Invalid user ID', 400)
+    }
     const post = await Post.findOne({ user: id }).lean()
     if (post) {
         throw createError('User has posts that need to be deleted first', 409)
