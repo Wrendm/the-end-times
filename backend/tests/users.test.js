@@ -29,6 +29,7 @@ describe('Users API', () => {
             .expect(200)
 
         expect(Array.isArray(res.body)).toBe(true)
+
         if (res.body.length > 0) {
             expect(res.body[0]).toHaveProperty('username')
             expect(res.body[0]).not.toHaveProperty('password')
@@ -37,12 +38,12 @@ describe('Users API', () => {
 
     it('POST /users should create a new user', async () => {
         const timestamp = Date.now()
+
         const newUser = {
             username: `jestuser_${timestamp}`,
             name: 'Jest New User',
             email: `jest_${timestamp}@example.com`,
-            password: 'password123',
-            roles: ['Contributor']
+            password: 'password123'
         }
 
         const res = await request(process.env.API_URL)
@@ -55,18 +56,21 @@ describe('Users API', () => {
 
         const createdUser = await User.findOne({ email: newUser.email })
         expect(createdUser).toBeTruthy()
+        expect(createdUser.roles).toEqual(['Contributor'])
+
         createdUserIds.push(createdUser._id)
     })
 
     it('POST /users should reject duplicate email', async () => {
         const timestamp = Date.now()
+
         const originalUser = {
             username: `jestuserdup_${timestamp}`,
             name: 'Original User',
             email: `jestdup_${timestamp}@example.com`,
-            password: 'password123',
-            roles: ['Contributor']
+            password: 'password123'
         }
+
         const created = await request(process.env.API_URL)
             .post('/users')
             .send(originalUser)
@@ -79,8 +83,7 @@ describe('Users API', () => {
             username: `anotheruser_${timestamp}`,
             name: 'Duplicate User',
             email: originalUser.email,
-            password: 'password123',
-            roles: ['Contributor']
+            password: 'password123'
         }
 
         const res = await request(process.env.API_URL)
@@ -90,5 +93,24 @@ describe('Users API', () => {
 
         expect(res.body).toHaveProperty('message')
         expect(res.body.message).toMatch(/duplicate/i)
+    })
+
+    it('POST /users should reject roles if provided (security test)', async () => {
+        const timestamp = Date.now()
+
+        const newUser = {
+            username: `jestuser_roles_${timestamp}`,
+            name: 'Role Test User',
+            email: `jest_roles_${timestamp}@example.com`,
+            password: 'password123',
+            roles: ['Admin'] 
+        }
+
+        const res = await request(process.env.API_URL)
+            .post('/users')
+            .send(newUser)
+            .expect(400)
+
+        expect(res.body).toHaveProperty('message')
     })
 })

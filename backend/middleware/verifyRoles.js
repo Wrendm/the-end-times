@@ -1,22 +1,19 @@
 const verifyRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !req.user.roles) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    const userRoles = req.user.roles.map(r => r.toLowerCase());
-    const normalizedAllowed = allowedRoles.map(r => r.toLowerCase());
-
-    const hasPermission = userRoles.some(role =>
-      normalizedAllowed.includes(role)
-    );
+    const hasPermission = req.user.roles.some(role =>
+      allowedRoles.includes(role)
+    )
 
     if (!hasPermission) {
-      return res.status(403).json({ message: 'Forbidden: Insufficient role' });
+      return res.status(403).json({ message: 'Forbidden: Insufficient role' })
     }
 
-    next();
-  };
-};
+    next()
+  }
+}
 
-module.exports = verifyRoles;
+module.exports = verifyRoles

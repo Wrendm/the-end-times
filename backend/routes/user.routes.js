@@ -4,7 +4,7 @@ const router = express.Router()
 const User = require('../models/User')
 const usersController = require('../controllers/users.controller')
 const validate = require('../validators/validate')
-const { createUserSchema, updateUserSchema, userIdParamSchema } = require('../validators/user.validator')
+const { createUserSchema, updateUserPutSchema, updateUserPatchSchema, userIdParamSchema } = require('../validators/user.validator')
 const verifyJWT = require('../middleware/verifyJWT')
 const checkOwnership = require('../middleware/checkOwnership')
 
@@ -20,15 +20,15 @@ router.route('/:id')
   .put(
     verifyJWT,
     validate(userIdParamSchema, 'params'),
+    validate(updateUserPutSchema, 'body'),
     checkOwnership(User, '_id'),
-    validate(updateUserSchema),
     usersController.updateUser
   )
   .patch(
     verifyJWT,
     validate(userIdParamSchema, 'params'),
+    validate(updateUserPatchSchema, 'body'),
     checkOwnership(User, '_id'),
-    validate(updateUserSchema),
     usersController.updateUserPartial
   )
   .delete(

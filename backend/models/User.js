@@ -10,13 +10,17 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         minlength: 4,
-        maxlength: 25
+        maxlength: 25,
+        lowercase: true,
+        trim: true
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        match: /^\S+@\S+\.\S+$/
+        match: /^\S+@\S+\.\S+$/,
+        lowercase: true,
+        trim: true
     },
     password: {
         type: String,
@@ -28,11 +32,11 @@ const userSchema = new mongoose.Schema({
         enum: ['Contributor', 'Admin', 'Editor'],
         default: ['Contributor']
     },
-    refreshToken:{
+    refreshToken: {
         type: String,
         default: null,
         select: false
     }
-},{ timestamps: true })
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema)

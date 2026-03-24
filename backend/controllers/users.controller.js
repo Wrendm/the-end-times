@@ -2,7 +2,6 @@ const User = require('../models/User')
 const Post = require('../models/Post')
 const { mapUser } = require('../utils/mappers/userMapper')
 const createError = require('../utils/createError')
-const isValidObjectId = require('../utils/isValidObjectId')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 
@@ -22,10 +21,7 @@ const getAllUsersAdmin = asyncHandler(async (req, res) => {
 // @desc -> single user
 // @route GET /users/:id 
 const getSingleUser = asyncHandler(async (req, res) => {
-    const { id } = req.params
-    if (!isValidObjectId(id)) {
-        throw createError('Invalid user ID', 400)
-    }
+    const { id } = req.validated.params
     const user = await User.findById(id).select('-password').lean()
     if (!user) {
         throw createError('User not found', 404)
@@ -36,10 +32,7 @@ const getSingleUser = asyncHandler(async (req, res) => {
 // @desc -> create user
 // @route POST /users 
 const createNewUser = asyncHandler(async (req, res) => {
-    const { username, name, email, password, roles } = req.body
-    if (!username || !name || !email || !password) {
-        throw createError('All fields are required', 400)
-    }
+    const { username, name, email, password } = req.validated.body
 
     const duplicate = await User.findOne({ $or: [{ username }, { email }] }).lean()
     if (duplicate) {
@@ -47,18 +40,15 @@ const createNewUser = asyncHandler(async (req, res) => {
     }
     const hashedPwd = await bcrypt.hash(password, 10)
 
-    const user = await User.create({ username, name, email, "password": hashedPwd, roles })
+    const user = await User.create({ username, name, email, "password": hashedPwd, roles: ['Contributor'] })
     res.status(201).json({ message: `New user ${user.username} created` })
 })
 
 // @desc -> update user entirely
 // @route PUT /users/:id 
 const updateUser = asyncHandler(async (req, res) => {
-    const { id } = req.params
-    if (!isValidObjectId(id)) {
-        throw createError('Invalid user ID', 400)
-    }
-    const { username, name, email, password, roles } = req.body
+    const { id } = req.validated.params
+    const { username, name, email, password} = req.validated.body
 
     const user = await User.findById(id)
     if (!user) {
@@ -71,29 +61,19 @@ const updateUser = asyncHandler(async (req, res) => {
         if (email) query.push({ email })
 
         const duplicate = await User.findOne({ $or: query }).lean()
+
         if (duplicate && duplicate._id.toString() !== id) {
             throw createError('Duplicate username or email', 409)
         }
-    }
-
-    if (roles !== undefined && !req.roles.includes('Admin')) {
-        throw createError('Only admins can change roles', 403)
     }
 
     if (password) {
         user.password = await bcrypt.hash(password, 10)
     }
 
-    const allowedUpdates = ['username', 'name', 'email']
-    allowedUpdates.forEach(field => {
-        if (req.body[field] !== undefined) {
-            user[field] = req.body[field]
-        }
-    })
-
-    if (roles !== undefined) {
-        user.roles = roles
-    }
+    if (username !== undefined) user.username = username
+    if (name !== undefined) user.name = name
+    if (email !== undefined) user.email = email
 
     const updatedUser = await user.save()
 
@@ -106,23 +86,20 @@ const updateUser = asyncHandler(async (req, res) => {
 // @desc -> update user in part
 // @route PATCH /users/:id 
 const updateUserPartial = asyncHandler(async (req, res) => {
-    const { id } = req.params
-    if (!isValidObjectId(id)) {
-        throw createError('Invalid user ID', 400)
-    }
-    const updates = req.body
+    const { id } = req.validated.params
+    const updates = req.validated.body
 
     const user = await User.findById(id);
     if (!user) {
         throw createError(`User with id ${id} not found`, 404)
     }
-
     if (updates.username || updates.email) {
         const query = []
         if (updates.username) query.push({ username: updates.username })
         if (updates.email) query.push({ email: updates.email })
 
         const duplicate = await User.findOne({ $or: query }).lean()
+
         if (duplicate && duplicate._id.toString() !== id) {
             throw createError('Duplicate username or email', 409)
         }
@@ -147,13 +124,29 @@ const updateUserPartial = asyncHandler(async (req, res) => {
     })
 })
 
+
+//@desc -> update user roles
+//@route PATCH admin/users/:id/roles
+const updateRoles = asyncHandler(async (req, res) => {
+    const { id } = req.validated.params
+    const { roles } = req.validated.body
+
+    const user = await User.findById(id)
+    if (!user) throw createError('User not found', 404)
+
+    user.roles = roles
+    await user.save()
+
+    res.json({
+        message: `${user.username} roles updated`,
+        user: mapUser(user)
+    })
+})
+
 // @desc -> delete user
 // @route DELETE /users/:id 
 const deleteUser = asyncHandler(async (req, res) => {
-    const { id } = req.params
-    if (!isValidObjectId(id)) {
-        throw createError('Invalid user ID', 400)
-    }
+    const { id } = req.validated.params
     const post = await Post.findOne({ user: id }).lean()
     if (post) {
         throw createError('User has posts that need to be deleted first', 409)
@@ -176,5 +169,6 @@ module.exports = {
     createNewUser,
     updateUser,
     updateUserPartial,
+    updateRoles,
     deleteUser
 }

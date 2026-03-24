@@ -15,5 +15,5 @@ module.exports = (schema, property = 'body') => {
     req.validated = req.validated || {}
     req.validated[property] = value
     next()
-  };
-};
+  }
+}
