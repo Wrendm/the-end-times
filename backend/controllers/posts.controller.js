@@ -9,9 +9,6 @@ const asyncHandler = require('express-async-handler')
 // @route GET /posts
 const getAllPosts = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.query;
-    if (user && !isValidObjectId(user)) {
-        throw createError('Invalid user ID', 400)
-    }
 
     const filter = {
         ...(postCategory ? { postCategory: { $regex: postCategory, $options: 'i' } } : {}),
@@ -27,9 +24,6 @@ const getAllPosts = asyncHandler(async (req, res) => {
 // @route GET /admin/posts
 const getAllPostsAdmin = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.query;
-    if (user && !isValidObjectId(user)) {
-        throw createError('Invalid user ID', 400)
-    }
 
     const filter = {
         ...(postCategory ? { postCategory: { $regex: postCategory, $options: 'i' } } : {}),
@@ -127,9 +121,14 @@ const updatePostPartial = asyncHandler(async (req, res) => {
         throw createError(`Post with id ${id} not found`, 404)
     }
 
+    const allowedFields = ['postType', 'postCategory', 'title', 'imgSrc', 'postContent', 'published']
+
     Object.keys(updates).forEach(key => {
+        if (!allowedFields.includes(key)) {
+            throw createError(`Invalid field: ${key}`, 400)
+        }
         post[key] = updates[key]
-    });
+    })
 
     const updatedPost = await post.save();
 

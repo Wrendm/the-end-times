@@ -4,13 +4,13 @@ const router = express.Router()
 const Post = require('../models/Post')
 const postsController = require('../controllers/posts.controller') 
 const validate = require('../validators/validate')
-const { createPostSchema, updatePostSchema, postIdParamSchema } = require('../validators/post.validator')
+const { createPostSchema, updatePostPutSchema, updatePostPatchSchema, postIdParamSchema, postQuerySchema } = require('../validators/post.validator')
 const verifyJWT = require('../middleware/verifyJWT')
 const checkOwnership = require('../middleware/checkOwnership')
 
 
 router.route('/')
-  .get(postsController.getAllPosts)
+  .get(validate(postQuerySchema, 'query'), postsController.getAllPosts)
   .post(verifyJWT, validate(createPostSchema), postsController.createNewPost);
 
 
@@ -23,14 +23,14 @@ router.route('/:id')
     verifyJWT,
     validate(postIdParamSchema, 'params'),
     checkOwnership(Post),
-    validate(updatePostSchema),
+    validate(updatePostPutSchema),
     postsController.updatePost
   )
   .patch(
     verifyJWT,
     validate(postIdParamSchema, 'params'),
     checkOwnership(Post),
-    validate(updatePostSchema),
+    validate(updatePostPatchSchema),
     postsController.updatePostPartial
   )
   .delete(
