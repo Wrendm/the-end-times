@@ -19,9 +19,10 @@ beforeEach(async () => {
     await Post.deleteMany({ postCategory: 'testing' })
     await User.deleteMany({ email: /jestuser/i })
 
-    // Create a unique test user
+    // Create test user
     const hashedPassword = await bcrypt.hash('password123', 10)
     const timestamp = Date.now()
+
     testUser = await User.create({
         username: `jestuser_${timestamp}`,
         name: 'Jest User',
@@ -30,14 +31,17 @@ beforeEach(async () => {
         roles: ['Contributor']
     })
 
-    // Generate JWT for authenticated routes
+    // Login to get token
     const loginRes = await request(process.env.API_URL)
         .post('/auth/login')
-        .send({ username: testUser.username, password: 'password123' })
+        .send({
+            username: testUser.username,
+            password: 'password123'
+        })
 
     authToken = loginRes.body?.accessToken || loginRes.body?.token
 
-    // Create a test post
+    // Create test post directly (bypasses validation)
     testPost = await Post.create({
         user: testUser._id,
         postType: 'blog',
@@ -55,12 +59,14 @@ afterAll(async () => {
 })
 
 describe('Posts API', () => {
+
     it('GET /posts should return an array of posts', async () => {
         const res = await request(app)
             .get('/posts')
             .expect(200)
 
         expect(Array.isArray(res.body)).toBe(true)
+
         if (res.body.length > 0) {
             expect(res.body[0]).toHaveProperty('title')
             expect(res.body[0]).toHaveProperty('user')
@@ -78,7 +84,6 @@ describe('Posts API', () => {
 
     it('POST /posts should create a new post', async () => {
         const newPost = {
-            user: testUser._id.toString(),
             postType: 'blog',
             postCategory: 'testing',
             title: 'Jest Create Post',
@@ -88,7 +93,7 @@ describe('Posts API', () => {
 
         const res = await request(app)
             .post('/posts')
-            .set('Authorization', `Bearer ${authToken}`) // include auth
+            .set('Authorization', `Bearer ${authToken}`)
             .send(newPost)
             .expect(201)
 
@@ -98,4 +103,5 @@ describe('Posts API', () => {
         const createdPost = await Post.findOne({ title: 'Jest Create Post' })
         expect(createdPost).not.toBeNull()
     })
+
 })
