@@ -58,7 +58,6 @@ const getSinglePost = asyncHandler(async (req, res) => {
 //	POST /posts -> create post
 const createNewPost = asyncHandler(async (req, res) => {
     const { postType, postCategory, title, imgSrc, postContent, published } = req.validated.body
-    if (!req.user?.id) throw createError('Unauthorized', 401)
     const dbUser = await User.findById(req.user.id)
 
     if (!dbUser) {

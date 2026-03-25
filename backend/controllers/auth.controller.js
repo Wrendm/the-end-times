@@ -200,7 +200,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @route GET /auth/me
 // @access Protected via cookie (httpOnly JWT)
 const getCurrentUser = asyncHandler(async (req, res) => {
-    if (!req.user || !req.user?.id) {
+    if (!req.user) {
         throw createError('Unauthorized', 401)
     }
 
