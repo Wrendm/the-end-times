@@ -20,19 +20,15 @@ const Dashboard = () => {
     const userId = auth.user.id;
 
     const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } =
-        useAxiosFetch<PostType[]>(
-            userId ? `/posts?user=${userId}` : null
-        );
+        useAxiosFetch<PostType[]>(`/posts?user=${userId}`);
 
     const posts: PostType[] = postsData ?? [];
-
-    console.log("AUTH USER:", auth.user);
 
     return (
         <div className="ProfilePage">
             <div className="ProfileHeader">
-                <h1>Welcome, {auth.user?.name}</h1>
-                {auth.user?.roles?.includes("Admin") && (
+                <h1>Welcome, {auth.user.name}</h1>
+                {auth.user.roles.includes("Admin") && (
                     <h3>
                         <Link to="/admin-dashboard">Admin Dashboard</Link>
                     </h3>

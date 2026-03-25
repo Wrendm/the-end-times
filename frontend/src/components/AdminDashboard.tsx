@@ -8,15 +8,21 @@ import type { PostType } from "../types/index";
 const AdminDashboard = () => {
     const auth = useContext(AuthContext);
     if (!auth) throw new Error("AuthContext not found");
+    if (!auth.user) {
+        return <div>Not authenticated</div>;
+    }
+    if (!auth.user.roles.includes("Admin")) {
+        return <div>Forbidden</div>;
+    }
 
     const { data: postsData, fetchError: fetchPostsError, isLoading: isPostsLoading } = useAxiosFetch<PostType[]>('/posts');
 
-    const posts = postsData ?? [];    
+    const posts = postsData ?? [];
 
     return (
         <div className="ProfilePage">
             <div className="ProfileHeader">
-                <h1>Welcome, {auth.user?.roles?.join(', ')} {auth.user?.name}</h1>
+                <h1>Welcome, {auth.user.roles.join(', ')} {auth.user.name}</h1>
             </div>
 
             <DataState

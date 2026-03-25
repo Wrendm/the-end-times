@@ -4,7 +4,7 @@ const PostFeed = ({ posts }: { posts: any[] }) => {
   return (
     <div className="PostFeed">
       {posts.toReversed().map(post => (
-        <div className="PostCard" key={post._id}>
+        <div className="PostCard" key={post.id}>
           <Post post={post} />
         </div>
       ))}

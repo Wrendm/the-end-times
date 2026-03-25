@@ -20,8 +20,9 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const data = await loginUser(form);
-      auth.login(data.data, data.token);
+      const res = await loginUser(form);
+
+      auth.login(res.data.user, res.data.token);
       setSuccess(true);
       setError("");
       setForm({ username: "", password: "" });

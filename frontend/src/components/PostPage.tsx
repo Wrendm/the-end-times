@@ -4,8 +4,15 @@ import usePostById from '../hooks/usePostById';
 
 const PostPage = () => {
   const { id } = useParams<{ id: string }>();
+  if (!id) {
+    throw new Error('Post ID is required');
+  }
 
-  const { post, isLoading, fetchError } = usePostById(id ?? '');
+  const { post, isLoading, fetchError } = usePostById(id);
+
+  if (post && !post.createdAt) {
+    throw new Error('Post is missing createdAt');
+  }
 
   return (
     <DataState
@@ -17,15 +24,18 @@ const PostPage = () => {
       {post && (
         <div className="ContentArea">
           <h1>{post.title || 'Untitled'}</h1>
-
           <div>
-            <Link to={`/users/${post.user?.id}`}>
-              <h2>{post.user?.username || 'Unknown User'}</h2>
-            </Link>
+            {post.user?.id ? (
+              <Link to={`/users/${post.user.id}`}>
+                <h2>{post.user.username}</h2>
+              </Link>
+            ) : (
+              <h2>Unknown User</h2>
+            )}
           </div>
 
           <div>
-            <h3>{post.createdAt ? new Date(post.createdAt).toLocaleDateString() : ''}</h3>
+            <h3>{new Date(post.createdAt).toLocaleDateString()}</h3>
           </div>
 
           <div className="ContentRow">
