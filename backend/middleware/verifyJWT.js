@@ -3,7 +3,6 @@ const createError = require('../utils/createError');
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
-
     if (!authHeader?.startsWith('Bearer ')) {
         throw createError('Unauthorized', 401);
     }
