@@ -28,7 +28,7 @@ const AdminDashboard = () => {
             <DataState
                 isLoading={isPostsLoading}
                 error={fetchPostsError}
-                isEmpty={posts.length === 0}
+                isEmpty={posts.length === 0 && !isPostsLoading && !fetchPostsError}
                 emptyMessage="No posts to display"
             >
                 <div className="ProfilePosts">

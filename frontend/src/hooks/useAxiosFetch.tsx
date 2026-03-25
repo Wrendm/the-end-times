@@ -24,9 +24,21 @@ const useAxiosFetch = <T,>(url: string | null, config?: AxiosRequestConfig) => {
         }
       } catch (err: unknown) {
         if (!isMounted) return;
-        if (err instanceof AxiosError) setFetchError(err.message);
-        else if (err instanceof Error) setFetchError(err.message);
-        else setFetchError('Unknown error');
+
+        if (err instanceof AxiosError) {
+          const response = err.response?.data;
+          const message = response?.message || err.message;
+          const errors = response?.errors;
+          if (errors && Array.isArray(errors)) {
+            setFetchError(`${message}\n${errors.join('\n')}`);
+          } else {
+            setFetchError(message);
+          }
+        } else if (err instanceof Error) {
+          setFetchError(err.message);
+        } else {
+          setFetchError('Unknown error');
+        }
         setData(null);
       } finally {
         isMounted && setIsLoading(false);

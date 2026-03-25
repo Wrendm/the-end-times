@@ -18,7 +18,7 @@ const PostPage = () => {
     <DataState
       isLoading={isLoading}
       error={fetchError}
-      isEmpty={!post}
+      isEmpty={!post && !isLoading && !fetchError}
       emptyMessage="That post fell in the void!"
     >
       {post && (

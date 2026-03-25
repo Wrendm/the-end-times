@@ -2,12 +2,16 @@ import { useParams } from "react-router-dom";
 import type { PostType } from '../types/index';
 import PostFeed from "./PostFeed";
 import DataState from "./DataState";
+import PageNotFound from "./PageNotFound";
 import useUserById from '../hooks/useUserById';
 import useAxiosFetch from '../hooks/useAxiosFetch';
 
 const ProfilePage = () => {
   const { id } = useParams<{ id: string }>();
   if (!id) return <h1>That user fell in the void!</h1>;
+  if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+    return <PageNotFound />;
+  }
 
   const { user, fetchError: fetchUserError, isLoading: isUserLoading } = useUserById(id);
 
@@ -38,7 +42,7 @@ const ProfilePage = () => {
           <DataState
             isLoading={isPostsLoading}
             error={fetchPostsError}
-            isEmpty={posts.length === 0}
+            isEmpty={posts.length === 0 && !isPostsLoading && !fetchPostsError}
             emptyMessage="This user hasn't made any posts yet."
           >
             <div className="ProfilePosts">

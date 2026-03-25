@@ -6,6 +6,7 @@ import { AuthContext } from "../context/authcontext";
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
 
   const auth = useContext(AuthContext);
@@ -28,7 +29,23 @@ export default function Login() {
       setForm({ username: "", password: "" });
       navigate("/dashboard");
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Login failed");
+      if (err.response) {
+        const res = err.response.data;
+
+        setError(res.message || "Registration failed");
+
+        if (res.errors && Array.isArray(res.errors)) {
+          setErrors(res.errors);
+        } else {
+          setErrors([]);
+        }
+      } else if (err.request) {
+        setError("No response from server");
+        setErrors([]);
+      } else {
+        setError("Network error");
+        setErrors([]);
+      }
     }
   };
 
@@ -36,7 +53,20 @@ export default function Login() {
     <div className="Form">
       <h1>Login</h1>
       {success && <div className="success">Login successful!</div>}
-      {error && <div className="error">{error}</div>}
+      {error && (
+        <div className="error">
+          <h2>Error!</h2>
+          <h3>{error}</h3>
+
+          {errors.length > 0 && (
+            <ul>
+              {errors.map((errMsg, i) => (
+                <li key={i}>{errMsg}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <label>Username</label>
         <input name="username" value={form.username} onChange={handleChange} />

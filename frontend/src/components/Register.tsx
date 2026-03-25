@@ -10,6 +10,7 @@ export default function Register() {
     });
 
     const [error, setError] = useState("");
+    const [errors, setErrors] = useState<string[]>([]);
     const [success, setSuccess] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -41,11 +42,22 @@ export default function Register() {
 
         } catch (err: any) {
             if (err.response) {
-                setError(err.response.data.message || "Registration failed");
+                const res = err.response.data;
+
+                setError(res.message || "Registration failed");
+
+                if (res.errors && Array.isArray(res.errors)) {
+                    setErrors(res.errors);
+                } else {
+                    setErrors([]);
+                }
+
             } else if (err.request) {
                 setError("No response from server");
+                setErrors([]);
             } else {
                 setError("Network error");
+                setErrors([]);
             }
         }
     };
@@ -57,7 +69,15 @@ export default function Register() {
             {error && (
                 <div className="error">
                     <h2>Error!</h2>
-                    <h2>{error}</h2>
+                    <h3>{error}</h3>
+
+                    {errors.length > 0 && (
+                        <ul>
+                            {errors.map((errMsg, i) => (
+                                <li key={i}>{errMsg}</li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             )}
 

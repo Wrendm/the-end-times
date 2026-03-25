@@ -14,7 +14,7 @@ const Fashion = () => {
     <DataState
       isLoading={isLoading}
       error={fetchError}
-      isEmpty={posts.length === 0}
+      isEmpty={posts.length === 0 && !isLoading && !fetchError}
       emptyMessage="No posts to display. You should make one!"
     >
       <PostFeed posts={posts} />

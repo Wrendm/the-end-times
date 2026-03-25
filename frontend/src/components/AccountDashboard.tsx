@@ -38,8 +38,8 @@ const Dashboard = () => {
             <DataState
                 isLoading={isPostsLoading}
                 error={fetchPostsError}
-                isEmpty={posts.length === 0}
-                emptyMessage="This user hasn't made any posts yet."
+                isEmpty={posts.length === 0 && !isPostsLoading && !fetchPostsError}
+                emptyMessage="Once you start making posts, you'll see them here!"
             >
                 <div className="ProfilePosts">
                     <PostFeed posts={posts} />

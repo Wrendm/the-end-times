@@ -27,9 +27,11 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="post">
+            <Route index element={<PageNotFound />} />
             <Route path=":id" element={<PostPage />} />
           </Route>
           <Route path="users">
+            <Route index element={<PageNotFound />} />
             <Route path=":id" element={<ProfilePage />} />
           </Route>
           <Route path="register" element={<Register />} />
@@ -45,7 +47,7 @@ function App() {
           <Route
             path="admin-dashboard"
             element={
-              <ProtectedRoute allowedRoles={['admin']}>
+              <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminDashboard />
               </ProtectedRoute>
             }
