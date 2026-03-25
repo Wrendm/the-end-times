@@ -61,6 +61,15 @@ a:hover {
   min-height: 80%;
 }
 
+.error{
+  color:crimson;
+  padding: 10px;
+}
+
+.error ul{
+  padding: 20px;
+}
+
 .Header,
 .Footer {
   width: 100%;
@@ -139,8 +148,9 @@ a:hover {
 
 .AccountActionNav {
   display: flex;
+  width: 20%;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: flex-end;
 }
 
@@ -153,6 +163,23 @@ a:hover {
   align-items: center;
   border: none;
   border-radius: 8px;
+}
+
+.AccountAction button {
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  color: #828e82;          
+  align-items: center;       
+  text-decoration: underline;    
+  font-size: inherit;          
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+}
+
+.AccountAction button:hover {
+  color: #333;
 }
 
 .Form {
