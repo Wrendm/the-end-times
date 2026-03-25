@@ -8,14 +8,15 @@ const jwt = require('jsonwebtoken')
 // @route POST /auth/register
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { username, name, email, password } = req.body;
+    const { username, name, email, password } = req.validated.body
+    const normalizedUsername = username.toLowerCase()
 
     const duplicate = await User.findOne({
         $or: [
-            { username: { $regex: new RegExp(`^${username}$`, 'i') } },
-            { email: { $regex: new RegExp(`^${email}$`, 'i') } }
+            { username: normalizedUsername },
+            { email }
         ]
-    }).lean();
+    }).lean()
 
     if (duplicate) {
         throw createError('Username or email already exists', 409)
@@ -23,16 +24,25 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const hashedPwd = await bcrypt.hash(password, 10)
 
-    const user = await User.create({ username, name, email, "password": hashedPwd, roles: ['Contributor'] })
-    res.status(201).json({ message: `New user ${user.username} registered` })
+    const user = await User.create({
+        username: normalizedUsername,
+        name,
+        email,
+        password: hashedPwd,
+        roles: ['Contributor']
+    })
+
+    res.status(201).json({
+        message: `New user ${user.username} registered`
+    })
 })
 
 // @desc Authenticate user and return JWT
 // @route POST /auth/login
 // @access Public
 const loginUser = asyncHandler(async (req, res) => {
-    const username = req.body.username.toLowerCase().trim()
-    const password = req.body.password
+    const username = req.validated.body.username.toLowerCase().trim()
+    const password = req.validated.body.password
 
     const user = await User.findOne({ username }).select('+refreshToken')
     if (!user) {
@@ -46,7 +56,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const payload = {
         id: user._id,
         username: user.username,
-        name: user.name, 
+        name: user.name,
         roles: user.roles
     }
 
@@ -79,7 +89,7 @@ const loginUser = asyncHandler(async (req, res) => {
         user: {
             id: user._id,
             username: user.username,
-            name: user.name, 
+            name: user.name,
             roles: user.roles
         }
     })
@@ -135,7 +145,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     const cookies = req.cookies;
 
     if (!cookies?.jwt) {
-        return res.sendStatus(204); 
+        return res.sendStatus(204);
     }
 
     const refreshToken = cookies.jwt;
