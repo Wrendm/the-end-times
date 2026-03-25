@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: Props) => {
 
         const { data } = await api.get("/auth/me");
 
-        setUser(data.user);
+        setUser(data.data);
       } catch {
         setUser(null);
         setToken(null);

@@ -21,7 +21,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const data = await loginUser(form);
-      auth.login(data.user, data.token);
+      auth.login(data.data, data.token);
       setSuccess(true);
       setError("");
       setForm({ username: "", password: "" });

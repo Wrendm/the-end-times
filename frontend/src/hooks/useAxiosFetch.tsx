@@ -19,7 +19,7 @@ const useAxiosFetch = <T,>(url: string | null, config?: AxiosRequestConfig) => {
       try {
         const response = await api.get(url, { ...config, signal: controller.signal });
         if (isMounted) {
-          setData(response.data);
+          setData(response.data.data);
           setFetchError('');
         }
       } catch (err: unknown) {
