@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from "react";
-import api, { setAuthToken } from "../api/axios";
+import api from "../api/axios";
 import { AuthContext } from "./authcontext";
 import type { UserType } from "../types";
 
@@ -16,20 +16,19 @@ export const AuthProvider = ({ children }: Props) => {
     setUser(userData);
     setToken(accessToken);
 
-    setAuthToken(accessToken);
     localStorage.setItem("token", accessToken);
   };
 
   const logout = async () => {
     try {
       await api.post("/auth/logout");
-    } catch { }
-
-    setUser(null);
-    setToken(null);
-
-    setAuthToken(null);
-    localStorage.removeItem("token");
+    } catch (err) {
+      console.error("Logout request failed:", err);
+    } finally {
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem("token");
+    }
   };
 
   useEffect(() => {
@@ -43,15 +42,14 @@ export const AuthProvider = ({ children }: Props) => {
         }
 
         setToken(storedToken);
-        setAuthToken(storedToken);
 
         const { data } = await api.get("/auth/me");
 
         setUser(data.data);
-      } catch {
+      } catch (err) {
+        console.error("Auth initialization failed", err);
         setUser(null);
         setToken(null);
-        setAuthToken(null);
         localStorage.removeItem("token");
       } finally {
         setLoading(false);
