@@ -86,9 +86,9 @@ describe('Auth API', () => {
             .send({ username: testUser.username, password: testUser.password })
             .expect(200)
 
-        expect(loginRes.body).toHaveProperty('token')
-        expect(loginRes.body.user).toHaveProperty('username', testUser.username)
-        expect(loginRes.body.user).not.toHaveProperty('password')
+        expect(loginRes.body.data).toHaveProperty('token')
+        expect(loginRes.body.data.user).toHaveProperty('username', testUser.username)
+        expect(loginRes.body.data.user).not.toHaveProperty('password')
     })
 
     it('POST /auth/login should fail with invalid credentials', async () => {
@@ -143,7 +143,7 @@ describe('Auth API', () => {
             .get('/auth/refresh')
             .expect(200)
 
-        expect(res.body).toHaveProperty('token')
+        expect(res.body.data).toHaveProperty('token')
     })
 
     it('POST /auth/logout should clear cookie and invalidate session', async () => {

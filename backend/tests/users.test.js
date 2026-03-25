@@ -28,11 +28,11 @@ describe('Users API', () => {
             .get('/users')
             .expect(200)
 
-        expect(Array.isArray(res.body)).toBe(true)
+        expect(Array.isArray(res.body.data)).toBe(true)
 
         if (res.body.length > 0) {
-            expect(res.body[0]).toHaveProperty('username')
-            expect(res.body[0]).not.toHaveProperty('password')
+            expect(res.body.data[0]).toHaveProperty('username')
+            expect(res.body.data[0]).not.toHaveProperty('password')
         }
     })
 

@@ -39,7 +39,7 @@ beforeEach(async () => {
             password: 'password123'
         })
 
-    authToken = loginRes.body?.accessToken || loginRes.body?.token
+    authToken = loginRes.body.data?.accessToken || loginRes.body.data?.token
 
     // Create test post directly (bypasses validation)
     testPost = await Post.create({
@@ -65,11 +65,11 @@ describe('Posts API', () => {
             .get('/posts')
             .expect(200)
 
-        expect(Array.isArray(res.body)).toBe(true)
+        expect(Array.isArray(res.body.data)).toBe(true)
 
         if (res.body.length > 0) {
-            expect(res.body[0]).toHaveProperty('title')
-            expect(res.body[0]).toHaveProperty('user')
+            expect(res.body.data[0]).toHaveProperty('title')
+            expect(res.body.data[0]).toHaveProperty('user')
         }
     })
 
@@ -78,8 +78,8 @@ describe('Posts API', () => {
             .get(`/posts/${testPost._id}`)
             .expect(200)
 
-        expect(res.body.title).toBe('Jest Test Post')
-        expect(res.body.user).toBeDefined()
+        expect(res.body.data.title).toBe('Jest Test Post')
+        expect(res.body.data.user).toBeDefined()
     })
 
     it('POST /posts should create a new post', async () => {

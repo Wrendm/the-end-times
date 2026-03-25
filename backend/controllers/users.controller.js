@@ -2,6 +2,7 @@ const User = require('../models/User')
 const Post = require('../models/Post')
 const { mapUser } = require('../utils/mappers/userMapper')
 const createError = require('../utils/createError')
+const sendResponse = require('../utils/sendResponse')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 
@@ -9,13 +10,19 @@ const asyncHandler = require('express-async-handler')
 // @route GET /users 
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find().select('-password').lean()
-    res.json(users.map(mapUser))
+    return sendResponse(res, {
+        message: 'Users fetched',
+        data: users.map(mapUser)
+    })
 })
 // @desc -> all users (admin)
 // @route GET admin/users 
 const getAllUsersAdmin = asyncHandler(async (req, res) => {
     const users = await User.find().select('-password').lean()
-    res.json(users.map(mapUser))
+    return sendResponse(res, {
+        message: 'Users fetched',
+        data: users.map(mapUser)
+    })
 })
 
 // @desc -> single user
@@ -26,7 +33,10 @@ const getSingleUser = asyncHandler(async (req, res) => {
     if (!user) {
         throw createError('User not found', 404)
     }
-    res.json(mapUser(user))
+    return sendResponse(res, {
+        message: 'User fetched',
+        data: mapUser(user)
+    })
 })
 
 // @desc -> create user
@@ -41,14 +51,18 @@ const createNewUser = asyncHandler(async (req, res) => {
     const hashedPwd = await bcrypt.hash(password, 10)
 
     const user = await User.create({ username, name, email, "password": hashedPwd, roles: ['Contributor'] })
-    res.status(201).json({ message: `New user ${user.username} created` })
+    return sendResponse(res, {
+        status: 201,
+        message: 'User created',
+        data: mapUser(user)
+    })
 })
 
 // @desc -> update user entirely
 // @route PUT /users/:id 
 const updateUser = asyncHandler(async (req, res) => {
     const { id } = req.validated.params
-    const { username, name, email, password} = req.validated.body
+    const { username, name, email, password } = req.validated.body
 
     const user = await User.findById(id)
     if (!user) {
@@ -77,9 +91,9 @@ const updateUser = asyncHandler(async (req, res) => {
 
     const updatedUser = await user.save()
 
-    res.json({
-        message: `${updatedUser.username} updated`,
-        user: mapUser(updatedUser)
+    return sendResponse(res, {
+        message: 'User updated',
+        data: mapUser(updatedUser)
     })
 })
 
@@ -118,9 +132,9 @@ const updateUserPartial = asyncHandler(async (req, res) => {
 
     const updatedUser = await user.save()
 
-    res.json({
-        message: `${updatedUser.username} updated`,
-        user: mapUser(updatedUser)
+    return sendResponse(res, {
+        message: 'User updated',
+        data: mapUser(updatedUser)
     })
 })
 
@@ -137,9 +151,9 @@ const updateRoles = asyncHandler(async (req, res) => {
     user.roles = roles
     await user.save()
 
-    res.json({
-        message: `${user.username} roles updated`,
-        user: mapUser(user)
+    return sendResponse(res, {
+        message: 'User roles updated',
+        data: mapUser(user)
     })
 })
 
@@ -159,7 +173,10 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     const result = await user.deleteOne()
 
-    res.json({ message: 'User deleted' })
+    return sendResponse(res, {
+        message: 'Post deleted',
+        data: null
+    })
 })
 
 module.exports = {

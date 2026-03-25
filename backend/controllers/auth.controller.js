@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const createError = require('../utils/createError')
+const sendResponse = require('../utils/sendResponse')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
@@ -32,8 +33,16 @@ const registerUser = asyncHandler(async (req, res) => {
         roles: ['Contributor']
     })
 
-    res.status(201).json({
-        message: `New user ${user.username} registered`
+    return sendResponse(res, {
+        status: 201,
+        message: `New user registered`,
+        data: {
+            id: user._id,
+            username: user.username,
+            name: user.name,
+            email: user.email,
+            roles: user.roles
+        }
     })
 })
 
@@ -84,13 +93,16 @@ const loginUser = asyncHandler(async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000
     })
 
-    return res.json({
-        token,
-        user: {
-            id: user._id,
-            username: user.username,
-            name: user.name,
-            roles: user.roles
+    return sendResponse(res, {
+        message: 'Login successful',
+        data: {
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                name: user.name,
+                roles: user.roles
+            }
         }
     })
 })
@@ -135,7 +147,10 @@ const refreshUser = asyncHandler(async (req, res) => {
         { expiresIn: '1h' }
     )
 
-    return res.json({ token: accessToken })
+    return sendResponse(res, {
+        message: 'Token refreshed',
+        data: { token: accessToken }
+    })
 })
 
 // @desc Logout
@@ -195,8 +210,9 @@ const getCurrentUser = asyncHandler(async (req, res) => {
         throw createError('User not found', 404)
     }
 
-    res.json({
-        user: {
+    return sendResponse(res, {
+        message: 'Current user fetched',
+        data: {
             id: user._id,
             username: user.username,
             roles: user.roles,
