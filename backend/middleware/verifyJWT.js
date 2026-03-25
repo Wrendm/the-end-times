@@ -21,6 +21,14 @@ const verifyJWT = (req, res, next) => {
 
         next();
     } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            throw createError('Token expired', 403);
+        }
+
+        if (err.name === 'JsonWebTokenError') {
+            throw createError('Invalid token', 403);
+        }
+
         throw createError('Forbidden', 403);
     }
 };

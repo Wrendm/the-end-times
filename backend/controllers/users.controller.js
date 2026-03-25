@@ -138,7 +138,6 @@ const updateUserPartial = asyncHandler(async (req, res) => {
     })
 })
 
-
 //@desc -> update user roles
 //@route PATCH admin/users/:id/roles
 const updateRoles = asyncHandler(async (req, res) => {

@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const User = require('../models/User')
 const app = require('../app')
 const request = require('supertest')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 jest.setTimeout(20000)
@@ -144,6 +145,54 @@ describe('Auth API', () => {
             .expect(200)
 
         expect(res.body.data).toHaveProperty('token')
+    })
+
+    it('GET /auth/me should fail with missing token', async () => {
+        const res = await request(app)
+            .get('/auth/me')
+            .expect(401)
+
+        expect(res.body).toHaveProperty('message')
+        expect(res.body.message).toMatch(/unauthorized/i)
+    })
+
+    it('GET /auth/me should fail with invalid token', async () => {
+        const res = await request(app)
+            .get('/auth/me')
+            .set('Authorization', 'Bearer invalid.token.here')
+            .expect(403)
+
+        expect(res.body).toHaveProperty('message')
+        expect(res.body.message).toMatch(/forbidden|invalid/i)
+    })
+
+    it('GET /auth/me should fail with expired token', async () => {
+        await request(app)
+            .post('/auth/register')
+            .send(testUser)
+            .expect(201)
+
+        const user = await User.findOne({ email: testUser.email })
+
+        const expiredToken = jwt.sign(
+            {
+                id: user._id,
+                username: user.username,
+                roles: user.roles
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: '1ms' }
+        )
+
+        await new Promise(resolve => setTimeout(resolve, 10))
+
+        const res = await request(app)
+            .get('/auth/me')
+            .set('Authorization', `Bearer ${expiredToken}`)
+            .expect(403)
+
+        expect(res.body).toHaveProperty('message')
+        expect(res.body.message).toMatch(/forbidden|expired/i)
     })
 
     it('POST /auth/logout should clear cookie and invalidate session', async () => {
