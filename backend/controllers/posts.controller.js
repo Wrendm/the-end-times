@@ -1,8 +1,10 @@
 const User = require('../models/User')
 const Post = require('../models/Post')
+const Category = require('../models/Category')
 const { mapPost } = require('../utils/mappers/postMapper')
 const createError = require('../utils/createError')
 const sendResponse = require('../utils/sendResponse')
+const validatePostByCategory = require('../utils/validatePostByCategory')
 const asyncHandler = require('express-async-handler')
 
 // @desc -> all posts
@@ -11,12 +13,15 @@ const getAllPosts = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.query
 
     const filter = {
-        ...(postCategory ? { postCategory: { $regex: postCategory, $options: 'i' } } : {}),
-        ...(user ? { user } : {}),
-        published: true
+        published: true,
+        ...(postCategory && { postCategory }),
+        ...(user && { user })
     }
 
-    const posts = await Post.find(filter).populate('user').lean()
+    const posts = await Post.find(filter)
+        .populate('user')
+        .populate('postCategory')
+        .lean()
 
     return sendResponse(res, {
         message: 'Posts fetched',
@@ -29,11 +34,14 @@ const getAllPostsAdmin = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.query
 
     const filter = {
-        ...(postCategory ? { postCategory: { $regex: postCategory, $options: 'i' } } : {}),
-        ...(user ? { user } : {})
+        ...(postCategory && { postCategory }),
+        ...(user && { user })
     }
 
-    const posts = await Post.find(filter).populate('user').lean()
+    const posts = await Post.find(filter)
+        .populate('user')
+        .populate('postCategory')
+        .lean()
 
     return sendResponse(res, {
         message: 'Posts fetched',
@@ -44,11 +52,12 @@ const getAllPostsAdmin = asyncHandler(async (req, res) => {
 // @route GET /posts/:id 
 const getSinglePost = asyncHandler(async (req, res) => {
     const { id } = req.validated.params
-    const post = await Post.findById(id).populate('user').lean()
+    const post = await Post.findById(id).populate('user').populate('postCategory').lean()
 
-    if (!post) {
+    if (!post || (!req.user.roles.includes('Admin') && !post.published) ) {
         throw createError('Post not found', 404)
     }
+
     return sendResponse(res, {
         message: 'Post fetched',
         data: mapPost(post)
@@ -57,16 +66,21 @@ const getSinglePost = asyncHandler(async (req, res) => {
 })
 //	POST /posts -> create post
 const createNewPost = asyncHandler(async (req, res) => {
-    const { postType, postCategory, title, imgSrc, postContent, published } = req.validated.body
-    const dbUser = await User.findById(req.user.id)
+    const { postCategory, title, imgSrc, postContent, published } = req.validated.body
 
+    const dbUser = await User.findById(req.user.id)
     if (!dbUser) {
         throw createError('User not found', 404)
     }
 
+    const category = await Category.findById(postCategory)
+    if (!category || !category.published) {
+        throw createError('Invalid category', 400)
+    }
+    validatePostByCategory(category, req.validated.body)
+
     const post = await Post.create({
         user: req.user.id,
-        postType,
         postCategory,
         title,
         imgSrc,
@@ -74,7 +88,7 @@ const createNewPost = asyncHandler(async (req, res) => {
         published
     })
 
-    const populatedPost = await post.populate('user')
+    const populatedPost = await post.populate(['user', 'postCategory'])
 
     return sendResponse(res, {
         status: 201,
@@ -85,14 +99,19 @@ const createNewPost = asyncHandler(async (req, res) => {
 //	PUT /posts/:id -> update post
 const updatePost = asyncHandler(async (req, res) => {
     const { id } = req.validated.params
-    const { postType, postCategory, title, imgSrc, postContent, published } = req.validated.body
+    const { postCategory, title, imgSrc, postContent, published } = req.validated.body
 
     const post = await Post.findById(id)
     if (!post) {
-        throw createError(`Post with id ${id} not found`, 404)
+        throw createError(`Post not found`, 404)
     }
 
-    post.postType = postType
+    const category = await Category.findById(postCategory)
+    if (!category || !category.published) {
+        throw createError('Invalid category', 400)
+    }
+    validatePostByCategory(category, req.validated.body)
+
     post.postCategory = postCategory
     post.title = title
     post.imgSrc = imgSrc
@@ -101,7 +120,7 @@ const updatePost = asyncHandler(async (req, res) => {
 
     const updatedPost = await post.save()
 
-    await updatedPost.populate('user')
+    await updatedPost.populate(['user', 'postCategory'])
 
     return sendResponse(res, {
         message: 'Post updated',
@@ -115,10 +134,27 @@ const updatePostPartial = asyncHandler(async (req, res) => {
 
     const post = await Post.findById(id)
     if (!post) {
-        throw createError(`Post with id ${id} not found`, 404)
+        throw createError(`Post not found`, 404)
     }
 
-    const allowedFields = ['postType', 'postCategory', 'title', 'imgSrc', 'postContent', 'published']
+    const allowedFields = ['postCategory', 'title', 'imgSrc', 'postContent', 'published']
+
+    let category = null
+
+    if (updates.postCategory) {
+        category = await Category.findById(updates.postCategory)
+        if (!category || !category.published) {
+            throw createError('Invalid category', 400)
+        }
+    } else {
+        category = await Category.findById(post.postCategory)
+    }
+
+    const mergedData = {
+        ...post.toObject(),
+        ...updates
+    }
+    validatePostByCategory(category, mergedData)
 
     Object.keys(updates).forEach(key => {
         if (!allowedFields.includes(key)) {
@@ -128,8 +164,7 @@ const updatePostPartial = asyncHandler(async (req, res) => {
     })
 
     const updatedPost = await post.save()
-
-    await updatedPost.populate('user')
+    await updatedPost.populate(['user', 'postCategory'])
 
     return sendResponse(res, {
         message: 'Post updated',
@@ -141,7 +176,7 @@ const deletePost = asyncHandler(async (req, res) => {
     const { id } = req.validated.params
     const post = await Post.findById(id)
     if (!post) {
-        throw createError(`Post with id ${id} not found`, 404)
+        throw createError(`Post not found`, 404)
     }
 
     await post.deleteOne()

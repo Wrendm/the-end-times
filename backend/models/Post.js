@@ -7,12 +7,9 @@ const postSchema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
-    postType: {
-      type: String,
-      required: true
-    },
     postCategory: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
       required: true
     },
     title: {
@@ -23,6 +20,12 @@ const postSchema = new mongoose.Schema(
       type: String
     },
     postContent: {
+      type: String
+    },
+    audioSrc: {
+      type: String
+    },
+    videoSrc: {
       type: String
     },
     published: {
