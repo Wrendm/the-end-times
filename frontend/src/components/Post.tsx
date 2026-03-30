@@ -14,9 +14,9 @@ const Post = ({ post }: PostProps) => {
         <div><p>{new Date(post.createdAt).toLocaleDateString()}</p></div>
       </div>
       <div className="ContentRow">
-        {post.postType === 'image' && (<p className='imagecontent'><Link to={`/post/${post.id}`}> <img src={post.imgSrc} width="400px"/></Link> </p>)}
-        {post.postCategory === 'poem' && (<p className='textcontent' style={{width: "400px"}} >{post.postContent}</p>)}
-        {post.postCategory === 'essay' && post.postContent && (<><p className='textcontent' style={{width: "400px"}} >{post.postContent.slice(0, 270)}</p><Link to={`/post/${post.id}`}><p>Continue reading...</p></Link></>)}
+        {post.postCategory.type === 'Image' && (<p className='imagecontent'><Link to={`/post/${post.id}`}> <img src={post.imgSrc} width="400px"/></Link> </p>)}
+        {post.postCategory.name === 'Poetry' && (<p className='textcontent' style={{width: "400px"}} >{post.postContent}</p>)}
+        {post.postCategory.name === 'Essay' && post.postContent && (<><p className='textcontent' style={{width: "400px"}} >{post.postContent.slice(0, 270)}</p><Link to={`/post/${post.id}`}><p>Continue reading...</p></Link></>)}
       </div>
     </>
   )

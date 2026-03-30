@@ -1,11 +1,7 @@
 
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import Paintings from './components/Paintings';
-import Photography from './components/Photography';
-import Poetry from './components/Poetry';
-import Essays from './components/Essays';
-import Fashion from './components/Fashion';
+import CategoryPage from './components/CategoryPage';
 import Home from './components/Home';
 import PostPage from './components/PostPage';
 import ProfilePage from './components/ProfilePage';
@@ -52,11 +48,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="paintings" element={<Paintings />} />
-          <Route path="photography" element={<Photography />} />
-          <Route path="poetry" element={<Poetry />} />
-          <Route path="essays" element={<Essays />} />
-          <Route path="fashion" element={<Fashion />} />
+          <Route path="category/:categoryName" element={<CategoryPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>

@@ -1,13 +1,17 @@
+// CategoryPage.tsx
 import PostFeed from "./PostFeed";
 import type { PostType } from '../types/index';
 import useAxiosFetch from '../hooks/useAxiosFetch';
-import DataState from '../components/DataState';
+import DataState from './DataState';
+import { useParams } from 'react-router-dom';
 
-const Photography = () => {
-  // Fetch posts directly
-  const { data, fetchError, isLoading } = useAxiosFetch<PostType[]>('/posts?postCategory=painting');
+const CategoryPage = () => {
+  const { categoryName } = useParams<{ categoryName: string }>();
 
-  // Ensure posts is always an array
+  const { data, fetchError, isLoading } = useAxiosFetch<PostType[]>(
+    `/posts?postCategory=${categoryName}`
+  );
+
   const posts = data ?? [];
 
   return (
@@ -22,4 +26,4 @@ const Photography = () => {
   );
 };
 
-export default Photography;
+export default CategoryPage;

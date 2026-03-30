@@ -1,17 +1,19 @@
 import { Link } from 'react-router-dom';
 
 const Nav = () => {
+  const categories = ['Painting', 'Photography', 'Poetry', 'Essay', 'Fashion'];
+
   return (
     <div className="Nav">
-        <ul>
-            <li><Link to='paintings'>Paintings</Link></li>
-            <li><Link to='photography'>Photography</Link></li>
-            <li><Link to='poetry'>Poetry</Link></li>
-            <li><Link to='essays'>Essays</Link></li>
-            <li><Link to='fashion'>Fashion</Link></li>
-        </ul>
+      <ul>
+        {categories.map(category => (
+          <li key={category}>
+            <Link to={`/category/${category}`}>{category}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
 
-export default Nav
+export default Nav;

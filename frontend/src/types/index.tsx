@@ -7,8 +7,7 @@ interface UserType {
 interface PostType {
   id: string;
   user: UserType;
-  postType: string;
-  postCategory: string;
+  postCategory: CategoryType;
   title: string,
   imgSrc?: string;
   postContent?: string;
@@ -16,5 +15,11 @@ interface PostType {
   createdAt: string;
   updatedAt: string;
 }
+interface CategoryType {
+  id: string;
+  name: string;
+  type: 'Text' | 'Image' | 'Audio' | 'Video';
+  published: boolean;
+}
 
-export type {UserType, PostType};
+export type { UserType, PostType, CategoryType };
