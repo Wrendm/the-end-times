@@ -35,9 +35,9 @@ const postIdParamSchema = Joi.object({
 })
 
 const postQuerySchema = Joi.object({
-  postCategory: objectId.optional(),
-  user: Joi.string().hex().length(24).optional()
-}).unknown(false)
+  postCategory: Joi.string().optional(),
+  user: Joi.string().optional().allow('')
+}).unknown(true)
 
 module.exports = {
   createPostSchema,

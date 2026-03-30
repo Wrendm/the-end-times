@@ -6,10 +6,8 @@ const mapPost = (post) => {
 
   return {
     id: post._id.toString(),
-    user: mapUser(post.user),                 
-    postCategory: post.postCategory._id.toString(),
-    category: mapCategory(post.postCategory),
-    postType: post.postCategory.type,        
+    user: mapUser(post.user),
+    postCategory: mapCategory(post.postCategory),
     title: post.title,
     imgSrc: post.imgSrc,
     audioSrc: post.audioSrc,
