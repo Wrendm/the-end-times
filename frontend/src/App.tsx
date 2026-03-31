@@ -11,6 +11,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/AccountDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import CreatePost from './components/CreatePost';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/authprovider';
 
@@ -32,6 +33,14 @@ function App() {
           </Route>
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
+          <Route
+            path="create-post"
+            element={
+              <ProtectedRoute>
+                <CreatePost />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="dashboard"
             element={

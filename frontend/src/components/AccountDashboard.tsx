@@ -28,6 +28,7 @@ const Dashboard = () => {
         <div className="ProfilePage">
             <div className="ProfileHeader">
                 <h1>Welcome, {auth.user.name}</h1>
+                <h2><Link to="/create-post">Create a Post</Link></h2>
                 {auth.user.roles.includes("Admin") && (
                     <h3>
                         <Link to="/admin-dashboard">Admin Dashboard</Link>

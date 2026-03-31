@@ -197,8 +197,27 @@ a:hover {
   border-radius: 8px;
 }
 
-label {
+
+input label, select label, textarea label {
   display: block;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  float: left;
+  gap: 8px;
+  margin: 4px;
 }
 
 .btn {
