@@ -11,35 +11,45 @@ const asyncHandler = require('express-async-handler')
 // @route GET /posts
 // posts.controller.js
 const getAllPosts = asyncHandler(async (req, res) => {
-    const { postCategory, user } = req.validated.query 
+    const { postCategory, user } = req.validated.query
 
-    let filter = {} 
+    let filter = {}
 
     if (postCategory) {
-        const category = await Category.findOne({ name: postCategory }).lean() 
+        const category = await Category.findOne({ name: postCategory }).lean()
         if (!category) {
-            throw createError(`Category "${postCategory}" not found`, 404) 
+            throw createError(`Category "${postCategory}" not found`, 404)
         }
-        filter.postCategory = category._id 
-        console.log('Filtering by category:', category._id) 
+        filter.postCategory = category._id
+        console.log('Filtering by category:', category._id)
     }
 
     if (user) {
-        filter.user = user 
-    } else{
+        filter.user = user
+
+        // If not logged in OR not the same user → only published
+        if (!req.user || req.user.id !== user) {
+            filter.published = true
+        }
+    } else {
+        // No user filter → global feed → only published
         filter.published = true
     }
+
+    console.log('req.user:', req.user)
+    console.log('query user:', user)
+    console.log('isOwner:', req.user?.id?.toString() === user?.toString())
 
     const posts = await Post.find(filter)
         .populate('user', 'username name roles')
         .populate('postCategory', 'name type')
-        .lean() 
+        .lean()
 
     return sendResponse(res, {
         message: 'Posts fetched',
         data: posts.map(mapPost),
-    }) 
-}) 
+    })
+})
 // @desc -> all posts (admin)
 // @route GET /admin/posts
 const getAllPostsAdmin = asyncHandler(async (req, res) => {
