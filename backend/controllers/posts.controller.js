@@ -11,37 +11,41 @@ const asyncHandler = require('express-async-handler')
 // @route GET /posts
 // posts.controller.js
 const getAllPosts = asyncHandler(async (req, res) => {
-    const { postCategory, user } = req.validated.query
+    const { postCategory, user } = req.validated.query 
 
-    const filter = { published: true }
+    let filter = {} 
 
     if (postCategory) {
-        const category = await Category.findOne({ name: postCategory }).lean()
+        const category = await Category.findOne({ name: postCategory }).lean() 
         if (!category) {
-            throw createError(`Category "${postCategory}" not found`, 404)
+            throw createError(`Category "${postCategory}" not found`, 404) 
         }
-        filter.postCategory = category._id
+        filter.postCategory = category._id 
+        console.log('Filtering by category:', category._id) 
     }
+
     if (user) {
-        filter.user = user
+        filter.user = user 
+    } else{
+        filter.published = true
     }
 
     const posts = await Post.find(filter)
         .populate('user', 'username name roles')
         .populate('postCategory', 'name type')
-        .lean()
+        .lean() 
 
     return sendResponse(res, {
         message: 'Posts fetched',
         data: posts.map(mapPost),
-    })
-})
+    }) 
+}) 
 // @desc -> all posts (admin)
 // @route GET /admin/posts
 const getAllPostsAdmin = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.validated.query
 
-    const filter = { }
+    const filter = {}
 
     if (postCategory) {
         const category = await Category.findOne({ name: postCategory }).lean()
@@ -67,21 +71,21 @@ const getAllPostsAdmin = asyncHandler(async (req, res) => {
 // @desc -> single post
 // @route GET /posts/:id 
 const getSinglePost = asyncHandler(async (req, res) => {
-  const { id } = req.validated.params
+    const { id } = req.validated.params
 
-  const post = await Post.findById(id)
-    .populate('user', 'username roles')
-    .populate('postCategory', 'name')
+    const post = await Post.findById(id)
+        .populate('user', 'username roles')
+        .populate('postCategory', 'name')
 
-  // If post doesn't exist, or not published and user isn't admin
-  if (!post || (!(req.user?.roles?.includes('Admin')) && !post.published)) {
-    throw createError('Post not found', 404)
-  }
+    // If post doesn't exist, or not published and user isn't admin
+    if (!post || (!((req.user?.roles?.includes('Admin')) || req.user?.id === post.user.id) && !post.published)) {
+        throw createError('Post not found', 404)
+    }
 
-  return sendResponse(res, {
-    message: 'Post fetched',
-    data: mapPost(post)
-  })
+    return sendResponse(res, {
+        message: 'Post fetched',
+        data: mapPost(post)
+    })
 })
 //	POST /posts -> create post
 const createNewPost = asyncHandler(async (req, res) => {

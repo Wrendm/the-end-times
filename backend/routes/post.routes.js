@@ -6,16 +6,18 @@ const postsController = require('../controllers/posts.controller')
 const validate = require('../validators/validate')
 const { createPostSchema, updatePostPutSchema, updatePostPatchSchema, postIdParamSchema, postQuerySchema } = require('../validators/post.validator')
 const verifyJWT = require('../middleware/verifyJWT')
+const optionalJWT = require('../middleware/optionalJWT') 
 const checkOwnership = require('../middleware/checkOwnership')
 
 
 router.route('/')
-  .get(validate(postQuerySchema, 'query'), postsController.getAllPosts)
-  .post(verifyJWT, validate(createPostSchema), postsController.createNewPost);
+  .get( optionalJWT, validate(postQuerySchema, 'query'), postsController.getAllPosts)
+  .post(verifyJWT, validate(createPostSchema), postsController.createNewPost) 
 
 
 router.route('/:id')
   .get(
+    verifyJWT,
     validate(postIdParamSchema, 'params'),
     postsController.getSinglePost
   )
