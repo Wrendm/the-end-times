@@ -3,7 +3,6 @@ const asyncHandler = require('express-async-handler')
 
 const optionalJWT = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization
-  console.log('AUTH HEADER:', req.headers.authorization)
   if (!authHeader?.startsWith('Bearer ')) return next()
 
   const token = authHeader.split(' ')[1]
