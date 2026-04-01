@@ -282,6 +282,21 @@ input, select, textarea {
   justify-content: space-between;
 }
 
+.ButtonRow{
+  display: flex;
+  justify-content: space-around;
+}
+
+.ButtonRow a{
+  width: 40%;
+  text-decoration: none;
+}
+
+.DeleteButton{
+  background-color: rgb(243, 86, 65);
+  width: 40%;
+}
+
 .ContentArea {
   width: 70%;
   margin: 40px auto;

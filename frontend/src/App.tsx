@@ -12,6 +12,7 @@ import Login from './components/Login';
 import Dashboard from './components/AccountDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import CreatePost from './components/CreatePost';
+import EditPost from './components/EditPost';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/authprovider';
 
@@ -26,6 +27,14 @@ function App() {
           <Route path="post">
             <Route index element={<PageNotFound />} />
             <Route path=":id" element={<PostPage />} />
+            <Route
+              path=":id/edit"
+              element={
+                <ProtectedRoute>
+                  <EditPost />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="users">
             <Route index element={<PageNotFound />} />

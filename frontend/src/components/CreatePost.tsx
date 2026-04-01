@@ -76,7 +76,7 @@ export default function CreatePost() {
             if (err.response) {
                 const res = err.response.data;
 
-                setError(res.message || "Registration failed");
+                setError(res.message || "Creation failed");
 
                 if (res.errors && Array.isArray(res.errors)) {
                     setErrors(res.errors);
@@ -109,6 +109,10 @@ export default function CreatePost() {
                             ))}
                         </ul>
                     )}
+                </div>
+            )}
+            {loading && (
+                <div className="loader">
                 </div>
             )}
             <form onSubmit={handleSubmit}>
