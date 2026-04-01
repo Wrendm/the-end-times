@@ -15,8 +15,17 @@ const optionalJWT = asyncHandler(async (req, res, next) => {
       roles: decoded.roles
     };
   } catch (err) {
-  console.log('JWT ERROR:', err.message)
-}
+
+    if (err.name === 'TokenExpiredError') {
+      throw createError('Token expired', 403);
+    }
+
+    if (err.name === 'JsonWebTokenError') {
+      throw createError('Invalid token', 403);
+    }
+
+    throw createError('Forbidden', 403);
+  }
   next()
 })
 
