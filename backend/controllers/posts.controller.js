@@ -27,18 +27,12 @@ const getAllPosts = asyncHandler(async (req, res) => {
     if (user) {
         filter.user = user
 
-        // If not logged in OR not the same user → only published
         if (!req.user || req.user.id !== user) {
             filter.published = true
         }
     } else {
-        // No user filter → global feed → only published
         filter.published = true
     }
-
-    console.log('req.user:', req.user)
-    console.log('query user:', user)
-    console.log('isOwner:', req.user?.id?.toString() === user?.toString())
 
     const posts = await Post.find(filter)
         .populate('user', 'username name roles')
