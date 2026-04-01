@@ -8,10 +8,11 @@ export default function CreatePost() {
     const [form, setForm] = useState({
         title: "",
         postCategory: "",
-        imgSrc: "",
         postContent: "",
         published: false,
     });
+    const [file, setFile] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string>(""); // For showing the image preview
     const [error, setError] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const [success, setSuccess] = useState(false);
@@ -47,49 +48,37 @@ export default function CreatePost() {
     }, [isLoading]);
 
     const handleChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await createPost({
-                ...form
-            });
+            const formData = new FormData();
+            formData.append("title", form.title);
+            formData.append("postCategory", form.postCategory);
+            formData.append("postContent", form.postContent);
+            formData.append("published", String(form.published));
+            if (file) formData.append("image", file);
+
+            await createPost(formData);
 
             setSuccess(true);
             setError("");
-
-            setForm({
-                title: "",
-                postCategory: "",
-                imgSrc: "",
-                postContent: "",
-                published: false,
-            });
+            setForm({ title: "", postCategory: "", postContent: "", published: false });
+            setFile(null);
+            setPreview("");
         } catch (err: any) {
-            if (err.response) {
-                const res = err.response.data;
-
-                setError(res.message || "Creation failed");
-
-                if (res.errors && Array.isArray(res.errors)) {
-                    setErrors(res.errors);
-                } else {
-                    setErrors([]);
-                }
-            } else if (err.request) {
-                setError("No response from server");
-                setErrors([]);
-            } else {
-                setError("Network error");
-                setErrors([]);
-            }
+            const res = err.response?.data;
+            setError(res?.message || "Creation failed");
+            setErrors(Array.isArray(res?.errors) ? res.errors : []);
         }
     };
 
@@ -101,7 +90,6 @@ export default function CreatePost() {
                 <div className="error">
                     <h2>Error!</h2>
                     <h3>{error}</h3>
-
                     {errors.length > 0 && (
                         <ul>
                             {errors.map((errMsg, i) => (
@@ -132,8 +120,8 @@ export default function CreatePost() {
                         </option>
                     ))}
                 </select>
-                <label>Image Source</label>
-                <input name="imgSrc" value={form.imgSrc} onChange={handleChange} />
+                <label>Image</label>
+                <input type="file" onChange={handleFileChange} />
                 <label>Post Content</label>
                 <textarea
                     name="postContent"

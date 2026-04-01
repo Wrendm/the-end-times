@@ -8,13 +8,9 @@ import usePostById from '../hooks/usePostById';
 import type { CategoryType } from "../types/index";
 
 export default function EditPost() {
-  const [form, setForm] = useState({
-    title: "",
-    postCategory: "",
-    imgSrc: "",
-    postContent: "",
-    published: false,
-  });
+  const [form, setForm] = useState({ title: "", postCategory: "", postContent: "", published: false });
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>(""); // For showing the image preview
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
@@ -39,23 +35,31 @@ export default function EditPost() {
     setForm({
       title: post.title,
       postCategory: post.postCategory.id,
-      imgSrc: post.imgSrc || "",
       postContent: post.postContent || "",
       published: post.published,
     });
   }, [post]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", form.title);
+    formData.append("postCategory", form.postCategory);
+    formData.append("postContent", form.postContent);
+    formData.append("published", String(form.published));
+    if (file) formData.append("image", file);
+
     try {
-      await updatePost(id!, { ...form });
+      await updatePost(id!, formData);
       setSuccess(true);
       setError("");
     } catch (err: any) {
@@ -117,8 +121,8 @@ export default function EditPost() {
               </option>
             ))}
           </select>
-          <label>Image Source</label>
-          <input name="imgSrc" value={form.imgSrc} onChange={handleChange} />
+          <label>Image</label>
+          <input type="file" onChange={handleFileChange} />
           <label>Post Content</label>
           <textarea name="postContent" value={form.postContent} onChange={handleChange} />
           <label>Published</label>

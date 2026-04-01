@@ -1,3 +1,4 @@
+const asyncHandler = require('express-async-handler')
 const User = require('../models/User')
 const Post = require('../models/Post')
 const Category = require('../models/Category')
@@ -5,7 +6,9 @@ const { mapPost } = require('../utils/mappers/postMapper')
 const createError = require('../utils/createError')
 const sendResponse = require('../utils/sendResponse')
 const validatePostByCategory = require('../utils/validatePostByCategory')
-const asyncHandler = require('express-async-handler')
+const {uploadToCloudinary} = require('../utils/cloudinaryUpload')
+const {deleteFromCloudinary} = require('../utils/cloudinaryDelete')
+
 
 // @desc -> all posts
 // @route GET /posts
@@ -21,7 +24,6 @@ const getAllPosts = asyncHandler(async (req, res) => {
             throw createError(`Category "${postCategory}" not found`, 404)
         }
         filter.postCategory = category._id
-        console.log('Filtering by category:', category._id)
     }
 
     if (user) {
@@ -49,7 +51,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
 const getAllPostsAdmin = asyncHandler(async (req, res) => {
     const { postCategory, user } = req.validated.query
 
-    const filter = {}
+    let filter = {}
 
     if (postCategory) {
         const category = await Category.findOne({ name: postCategory }).lean()
@@ -58,6 +60,7 @@ const getAllPostsAdmin = asyncHandler(async (req, res) => {
         }
         filter.postCategory = category._id
     }
+
     if (user) {
         filter.user = user
     }
@@ -93,7 +96,7 @@ const getSinglePost = asyncHandler(async (req, res) => {
 })
 //	POST /posts -> create post
 const createNewPost = asyncHandler(async (req, res) => {
-    const { postCategory, title, imgSrc, postContent, published } = req.validated.body
+    const { postCategory, title, postContent, published } = req.validated.body
 
     const dbUser = await User.findById(req.user.id)
     if (!dbUser) {
@@ -104,7 +107,12 @@ const createNewPost = asyncHandler(async (req, res) => {
     if (!category || !category.published) {
         throw createError('Invalid category', 400)
     }
-    validatePostByCategory(category, req.validated.body)
+    validatePostByCategory(category, req.validated.body, req.file)
+
+    let imgSrc = null
+    if (req.file) {
+        imgSrc = await uploadToCloudinary(req.file, 'posts')
+    }
 
     const post = await Post.create({
         user: req.user.id,
@@ -129,7 +137,7 @@ const createNewPost = asyncHandler(async (req, res) => {
 //	PUT /posts/:id -> update post
 const updatePost = asyncHandler(async (req, res) => {
     const { id } = req.validated.params
-    const { postCategory, title, imgSrc, postContent, published } = req.validated.body
+    const { postCategory, title, postContent, published } = req.validated.body
 
     const post = await Post.findById(id)
     if (!post) {
@@ -140,11 +148,15 @@ const updatePost = asyncHandler(async (req, res) => {
     if (!category || !category.published) {
         throw createError('Invalid category', 400)
     }
-    validatePostByCategory(category, req.validated.body)
+    validatePostByCategory(category, req.validated.body, req.file)
+
+    if (req.file) {
+        if (post.imgSrc) await deleteFromCloudinary(post.imgSrc) 
+        post.imgSrc = await uploadToCloudinary(req.file, 'posts') 
+    }
 
     post.postCategory = postCategory
     post.title = title
-    post.imgSrc = imgSrc
     post.postContent = postContent
     post.published = published
 
@@ -184,7 +196,15 @@ const updatePostPartial = asyncHandler(async (req, res) => {
         ...post.toObject(),
         ...updates
     }
-    validatePostByCategory(category, mergedData)
+    validatePostByCategory(category, mergedData, req.file)
+
+    if (updates.imgSrc === null && post.imgSrc) {
+        await deleteFromCloudinary(post.imgSrc) 
+        post.imgSrc = null 
+    } else if (req.file) {
+        if (post.imgSrc) await deleteFromCloudinary(post.imgSrc) 
+        post.imgSrc = await uploadToCloudinary(req.file, 'posts') 
+    }
 
     Object.keys(updates).forEach(key => {
         if (!allowedFields.includes(key)) {
@@ -207,6 +227,10 @@ const deletePost = asyncHandler(async (req, res) => {
     const post = await Post.findById(id)
     if (!post) {
         throw createError(`Post not found`, 404)
+    }
+
+    if (post.imgSrc) {
+        await deleteFromCloudinary(post.imgSrc) 
     }
 
     await post.deleteOne()

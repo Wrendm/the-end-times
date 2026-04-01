@@ -1,12 +1,18 @@
 import api from "./axios";
 
-export const createPost = async (payload: { title: string; postCategory: string; imgSrc: string; postContent: string; published: boolean }) => {
-  const { data } = await api.post("/posts", payload);
+type PostFormData = FormData;
+
+export const createPost = async (payload: PostFormData) => {
+  const { data } = await api.post("/posts", payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
 };
 
-export const updatePost = async (id: string, payload: { title: string; postCategory: string; imgSrc: string; postContent: string; published: boolean }) => {
-  const { data } = await api.put(`/posts/${id}`, payload);
+export const updatePost = async (id: string, payload: PostFormData) => {
+  const { data } = await api.put(`/posts/${id}`, payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
 };
 
