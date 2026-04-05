@@ -4,11 +4,13 @@ const app = require('./app')
 
 const PORT = process.env.PORT || 3500
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('Connected to MongoDB')
+const MONGO_URI = process.env.NODE_ENV === 'test'
+  ? process.env.MONGO_URI_TEST
+  : process.env.MONGO_URI_DEV
 
-        // Start server ONLY after DB connects
+mongoose.connect(MONGO_URI)
+    .then(() => {
+        console.log(`Connected to MongoDB (${process.env.NODE_ENV === 'test' ? 'test' : 'dev'} database)`)
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`)
         })

@@ -7,17 +7,20 @@ const validate = require('../validators/validate')
 const { createUserSchema, updateUserPutSchema, updateUserPatchSchema, userIdParamSchema, usersQuerySchema } = require('../validators/user.validator')
 const verifyJWT = require('../middleware/verifyJWT')
 const checkOwnership = require('../middleware/checkOwnership')
+const { getLimiter, updateLimiter, deleteLimiter, signupLimiter } = require('../middleware/rateLimit')
 
 router.route('/')
-  .get(validate(usersQuerySchema, 'query'), usersController.getAllUsers)
-  .post(validate(createUserSchema), usersController.createNewUser)
+  .get(getLimiter, validate(usersQuerySchema, 'query'), usersController.getAllUsers)
+  .post(signupLimiter, validate(createUserSchema), usersController.createNewUser)
 
 router.route('/:id')
   .get(
+    getLimiter,
     validate(userIdParamSchema, 'params'),
     usersController.getSingleUser
   )
   .put(
+    updateLimiter,
     verifyJWT,
     validate(userIdParamSchema, 'params'),
     validate(updateUserPutSchema, 'body'),
@@ -25,6 +28,7 @@ router.route('/:id')
     usersController.updateUser
   )
   .patch(
+    updateLimiter,
     verifyJWT,
     validate(userIdParamSchema, 'params'),
     validate(updateUserPatchSchema, 'body'),
@@ -32,6 +36,7 @@ router.route('/:id')
     usersController.updateUserPartial
   )
   .delete(
+    deleteLimiter,
     verifyJWT,
     validate(userIdParamSchema, 'params'),
     checkOwnership(User, '_id'),
