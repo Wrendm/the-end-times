@@ -12,7 +12,6 @@ export default function CreatePost() {
         published: false,
     });
     const [file, setFile] = useState<File | null>(null);
-    const [preview, setPreview] = useState<string>(""); // For showing the image preview
     const [error, setError] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const [success, setSuccess] = useState(false);
@@ -74,7 +73,6 @@ export default function CreatePost() {
             setError("");
             setForm({ title: "", postCategory: "", postContent: "", published: false });
             setFile(null);
-            setPreview("");
         } catch (err: any) {
             const res = err.response?.data;
             setError(res?.message || "Creation failed");

@@ -6,7 +6,7 @@ import { deletePost } from "../api/postApi";
 
 interface PostProps {
   post: PostType;
-  onDelete?: (id: string) => void; 
+  onDelete?: (id: string) => void;
 }
 
 const Post = ({ post, onDelete }: PostProps) => {
@@ -39,6 +39,14 @@ const Post = ({ post, onDelete }: PostProps) => {
 
   return (
     <>
+      {error && <p className="error">{error}</p>}
+      {errors.length > 0 && (
+        <ul className="error-list">
+          {errors.map((err, i) => (
+            <li key={i}>{err}</li>
+          ))}
+        </ul>
+      )}
       {auth?.user?.id === post.user.id && (
         <div className="OptionRow">
           <p>{post.published !== true ? 'Draft' : 'Published'}</p>

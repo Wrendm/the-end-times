@@ -10,7 +10,6 @@ import type { CategoryType } from "../types/index";
 export default function EditPost() {
   const [form, setForm] = useState({ title: "", postCategory: "", postContent: "", published: false });
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>(""); // For showing the image preview
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
