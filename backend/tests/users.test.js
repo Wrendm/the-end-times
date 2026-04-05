@@ -8,7 +8,7 @@ describe('Users API', () => {
     let createdUserIds = []
 
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URI)
+        await mongoose.connect(process.env.MONGO_URI_TEST)
     })
 
     afterAll(async () => {
@@ -24,7 +24,7 @@ describe('Users API', () => {
     })
 
     it('GET /users should return an array of users', async () => {
-        const res = await request(process.env.API_URL)
+        const res = await request(app)
             .get('/users')
             .expect(200)
 
@@ -46,7 +46,7 @@ describe('Users API', () => {
             password: 'password123'
         }
 
-        const res = await request(process.env.API_URL)
+        const res = await request(app)
             .post('/users')
             .send(newUser)
             .expect(201)
@@ -71,7 +71,7 @@ describe('Users API', () => {
             password: 'password123'
         }
 
-        const created = await request(process.env.API_URL)
+        const created = await request(app)
             .post('/users')
             .send(originalUser)
             .expect(201)
@@ -86,7 +86,7 @@ describe('Users API', () => {
             password: 'password123'
         }
 
-        const res = await request(process.env.API_URL)
+        const res = await request(app)
             .post('/users')
             .send(duplicateUser)
             .expect(409)
@@ -103,10 +103,10 @@ describe('Users API', () => {
             name: 'Role Test User',
             email: `jest_roles_${timestamp}@example.com`,
             password: 'password123',
-            roles: ['Admin'] 
+            roles: ['Admin']
         }
 
-        const res = await request(process.env.API_URL)
+        const res = await request(app)
             .post('/users')
             .send(newUser)
             .expect(400)

@@ -11,12 +11,12 @@ let authToken
 let testPost
 
 beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URI)
+    await mongoose.connect(process.env.MONGO_URI_TEST)
 })
 
 beforeEach(async () => {
     // Clean test data
-    await Post.deleteMany({ postCategory: 'testing' })
+    await Post.deleteMany()
     await User.deleteMany({ email: /jestuser/i })
 
     // Create test user
@@ -32,7 +32,7 @@ beforeEach(async () => {
     })
 
     // Login to get token
-    const loginRes = await request(process.env.API_URL)
+    const loginRes = await request(app)
         .post('/auth/login')
         .send({
             username: testUser.username,
@@ -53,7 +53,7 @@ beforeEach(async () => {
 })
 
 afterAll(async () => {
-    await Post.deleteMany({ postCategory: 'testing' })
+    await Post.deleteMany({})
     await User.deleteMany({ email: /jestuser/i })
     await mongoose.connection.close()
 })
@@ -103,5 +103,4 @@ describe('Posts API', () => {
         const createdPost = await Post.findOne({ title: 'Jest Create Post' })
         expect(createdPost).not.toBeNull()
     })
-
 })

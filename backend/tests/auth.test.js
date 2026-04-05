@@ -7,22 +7,21 @@ require('dotenv').config()
 
 jest.setTimeout(20000)
 
+let testUser
+
 describe('Auth API', () => {
-    console.log('API_URL:', process.env.API_URL)
+    console.log('API_URL:', process.env.API_URL_TEST)
     let createdUserIds = []
-    let testUser
 
     beforeAll(async () => {
-        if (!process.env.MONGO_URI) {
+        if (!process.env.MONGO_URI_TEST) {
             throw new Error('MONGO_URI is not defined in your .env file')
         }
 
-        // Connect to MongoDB (Mongoose 7+ automatically handles parser and topology)
-        await mongoose.connect(process.env.MONGO_URI)
+        await mongoose.connect(process.env.MONGO_URI_TEST)
     })
 
     afterAll(async () => {
-        // Clean up test users
         if (createdUserIds.length > 0) {
             await User.deleteMany({ _id: { $in: createdUserIds } })
         }
@@ -30,7 +29,6 @@ describe('Auth API', () => {
     })
 
     beforeEach(async () => {
-        // Remove leftover test users
         await User.deleteMany({ email: /auth_/ })
 
         const timestamp = Date.now() + Math.floor(Math.random() * 10000)
