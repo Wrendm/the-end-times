@@ -20,7 +20,7 @@ router.route('/')
 router.route('/:id')
   .get(
     getLimiter,
-    verifyJWT,
+    optionalJWT,
     validate(postIdParamSchema, 'params'),
     postsController.getSinglePost
   )
