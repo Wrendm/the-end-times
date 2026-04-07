@@ -61,16 +61,25 @@ a:hover {
   min-height: 80%;
 }
 
-.error{
-  color:crimson;
+.error {
+  color: crimson;
   padding: 10px;
 }
 
-.error ul{
+.error ul {
   padding: 20px;
 }
 
-.Header,
+.Header {
+  width: 100%;
+  padding: 1rem;
+  background-color: #607B7D;
+}
+
+.Header .TopRow {
+  margin: 1rem 0;
+}
+
 .Footer {
   width: 100%;
   padding: 1rem;
@@ -109,7 +118,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .Nav ul {
@@ -146,18 +155,43 @@ a:hover {
   cursor: pointer;
 }
 
+.active,
+.pending {
+  color: #fff !important;
+}
+
+.AdminSubNav {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.AdminSubNav ul {
+  color: #333;
+  list-style-type: none;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.AdminSubNav li {
+  padding: 1rem;
+  cursor: pointer;
+}
+
 .AccountActionNav {
   display: flex;
-  width: 20%;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: flex-end;
 }
 
 .AccountAction {
   background-color: #fff;
   padding: .5rem;
-  margin: .5rem 0rem .5rem .5rem;
+  margin: 0rem 0rem 0rem 1rem;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -165,14 +199,18 @@ a:hover {
   border-radius: 8px;
 }
 
+.AccountAction a {
+  text-decoration: none;
+}
+
 .AccountAction button {
   background-color: #fff;
   border: none;
   border-radius: 8px;
-  color: #828e82;          
-  align-items: center;       
-  text-decoration: underline;    
-  font-size: inherit;          
+  color: #828e82;
+  align-items: center;
+  text-decoration: underline;
+  font-size: inherit;
   cursor: pointer;
   font-family: inherit;
   font-weight: bold;
@@ -198,11 +236,15 @@ a:hover {
 }
 
 
-input label, select label, textarea label {
+input label,
+select label,
+textarea label {
   display: block;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
@@ -231,6 +273,7 @@ input, select, textarea {
   border-radius: 4px;
   cursor: pointer;
 }
+
 .btn-secondary {
   width: 100%;
   display: block;
@@ -241,9 +284,30 @@ input, select, textarea {
   border-radius: 4px;
   cursor: pointer;
 }
-.btn-secondary a{
+
+.btn-secondary a {
   color: #333;
   text-decoration: none;
+}
+
+table{
+  margin: 20px auto;
+  width: 90%;
+}
+
+th, td {
+  padding: 10px;
+  text-align: start;
+}
+
+th{
+  background-color: #4a4e69;
+  color: #fff;
+}
+
+td{
+  background-color:#B9B1B8;
+  color: #000;
 }
 
 .Home,
@@ -268,6 +332,13 @@ input, select, textarea {
   justify-content: center;
   align-items: flex-start;
   align-content: flex-start;
+  min-height: 90%;
+}
+
+.SideBar {
+  width: 33%;
+  background-color: #222;
+  color: #fff;
 }
 
 .PostCard {
@@ -282,17 +353,17 @@ input, select, textarea {
   justify-content: space-between;
 }
 
-.ButtonRow{
+.ButtonRow {
   display: flex;
   justify-content: space-around;
 }
 
-.ButtonRow a{
+.ButtonRow a {
   width: 40%;
   text-decoration: none;
 }
 
-.DeleteButton{
+.DeleteButton {
   background-color: rgb(243, 86, 65);
   width: 40%;
 }
@@ -310,14 +381,4 @@ input, select, textarea {
   padding: 30px 60px 30px 40px;
   background-color: #333;
   color: #fafafa;
-}
-
-
-.Essays,
-.Fashion,
-.Home,
-.Paintings,
-.Photography,
-.Poetry {
-  min-height: 80%;
 }
