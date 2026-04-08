@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/authApi";
 
 export default function Register() {
@@ -13,6 +14,18 @@ export default function Register() {
     const [errors, setErrors] = useState<string[]>([]);
     const [success, setSuccess] = useState(false);
     const [message, setMessage] = useState("");
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                navigate("/login");
+            }, 5000);
+
+            return () => clearTimeout(timer); // cleanup
+        }
+    }, [success, navigate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -39,6 +52,7 @@ export default function Register() {
                 email: "",
                 password: ""
             });
+
 
         } catch (err: any) {
             if (err.response) {
