@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, useNavigate, Link } from "react-router-dom";
 import { updatePost } from "../api/postApi";
 import DataState from "./DataState";
 import { AuthContext } from "../context/authcontext";
@@ -21,6 +21,8 @@ export default function EditPost() {
   const { data: categoryData, fetchError, isLoading } = useAxiosFetch<CategoryType[]>(`/categories`);
   const categories: CategoryType[] = categoryData ?? [];
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (fetchError) setError(fetchError);
   }, [fetchError]);
@@ -38,6 +40,16 @@ export default function EditPost() {
       published: post.published,
     });
   }, [post]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate(`/posts/${id}`);
+      }, 2000);
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [success, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -80,7 +92,7 @@ export default function EditPost() {
     return <div>Post not found</div>;
   }
 
-  if (auth.user.id !== post.user.id) {
+  if (auth.user.id !== post.user.id && !auth.user?.roles.includes("Admin")) {
     return <Navigate to="/" replace />;
   }
 
@@ -112,6 +124,7 @@ export default function EditPost() {
           <label>Title</label>
           <input name="title" value={form.title} onChange={handleChange} />
           <label>Category</label>
+          <Link to={`/categories/create`} className='readmore'><p>Is something missing? Submit an option!</p></Link>
           <select name="postCategory" value={form.postCategory} onChange={handleChange}>
             <option value="">Select a category</option>
             {categories.map((cat) => (
