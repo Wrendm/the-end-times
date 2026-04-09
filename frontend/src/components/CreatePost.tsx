@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { createPost } from "../api/postApi";
 import { AuthContext } from "../context/authcontext";
 import useAxiosFetch from "../hooks/useAxiosFetch";
@@ -16,6 +17,9 @@ export default function CreatePost() {
     const [errors, setErrors] = useState<string[]>([]);
     const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [createdPostId, setCreatedPostId] = useState<string | null>(null);
+
+    const navigate = useNavigate();
 
     const auth = useContext(AuthContext);
     if (!auth) throw new Error("AuthContext not found");
@@ -46,6 +50,16 @@ export default function CreatePost() {
         }
     }, [isLoading]);
 
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                navigate(`/posts/${createdPostId}`);
+            }, 2000);
+
+            return () => clearTimeout(timer); // cleanup
+        }
+    }, [success, navigate]);
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
@@ -67,7 +81,8 @@ export default function CreatePost() {
             formData.append("published", String(form.published));
             if (file) formData.append("image", file);
 
-            await createPost(formData);
+            const post = await createPost(formData);
+            setCreatedPostId(post.data.id);
 
             setSuccess(true);
             setError("");
@@ -105,6 +120,7 @@ export default function CreatePost() {
                 <label>Title</label>
                 <input name="title" value={form.title} onChange={handleChange} />
                 <label>Category</label>
+                <Link to={`/categories/create`} className='readmore'><p>Is something missing? Submit an option!</p></Link>
                 <select
                     name="postCategory"
                     value={form.postCategory}
