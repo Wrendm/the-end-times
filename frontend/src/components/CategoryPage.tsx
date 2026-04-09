@@ -1,4 +1,3 @@
-// CategoryPage.tsx
 import PostFeed from "./PostFeed";
 import type { PostType } from '../types/index';
 import useAxiosFetch from '../hooks/useAxiosFetch';
