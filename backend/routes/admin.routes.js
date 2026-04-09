@@ -7,9 +7,10 @@ const categoriesController = require('../controllers/categories.controller')
 
 const verifyJWT = require('../middleware/verifyJWT')
 const verifyRoles = require('../middleware/verifyRoles')
+const uploadImage = require('../middleware/uploadImage')
 
 const validate = require('../validators/validate')
-const { postQuerySchema } = require('../validators/post.validator')
+const { postQuerySchema, updatePostPutSchema, updatePostPatchSchema, postIdParamSchema } = require('../validators/post.validator')
 const { updateRolesSchema, userIdParamSchema } = require('../validators/user.validator')
 const { updateCategoryPutSchema, updateCategoryPatchSchema, categoryIdParamSchema } = require('../validators/category.validator')
 
@@ -19,6 +20,19 @@ router.use(verifyRoles('Admin'));
 //posts
 router.route('/posts')
     .get(validate(postQuerySchema, 'query'), postsController.getAllPostsAdmin)
+
+router.route('/posts/edit/:id')
+    .patch(
+        validate(postIdParamSchema, 'params'),
+        uploadImage.single('image'),
+        validate(updatePostPatchSchema),
+        postsController.updatePostPartial
+    )
+router.route('/posts/delete/:id')
+    .delete(
+        validate(postIdParamSchema, 'params'),
+        postsController.deletePost
+    )
 
 //users
 router.route('/users')
