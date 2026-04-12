@@ -1,30 +1,31 @@
 import api from "./axios";
+import { setAccessToken } from "./tokenStorage";
 
 export const loginUser = async (formData: { username: string; password: string }) => {
-  const { data } = await api.post("/auth/login", formData);
-
-  api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-
-  return data;
+  try {
+    const { data } = await api.post("/auth/login", formData);
+    return data;
+  } catch (err: any) {
+    console.error("FULL ERROR:", err.response?.data || err);
+    throw err;
+  }
 };
 
-export const registerUser = async (payload: { name: string; username: string; email: string; password: string }) => {
+export const registerUser = async (payload: {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+}) => {
   const { data } = await api.post("/auth/register", payload);
-  return data;
+  return data.data;
 };
 
 export const getCurrentUser = async () => {
   try {
     const { data } = await api.get("/auth/me");
-    return data;
+    return data.data;
   } catch {
-    try {
-      await api.get("/auth/refresh");
-      
-      const { data } = await api.get("/auth/me");
-      return data;
-    } catch {
-      return null;
-    }
+    return null;
   }
 };

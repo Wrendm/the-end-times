@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const createError = require('../utils/createError');
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
+
     if (!authHeader?.startsWith('Bearer ')) {
-        throw createError('Unauthorized', 401);
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
     }
 
     const token = authHeader.split(' ')[1];
@@ -15,20 +15,21 @@ const verifyJWT = (req, res, next) => {
         req.user = {
             id: decoded.id,
             username: decoded.username,
-            roles: decoded.roles
+            roles: decoded.roles,
+            exp: decoded.exp
         };
 
         next();
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
-            throw createError('Token expired', 403);
+            return res.status(401).json({ message: 'Token expired' });
         }
 
         if (err.name === 'JsonWebTokenError') {
-            throw createError('Invalid token', 403);
+            return res.status(401).json({ message: 'Invalid token' });
         }
 
-        throw createError('Forbidden', 403);
+        return res.status(401).json({ message: 'Unauthorized' });
     }
 };
 

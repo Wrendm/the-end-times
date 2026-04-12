@@ -72,14 +72,15 @@ const loginUser = asyncHandler(async (req, res) => {
     const token = jwt.sign(
         payload,
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '1h' } //1h
     )
 
     const refreshToken = jwt.sign(
         { id: user._id },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '1d' }
+        { expiresIn: '1d' } //1d
     )
+    
 
     const hashedToken = await bcrypt.hash(refreshToken, 10)
 
@@ -144,7 +145,7 @@ const refreshUser = asyncHandler(async (req, res) => {
             roles: user.roles
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '1h' } //1h
     )
 
     return sendResponse(res, {

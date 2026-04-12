@@ -32,7 +32,7 @@ export default function Login() {
       if (err.response) {
         const res = err.response.data;
 
-        setError(res.message || "Registration failed");
+        setError(res.message || "Login failed");
 
         if (res.errors && Array.isArray(res.errors)) {
           setErrors(res.errors);
