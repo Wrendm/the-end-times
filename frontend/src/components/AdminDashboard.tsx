@@ -5,6 +5,9 @@ import DataTable from "./DataTable";
 import useAxiosFetch from "../hooks/useAxiosFetch";
 import type { PostType, UserType, CategoryType } from "../types/index";
 import { userColumns, postColumns, categoryColumns } from "../types/columns";
+import { deletePost } from "../api/postApi";
+import { deleteUser } from "../api/userApi";
+import { deleteCategory } from "../api/categoryApi";
 
 type TabType = "users" | "posts" | "categories";
 
@@ -24,19 +27,19 @@ const AdminDashboard = () => {
         data: postsData,
         fetchError: fetchPostsError,
         isLoading: isPostsLoading,
-    } = useAxiosFetch<PostType[]>("/posts");
+    } = useAxiosFetch<PostType[]>("/admin/posts");
 
     const {
         data: usersData,
         fetchError: fetchUsersError,
         isLoading: isUsersLoading,
-    } = useAxiosFetch<UserType[]>("/users");
+    } = useAxiosFetch<UserType[]>("/admin/users");
 
     const {
         data: categoryData,
         fetchError: fetchCategoriesError,
         isLoading: isCategoriesLoading,
-    } = useAxiosFetch<CategoryType[]>("/categories");
+    } = useAxiosFetch<CategoryType[]>("/admin/categories");
 
     useEffect(() => {
         if (postsData) setPosts(postsData);
@@ -49,6 +52,27 @@ const AdminDashboard = () => {
     useEffect(() => {
         if (categoryData) setCategories(categoryData);
     }, [categoryData]);
+
+    const handleDeletePost = async (id: string) => {
+        try {
+            await deletePost(id);
+            setPosts(prev => prev.filter(p => p.id !== id));
+        } catch (err) { console.error(err); alert("Failed to delete post"); }
+    };
+
+    const handleDeleteUser = async (id: string) => {
+        try {
+            await deleteUser(id);
+            setUsers(prev => prev.filter(u => u.id !== id));
+        } catch (err) { console.error(err); alert("Failed to delete user"); }
+    };
+
+    const handleDeleteCategory = async (id: string) => {
+        try {
+            await deleteCategory(id);
+            setCategories(prev => prev.filter(c => c.id !== id));
+        } catch (err) { console.error(err); alert("Failed to delete category"); }
+    };
 
     const isLoading = isPostsLoading || isUsersLoading || isCategoriesLoading;
     const error = fetchPostsError || fetchUsersError || fetchCategoriesError;
@@ -75,15 +99,25 @@ const AdminDashboard = () => {
                 </ul>
             </div>
 
-            <DataState
-                isLoading={isLoading}
-                error={error}
-                isEmpty={isEmpty}
-                emptyMessage="No data to display"
-            >
-                {tab === "users" && <DataTable<'users'> dataset={users} columns={userColumns} />}
-                {tab === "posts" && <DataTable<'posts'> dataset={posts} columns={postColumns} />}
-                {tab === "categories" && <DataTable<'categories'> dataset={categories} columns={categoryColumns} />}
+            <DataState isLoading={isLoading} error={error} isEmpty={isEmpty} emptyMessage="No data to display">
+                {tab === "users" && <DataTable<UserType>
+                    dataset={users}
+                    columns={userColumns(handleDeleteUser)}
+                />}
+                {tab === "posts" && <DataTable<PostType>
+                    dataset={posts}
+                    columns={postColumns(handleDeletePost)}
+                />
+                }
+                {tab === "categories" && 
+                <div>
+                    <a href={`admin/categories/create`}>New Category</a>
+                </div>
+                }
+                {tab === "categories" && <DataTable<CategoryType>
+                    dataset={categories}
+                    columns={categoryColumns(handleDeleteCategory)}
+                />}
             </DataState>
             <div>
                 <button className="btn" onClick={auth.logout}>
