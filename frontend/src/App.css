@@ -35,6 +35,10 @@ a {
 }
 
 a:hover {
+  color: #fff;
+}
+
+.readmore:hover{
   color: #333;
 }
 
@@ -110,6 +114,21 @@ a:hover {
 .Header h1:hover a,
 .Header h1:focus a {
   cursor: pointer;
+}
+
+.ContentRow .title h4 {
+  max-width: 400px;
+  color: #000;
+  font-size: 22px;
+  margin: 10px 0;
+}
+
+.ContentRow .title {
+  text-decoration: none;
+}
+
+.ContentRow p {
+  margin: 10px 0;
 }
 
 .Nav {
@@ -202,6 +221,9 @@ a:hover {
 .AccountAction a {
   text-decoration: none;
 }
+.AccountAction a:hover {
+  color:#333;
+}
 
 .AccountAction button {
   background-color: #fff;
@@ -290,23 +312,24 @@ textarea {
   text-decoration: none;
 }
 
-table{
+table {
   margin: 20px auto;
   width: 90%;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   text-align: start;
 }
 
-th{
+th {
   background-color: #4a4e69;
   color: #fff;
 }
 
-td{
-  background-color:#B9B1B8;
+td {
+  background-color: #B9B1B8;
   color: #000;
 }
 
@@ -327,6 +350,12 @@ td{
 }
 
 .PostFeed {
+  /*TRY THIS
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+*/
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
