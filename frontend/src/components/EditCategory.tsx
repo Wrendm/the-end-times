@@ -48,27 +48,27 @@ export default function EditCategory() {
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  try {
-    const isPublished = auth.user?.roles.includes("Admin") ? form.published : false;
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const isPublished = auth.user?.roles.includes("Admin") ? form.published : false;
 
-    const payload = {
-      name: form.name,
-      published: isPublished,
+            const payload = {
+                name: form.name,
+                published: isPublished,
+            };
+
+            await updateCategory(id, payload);
+
+            setSuccess(true);
+            setError("");
+            setForm({ name: "", published: false });
+        } catch (err: any) {
+            const res = err.response?.data;
+            setError(res?.message || "Creation failed");
+            setErrors(Array.isArray(res?.errors) ? res.errors : []);
+        }
     };
-
-    await updateCategory(id, payload);
-
-    setSuccess(true);
-    setError("");
-    setForm({ name: "", published: false });
-  } catch (err: any) {
-    const res = err.response?.data;
-    setError(res?.message || "Creation failed");
-    setErrors(Array.isArray(res?.errors) ? res.errors : []);
-  }
-};
 
     if (auth.loading || isLoading) return <div className="loader" />;
     if (!auth.user) return <div>Not authenticated</div>;
@@ -110,28 +110,28 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     <input className="input" type="text" name="name" value={form.name} onChange={handleChange} />
 
                     <label>Published</label>
-                        <div className="radio-group">
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="published"
-                                    value="true"
-                                    checked={form.published === true}
-                                    onChange={() => setForm({ ...form, published: true })}
-                                />
-                                True
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="published"
-                                    value="false"
-                                    checked={form.published === false}
-                                    onChange={() => setForm({ ...form, published: false })}
-                                />
-                                False
-                            </label>
-                        </div>
+                    <div className="radio-group">
+                        <label>
+                            <input
+                                type="radio"
+                                name="published"
+                                value="true"
+                                checked={form.published === true}
+                                onChange={() => setForm({ ...form, published: true })}
+                            />
+                            True
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="published"
+                                value="false"
+                                checked={form.published === false}
+                                onChange={() => setForm({ ...form, published: false })}
+                            />
+                            False
+                        </label>
+                    </div>
 
                     <button className="btn" type="submit">Submit</button>
                 </form>

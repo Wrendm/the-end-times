@@ -1,4 +1,5 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { createCategory } from "../api/categoryApi";
 import { AuthContext } from "../context/authcontext";
 
@@ -22,6 +23,8 @@ export default function CreateCategory() {
     const [errors, setErrors] = useState<string[]>([]);
     const [success, setSuccess] = useState(false);
 
+    const navigate = useNavigate();
+
     const auth = useContext(AuthContext);
     if (!auth) throw new Error("AuthContext not found");
 
@@ -32,6 +35,16 @@ export default function CreateCategory() {
     if (!auth.user) {
         return <div>Not authenticated</div>;
     }
+
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                navigate("/admin");
+            }, 2000);
+
+            return () => clearTimeout(timer); // cleanup
+        }
+    }, [success, navigate]);
 
 
     const handleChange = (
