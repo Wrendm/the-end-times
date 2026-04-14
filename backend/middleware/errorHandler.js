@@ -41,23 +41,25 @@ const errorHandler = (err, req, res, next) => {
             .join(', ')
     }
 
-    /**
-     * -------------------------------
-     * AUTH & SECURITY (PLANNED)
-     * -------------------------------
-     *
-     * These status codes will be introduced once JWT authentication
-     * and role-based authorization middleware are implemented.
-     *
-     * 401 → Unauthorized
-     *      - Missing or invalid access token
-     *
-     * 403 → Forbidden
-     *      - Authenticated but insufficient permissions
-     *
-     * 429 → Too Many Requests
-     *      - To be used with rate-limiting middleware
-     */
+    if (err.name === 'JsonWebTokenError') {
+        statusCode = 401
+        message = 'Invalid token'
+    }
+
+    if (err.name === 'TokenExpiredError') {
+        statusCode = 401
+        message = 'Token expired'
+    }
+
+    if (err.message === 'Unauthorized') {
+        statusCode = 401
+        message = 'Authentication required'
+    }
+
+    if (err.message === 'Forbidden') {
+        statusCode = 403
+        message = 'You do not have permission to perform this action'
+    }
 
     res.status(statusCode).json({
         success: false,
