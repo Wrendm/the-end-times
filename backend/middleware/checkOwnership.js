@@ -17,9 +17,9 @@ const checkOwnership = (Model, ownerField = 'user') =>
     if (!resource[ownerField]) {
       throw createError('Ownership field not found on resource', 500)
     }
-
+ 
     const isOwner = resource[ownerField].toString() === req.user.id
-    const isAdmin = req.roles?.includes('Admin')
+    const isAdmin = req.user.roles?.includes('Admin')
 
     if (!isOwner && !isAdmin) {
       throw createError('Forbidden', 403)
