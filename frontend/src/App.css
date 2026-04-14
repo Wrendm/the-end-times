@@ -1,336 +1,55 @@
+/* =========================
+   VARIABLES
+   ========================= */
+:root {
+  --color-primary: #607B7D;
+  --color-dark: #333;
+  --color-light: #fff;
+  --color-muted: #828e82;
+  --color-bg: #efefef;
+  --color-border: #ccc;
+  --color-danger: crimson;
+}
+
+/* =========================
+   BASE / RESET
+   ========================= */
 body {
   font-family: "Syne", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #efefef;
+  background-color: var(--color-bg);
+  margin: 0;
 }
 
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
+a {
+  color: var(--color-muted);
+  text-decoration: none;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+a:hover {
+  color: var(--color-light);
 }
 
+.readmore:hover {
+  color: var(--color-dark);
+}
+
+/* =========================
+   LAYOUT
+   ========================= */
 .App {
   width: 100%;
   height: 100vh;
 }
 
-a {
-  color: #828e82;
-}
-
-a:hover {
-  color: #fff;
-}
-
-.readmore:hover{
-  color: #333;
-}
-
-.loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #607B7D;
-  width: 100px;
-  height: 100px;
-  -webkit-animation: spin 2s linear infinite;
-  /* Safari */
-  animation: spin 2s linear infinite;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 60%;
-}
-
-.FetchError {
-  display: flex;
-  justify-content: center;
-  padding-top: 50px;
-  min-height: 80%;
-}
-
-.error {
-  color: crimson;
-  padding: 10px;
-}
-
-.error ul {
-  padding: 20px;
-}
-
-.Header {
-  width: 100%;
-  padding: 1rem;
-  background-color: #607B7D;
-}
-
-.Header .TopRow {
-  margin: 1rem 0;
-}
-
-.Footer {
-  width: 100%;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #607B7D;
-}
-
-.Footer {
-  padding: 0.75rem;
-  display: grid;
-  place-content: center;
-}
-
-.Header h1 a {
-  text-decoration: none;
-  color: #222;
-}
-
-.Header h1:hover,
-.Header h1:focus,
-.Header h1:hover a,
-.Header h1:focus a {
-  color: #E0E0E0;
-}
-
-.Header h1:hover a,
-.Header h1:focus a {
-  cursor: pointer;
-}
-
-.ContentRow .title h4 {
-  max-width: 400px;
-  color: #000;
-  font-size: 22px;
-  margin: 10px 0;
-}
-
-.ContentRow .title {
-  text-decoration: none;
-}
-
-.ContentRow p {
-  margin: 10px 0;
-}
-
-.Nav {
-  width: 100%;
-  background-color: #333;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.Nav ul {
-  color: #fff;
-  list-style-type: none;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-}
-
-.Nav li {
-  padding: 1rem;
-}
-
-.Nav li:hover,
-.Nav li:focus {
-  padding: 1rem;
-}
-
-.Nav li a {
-  color: #828e82;
-  text-decoration: none;
-}
-
-.Nav li:hover,
-.Nav li:focus,
-.Nav li:hover a,
-.Nav li:focus a {
-  color: #E0E0E0;
-}
-
-.Nav li:hover a,
-.Nav li:focus a {
-  cursor: pointer;
-}
-
-.active,
-.pending {
-  color: #fff !important;
-}
-
-.AdminSubNav {
-  width: 100%;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.AdminSubNav ul {
-  color: #333;
-  list-style-type: none;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-}
-
-.AdminSubNav li {
-  padding: 1rem;
-  cursor: pointer;
-}
-
-.AccountActionNav {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-}
-
-.AccountAction {
-  background-color: #fff;
-  padding: .5rem;
-  margin: 0rem 0rem 0rem 1rem;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  border: none;
-  border-radius: 8px;
-}
-
-.AccountAction a {
-  text-decoration: none;
-}
-.AccountAction a:hover {
-  color:#333;
-}
-
-.AccountAction button {
-  background-color: #fff;
-  border: none;
-  border-radius: 8px;
-  color: #828e82;
-  align-items: center;
-  text-decoration: underline;
-  font-size: inherit;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: bold;
-}
-
-.AccountAction button:hover {
-  color: #333;
-}
-
-.Form {
-  width: 60%;
+.ContentArea {
+  width: 70%;
+  margin: 40px auto;
   min-height: 75%;
-  padding: 40px;
-  margin: 20px auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-self: center;
-  align-content: center;
-  background-color: #fff;
-  border: none;
-  border-radius: 8px;
-}
-
-
-input label,
-select label,
-textarea label {
-  display: block;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.radio-group label {
-  display: flex;
-  align-items: center;
-  float: left;
-  gap: 8px;
-  margin: 4px;
-}
-
-.btn {
-  width: 100%;
-  display: block;
-  background-color: #607B7D;
-  color: white;
-  padding: 14px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-secondary {
-  width: 100%;
-  display: block;
-  background-color: #d7d7d7;
-  padding: 14px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-secondary a {
-  color: #333;
-  text-decoration: none;
-}
-
-table {
-  margin: 20px auto;
-  width: 90%;
-}
-
-th,
-td {
-  padding: 10px;
-  text-align: start;
-}
-
-th {
-  background-color: #4a4e69;
-  color: #fff;
-}
-
-td {
-  background-color: #B9B1B8;
-  color: #000;
+  flex-grow: 1;
 }
 
 .Home,
@@ -344,39 +63,293 @@ td {
 
 .PageNotFound {
   display: flex;
-  height: 80%;
   justify-content: center;
+  align-items: center;
+  height: 80%;
+}
+
+/* =========================
+   HEADER / FOOTER
+   ========================= */
+.Header,
+.Footer {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--color-primary);
+}
+
+.Header .TopRow {
+  margin: 1rem 0;
+}
+
+.Footer {
+  display: grid;
+  place-content: center;
+}
+
+/* Header links */
+.Header h1 a {
+  color: #222;
+}
+
+.Header h1:hover,
+.Header h1:focus,
+.Header h1:hover a,
+.Header h1:focus a {
+  color: #E0E0E0;
+  cursor: pointer;
+}
+
+/* =========================
+   NAVIGATION
+   ========================= */
+.Nav {
+  width: 100%;
+  background-color: var(--color-dark);
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
+.Nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  color: var(--color-light);
+}
+
+.Nav li {
+  padding: 1rem;
+}
+
+.Nav li a {
+  color: var(--color-muted);
+}
+
+.Nav li:hover a,
+.Nav li:focus a {
+  color: #E0E0E0;
+  cursor: pointer;
+}
+
+.active,
+.pending {
+  color: var(--color-light) !important;
+}
+
+/* =========================
+   ADMIN NAV
+   ========================= */
+.AdminSubNav {
+  width: 100%;
+  background-color: var(--color-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.AdminSubNav ul {
+  list-style: none;
+  display: flex;
+  color: var(--color-dark);
+}
+
+.AdminSubNav li {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+/* =========================
+   ACCOUNT ACTIONS
+   ========================= */
+.AccountActionNav {
+  display: flex;
+  align-items: flex-end;
+}
+
+.AccountAction {
+  background-color: var(--color-light);
+  padding: 0.5rem;
+  margin-left: 1rem;
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 8px;
+}
+
+.AccountAction a:hover {
+  color: var(--color-dark);
+}
+
+.AccountAction button {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-muted);
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.AccountAction button:hover {
+  color: var(--color-dark);
+}
+
+/* =========================
+   CONTENT / POSTS
+   ========================= */
 .PostFeed {
-  /*TRY THIS
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-*/
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  align-content: flex-start;
   min-height: 90%;
 }
 
+.PostCard {
+  margin: 2%;
+  padding: 15px;
+  background-color: var(--color-light);
+}
+
+.ContentRow .title {
+  text-decoration: none;
+}
+
+.ContentRow .title h4 {
+  max-width: 400px;
+  font-size: 22px;
+  margin: 10px 0;
+  color: #000;
+}
+
+.ContentRow p {
+  margin: 10px 0;
+}
+
+/* =========================
+   SIDEBAR
+   ========================= */
 .SideBar {
   width: 33%;
   background-color: #222;
-  color: #fff;
+  color: var(--color-light);
 }
 
-.PostCard {
-  flex-direction: row;
-  margin: 2%;
-  padding: 15px;
-  background-color: #fff;
+/* =========================
+   BUTTONS
+   ========================= */
+.btn,
+.btn-secondary {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
+.btn {
+  background-color: var(--color-primary);
+  color: var(--color-light);
+}
+
+.btn-secondary {
+  background-color: #d7d7d7;
+}
+
+.btn-secondary a {
+  color: var(--color-dark);
+}
+
+/* Delete */
+.DeleteButton {
+  background-color: rgb(243, 86, 65);
+  width: 40%;
+}
+
+/* =========================
+   FORM
+   ========================= */
+.Form {
+  width: 60%;
+  min-height: 75%;
+  padding: 40px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-light);
+  border-radius: 8px;
+}
+
+.Form label {
+  display: block;
+}
+
+.Form input,
+.Form select,
+.Form textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px;
+}
+
+/* =========================
+   TABLE
+   ========================= */
+table {
+  margin: 20px auto;
+  width: 90%;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #4a4e69;
+  color: var(--color-light);
+}
+
+td {
+  background-color: #B9B1B8;
+}
+
+/* =========================
+   ERRORS / STATES
+   ========================= */
+.FetchError {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  min-height: 80%;
+}
+
+.error {
+  color: var(--color-danger);
+  padding: 10px;
+}
+
+.error ul {
+  padding: 20px;
+}
+
+/* =========================
+   UTILITIES
+   ========================= */
 .TopRow {
   display: flex;
   justify-content: space-between;
@@ -389,25 +362,39 @@ td {
 
 .ButtonRow a {
   width: 40%;
-  text-decoration: none;
 }
 
-.DeleteButton {
-  background-color: rgb(243, 86, 65);
-  width: 40%;
-}
-
-.ContentArea {
-  width: 70%;
-  margin: 40px auto;
-  min-height: 75%;
+/* =========================
+   LOADER
+   ========================= */
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid var(--color-primary);
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  margin-bottom: 60%;
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  animation: spin 2s linear infinite;
 }
 
+/* =========================
+   PROFILE
+   ========================= */
 .ProfileHeader {
   padding: 30px 60px 30px 40px;
-  background-color: #333;
+  background-color: var(--color-dark);
   color: #fafafa;
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
