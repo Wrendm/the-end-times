@@ -11,10 +11,9 @@ const CategoryActions = ({ id, handleDeleteCategory }: CategoryActionsProps) => 
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="actions">
-      <button onClick={() => setOpen(true)}>Edit</button>
-
-      <button onClick={() => handleDeleteCategory(id)}>
+    <div className="actions ButtonRow">
+      <button className="admin-btn" onClick={() => setOpen(true)}>Edit</button>
+      <button className="admin-btn" onClick={() => handleDeleteCategory(id)}>
         Delete
       </button>
 

@@ -10,9 +10,9 @@ type PostActionsProps = {
 const PostActions = ({ id, handleDeletePost }: PostActionsProps) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="actions">
-      <button onClick={() => setOpen(true)}>Edit</button>
-      <button onClick={() => handleDeletePost(id)}>Delete</button>
+    <div className="actions ButtonRow">
+      <button className="admin-btn" onClick={() => setOpen(true)}>Edit</button>
+      <button className="admin-btn" onClick={() => handleDeletePost(id)}>Delete</button>
             <Popup trigger={open} setTrigger={setOpen}>
         <EditPost id={id} />
       </Popup>

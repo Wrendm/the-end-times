@@ -12,10 +12,10 @@ const UserActions = ({ id, handleDeleteUser }: UserActionsProps) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openEditRoles, setOpenEditRoles] = useState(false);
   return (
-    <div className="actions">
-      <button onClick={() => setOpenEdit(true)}>Edit</button>
-      <button onClick={() => setOpenEditRoles(true)}>Edit Roles</button>
-      <button onClick={() => handleDeleteUser(id)}>Delete</button>
+    <div className="actions ButtonRow">
+      <button className="admin-btn" onClick={() => setOpenEdit(true)}>Edit</button>
+      <button className="admin-btn"  onClick={() => setOpenEditRoles(true)}>Edit Roles</button>
+      <button className="admin-btn" onClick={() => handleDeleteUser(id)}>Delete</button>
       <Popup trigger={openEdit} setTrigger={setOpenEdit}>
         <EditUser id={id} />
       </Popup>
