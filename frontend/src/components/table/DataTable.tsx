@@ -1,4 +1,4 @@
-import type { Column } from "../types/index";
+import type { Column } from "../../types/index";
 
 interface DataTableProps<T extends { id: string; [key: string]: any }> {
   dataset: T[];

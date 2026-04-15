@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import type { PostType } from '../types/index';
+import type { PostType } from '../../types/index';
 import PostFeed from "./PostFeed";
-import DataState from "./DataState";
+import DataState from "../DataState";
 import PageNotFound from "./PageNotFound";
-import useUserById from '../hooks/useUserById';
-import useAxiosFetch from '../hooks/useAxiosFetch';
+import useUserById from '../../hooks/useUserById';
+import useAxiosFetch from '../../hooks/useAxiosFetch';
 
 const ProfilePage = () => {
   const { id } = useParams<{ id: string }>();

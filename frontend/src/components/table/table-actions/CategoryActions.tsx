@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Popup from "../Popup";
-import EditCategory from "../EditCategory";
+import Popup from "../../ui/Popup";
+import EditCategory from "../../features/categories/EditCategory";
 
 type CategoryActionsProps = {
   id: string;

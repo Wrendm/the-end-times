@@ -1,7 +1,7 @@
 import PostFeed from "./PostFeed";
-import type { PostType } from '../types/index';
-import useAxiosFetch from '../hooks/useAxiosFetch';
-import DataState from '../components/DataState';
+import type { PostType } from '../../types/index';
+import useAxiosFetch from '../../hooks/useAxiosFetch';
+import DataState from '../DataState';
 
 const Home = () => {
   // Fetch posts directly

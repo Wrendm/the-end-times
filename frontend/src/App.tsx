@@ -2,24 +2,24 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './context/authprovider';
 
-import Layout from './components/Layout';
-import Home from './components/Home';
-import PageNotFound from './components/PageNotFound';
+import Layout from './components/layout/Layout';
+import Home from './components/pages/Home';
+import PageNotFound from './components/pages/PageNotFound';
 
-import Register from './components/Register';
-import Login from './components/Login';
+import Register from './components/pages/Register';
+import Login from './components/pages/Login';
 
-import Dashboard from './components/AccountDashboard';
-import AdminDashboard from './components/AdminDashboard';
+import Dashboard from './components/pages/AccountDashboard';
+import AdminDashboard from './components/pages/AdminDashboard';
 
-import PostPage from './components/PostPage';
-import CreatePost from './components/CreatePost';
+import PostPage from './components/pages/PostPage';
+import CreatePost from './components/features/posts/CreatePost';
 
 
-import CategoryPage from './components/CategoryPage';
-import CreateCategory from './components/CreateCategory';
+import CategoryPage from './components/pages/CategoryPage';
+import CreateCategory from './components/features/categories/CreateCategory';
 
-import ProfilePage from './components/ProfilePage';
+import ProfilePage from './components/pages/ProfilePage';
 
 
 import ProtectedRoute from './components/ProtectedRoute';

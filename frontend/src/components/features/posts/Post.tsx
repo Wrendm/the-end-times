@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useContext, useState } from 'react';
-import { AuthContext } from '../context/authcontext';
-import type { PostType } from '../types/index';
+import { AuthContext } from '../../../context/authcontext';
+import type { PostType } from '../../../types/index';
 import EditPost from './EditPost';
-import { deletePost } from "../api/postApi";
-import Popup from './Popup';
+import { deletePost } from "../../../api/postApi";
+import Popup from '../../ui/Popup';
 
 interface PostProps {
   post: PostType;

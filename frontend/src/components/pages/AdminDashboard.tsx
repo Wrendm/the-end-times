@@ -1,15 +1,15 @@
 import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../context/authcontext";
-import DataState from "./DataState";
+import { AuthContext } from "../../context/authcontext";
+import DataState from "../DataState";
 import DataTable from "./DataTable";
-import useAxiosFetch from "../hooks/useAxiosFetch";
-import type { PostType, UserType, CategoryType } from "../types/index";
-import { postColumns } from "../types/postColumns";
-import { userColumns } from "../types/userColumns";
-import { categoryColumns } from "../types/categoryColumns";
-import { deletePost } from "../api/postApi";
-import { deleteUser } from "../api/userApi";
-import { deleteCategory } from "../api/categoryApi";
+import useAxiosFetch from "../../hooks/useAxiosFetch";
+import type { PostType, UserType, CategoryType } from "../../types/index";
+import { postColumns } from "../../types/postColumns";
+import { userColumns } from "../../types/userColumns";
+import { categoryColumns } from "../../types/categoryColumns";
+import { deletePost } from "../../api/postApi";
+import { deleteUser } from "../../api/userApi";
+import { deleteCategory } from "../../api/categoryApi";
 
 type TabType = "users" | "posts" | "categories";
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Post from './Post';
+import Post from './features/posts/Post';
 import type { PostType } from '../types';
 
 interface PostFeedProps {

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Popup from "../Popup";
-import EditUser from "../EditUser";
-import EditUserRoles from "../EditUserRoles";
+import Popup from "../../ui/Popup";
+import EditUser from "../../features/users/EditUser";
+import EditUserRoles from "../../features/users/EditUserRoles";
 
 type UserActionsProps = {
   id: string;

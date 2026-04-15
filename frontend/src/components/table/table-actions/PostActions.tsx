@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Popup from "../Popup";
-import EditPost from "../EditPost";
+import Popup from "../../ui/Popup";
+import EditPost from "../../features/posts/EditPost";
 
 type PostActionsProps = {
   id: string;

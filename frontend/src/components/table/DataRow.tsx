@@ -1,4 +1,4 @@
-import type { DataMap, Column } from "../types/postColumns";
+import type { DataMap, Column } from "../../types/index.tsx";
 import DataColumn from "./DataColumn";
 
 type DataRowProps<T extends keyof DataMap> = {
