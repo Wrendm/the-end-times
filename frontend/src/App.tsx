@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './context/authprovider';
 
@@ -14,17 +14,16 @@ import AdminDashboard from './components/AdminDashboard';
 
 import PostPage from './components/PostPage';
 import CreatePost from './components/CreatePost';
-import EditPost from './components/EditPost';
+
 
 import CategoryPage from './components/CategoryPage';
 import CreateCategory from './components/CreateCategory';
 
 import ProfilePage from './components/ProfilePage';
-import EditUser from './components/EditUser';
+
 
 import ProtectedRoute from './components/ProtectedRoute';
-import EditCategory from './components/EditCategory';
-import EditUserRoles from './components/EditUserRoles';
+
 
 function App() {
   return (
@@ -47,11 +46,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path=":id" element={<PostPage />} />
-            <Route path=":id/edit" element={
-              <ProtectedRoute>
-                <EditPost />
-              </ProtectedRoute>
-            } />
+
           </Route>
 
           {/* Categories */}
@@ -69,11 +64,6 @@ function App() {
           <Route path="users">
             <Route index element={<PageNotFound />} />
             <Route path=":id" element={<ProfilePage />} />
-            <Route path=":id/edit" element={
-              <ProtectedRoute>
-                <EditUser />
-              </ProtectedRoute>
-            } />
           </Route>
 
           {/* Dashboard */}
@@ -88,26 +78,6 @@ function App() {
             <Route index element={
               <ProtectedRoute allowedRoles={['Admin']}>
                 <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="posts/edit/:id" element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <EditPost />
-              </ProtectedRoute>
-            } />
-            <Route path="users/edit/:id" element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <EditUser />
-              </ProtectedRoute>
-            } />
-            <Route path="users/:id/roles" element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <EditUserRoles />
-              </ProtectedRoute>
-            } />
-            <Route path="categories/edit/:id" element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <EditCategory />
               </ProtectedRoute>
             } />
             <Route path="categories/create" element={

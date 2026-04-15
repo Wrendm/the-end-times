@@ -1,11 +1,15 @@
 import { useState, useContext, useEffect } from "react";
-import { useParams, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import DataState from "./DataState";
 import { AuthContext } from "../context/authcontext";
 import useUserById from "../hooks/useUserById";
 import { updateUser } from "../api/userApi";
 
-export default function EditUser() {
+type EditUserProps = {
+  id: string;
+};
+
+export default function EditUser({ id }: EditUserProps) {
     const [form, setForm] = useState({
         name: "",
         username: "",
@@ -16,7 +20,6 @@ export default function EditUser() {
     const [success, setSuccess] = useState(false);
 
     const auth = useContext(AuthContext)!;
-    const { id } = useParams<{ id: string }>();
     const { user, isLoading, fetchError } = useUserById(id!);
 
     const navigate = useNavigate();

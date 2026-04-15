@@ -1,11 +1,15 @@
 import { useState, useContext, useEffect } from "react";
-import { useParams, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import DataState from "./DataState";
 import { AuthContext } from "../context/authcontext";
 import useCategoryById from "../hooks/useCategoryById";
 import { updateCategory } from "../api/categoryApi";
 
-export default function EditCategory() {
+type EditCategoryProps = {
+  id: string;
+};
+
+export default function EditCategory({ id }: EditCategoryProps) {
     const [form, setForm] = useState({
         name: "",
         published: false
@@ -15,7 +19,6 @@ export default function EditCategory() {
     const [success, setSuccess] = useState(false);
 
     const auth = useContext(AuthContext)!;
-    const { id } = useParams<{ id: string }>();
     if (!id) return <div>Post not found</div>;
     const { category, isLoading, fetchError } = useCategoryById(id);
 

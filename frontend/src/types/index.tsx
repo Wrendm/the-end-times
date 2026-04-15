@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 interface UserType {
   id: string;
   name: string;
@@ -21,5 +23,19 @@ interface CategoryType {
   type: 'Text' | 'Image' | 'Audio' | 'Video';
   published: boolean;
 }
+
+export type DataMap = {
+  users: UserType;
+  posts: PostType;
+  categories: CategoryType;
+};
+
+export type Column<T extends keyof DataMap> = {
+  [K in keyof DataMap[T] & string]: {
+    key: K;
+    label?: string;
+    render?: (value: DataMap[T][K], row: DataMap[T]) => ReactNode;
+  };
+}[keyof DataMap[T] & string];
 
 export type { UserType, PostType, CategoryType };

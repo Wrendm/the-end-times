@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/authcontext';
 import type { PostType } from '../types/index';
+import EditPost from './EditPost';
 import { deletePost } from "../api/postApi";
+import Popup from './Popup';
 
 interface PostProps {
   post: PostType;
@@ -14,6 +16,7 @@ const Post = ({ post, onDelete }: PostProps) => {
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
+  const [editPopup, setEditPopup] = useState(false);
 
   const handleDelete = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -52,9 +55,7 @@ const Post = ({ post, onDelete }: PostProps) => {
           <p>{post.published !== true ? 'Draft' : 'Published'}</p>
           <p>{new Date(post.createdAt).toLocaleDateString()}</p>
           <div className="ButtonRow">
-            <Link to={`/posts/${post.id}/edit`}>
-              <button className="btn EditButton">Edit</button>
-            </Link>
+            <button className="btn EditButton" onClick={()=> setEditPopup(true)}>Edit</button>
             <button className="btn DeleteButton" onClick={handleDelete}>Delete</button>
           </div>
         </div>
@@ -97,6 +98,9 @@ const Post = ({ post, onDelete }: PostProps) => {
             <Link to={`/posts/${post.id}`} className='readmore'><p>Continue reading...</p></Link>
           </>
         )}
+        <Popup trigger={editPopup} setTrigger={setEditPopup}>
+          <EditPost id={post.id}/>
+        </Popup>
       </div>
     </>
   );

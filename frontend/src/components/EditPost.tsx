@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useParams, Navigate, useNavigate, Link } from "react-router-dom";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 import { updatePost } from "../api/postApi";
 import DataState from "./DataState";
 import { AuthContext } from "../context/authcontext";
@@ -7,7 +7,11 @@ import useAxiosFetch from "../hooks/useAxiosFetch";
 import usePostById from '../hooks/usePostById';
 import type { CategoryType } from "../types/index";
 
-export default function EditPost() {
+type EditPostProps = {
+  id: string;
+};
+
+export default function EditPost({ id }: EditPostProps) {
   const [form, setForm] = useState({ title: "", postCategory: "", postContent: "", published: false });
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
@@ -16,7 +20,6 @@ export default function EditPost() {
   const [loading, setLoading] = useState(false);
 
   const auth = useContext(AuthContext)!;
-  const { id } = useParams<{ id: string }>();
   const { post, isLoading: isLoadingPost, fetchError: fetchErrorPost } = usePostById(id!);
   const { data: categoryData, fetchError, isLoading } = useAxiosFetch<CategoryType[]>(`/categories`);
   const categories: CategoryType[] = categoryData ?? [];
