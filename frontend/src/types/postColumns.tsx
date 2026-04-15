@@ -1,6 +1,6 @@
 import type { Column, PostType } from "../types";
 import { postColumnsBase } from "./baseColumns";
-import PostActions from "../components/table-actions/PostActions";
+import PostActions from "../components/table/table-actions/PostActions";
 
 export const postColumns = (
   handleDeletePost: (id: string) => void

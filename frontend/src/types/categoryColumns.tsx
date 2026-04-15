@@ -1,6 +1,6 @@
 import type { Column, CategoryType } from "../types";
 import { categoryColumnsBase } from "./baseColumns";
-import CategoryActions from "../components/table-actions/CategoryActions";
+import CategoryActions from "../components/table/table-actions/CategoryActions";
 
 export const categoryColumns = (
   handleDeleteCategory: (id: string) => void
