@@ -1,5 +1,5 @@
 import type { DataMap, Column } from "../../types/index.tsx";
-import DataColumn from "./DataColumn";
+import DataColumn from "./DataColumn.tsx";
 
 type DataRowProps<T extends keyof DataMap> = {
   row: DataMap[T];
