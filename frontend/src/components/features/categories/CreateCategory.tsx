@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createCategory } from "../api/categoryApi";
-import { AuthContext } from "../context/authcontext";
+import { createCategory } from "../../../api/categoryApi";
+import { AuthContext } from "../../../context/authcontext";
 
 const types = ['Text', 'Image', 'Audio', 'Video'] as const;
 

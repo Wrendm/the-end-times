@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Post from './features/posts/Post';
-import type { PostType } from '../types';
+import Post from '../../features/posts/Post';
+import type { PostType } from '../../../types';
 
 interface PostFeedProps {
   posts: PostType[];

@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import type { CategoryType } from '../../types/index';
-import useAxiosFetch from '../../hooks/useAxiosFetch';
-import DataState from '../DataState';
-const Nav = () => {
+import type { CategoryType } from '../types/index';
+import useAxiosFetch from '../hooks/useAxiosFetch';
+import DataState from './DataState';
+const SideNav = () => {
   const { data, fetchError, isLoading } = useAxiosFetch<CategoryType[]>(
     `/categories`
   );
@@ -16,7 +16,7 @@ const Nav = () => {
       isEmpty={categories.length === 0 && !isLoading && !fetchError}
       emptyMessage="No categories to display. You should make one!"
     >
-      <div className="Nav">
+      <div className="SideNav">
         <ul>
           {categories.map(category => (
             <li key={category.name}>
@@ -31,4 +31,4 @@ const Nav = () => {
   );
 }
 
-export default Nav;
+export default SideNav;

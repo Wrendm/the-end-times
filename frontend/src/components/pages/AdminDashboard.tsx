@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/authcontext";
 import DataState from "../DataState";
-import DataTable from "./DataTable";
+import DataTable from "../table/DataTable";
 import useAxiosFetch from "../../hooks/useAxiosFetch";
 import type { PostType, UserType, CategoryType } from "../../types/index";
 import { postColumns } from "../../types/postColumns";

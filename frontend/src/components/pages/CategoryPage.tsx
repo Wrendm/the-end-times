@@ -1,4 +1,4 @@
-import PostFeed from "./PostFeed";
+import PostFeed from "../features/posts/PostFeed.tsx";
 import type { PostType } from '../../types/index';
 import useAxiosFetch from '../../hooks/useAxiosFetch';
 import DataState from '../DataState';

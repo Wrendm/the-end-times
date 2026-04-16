@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import type { PostType } from '../../types/index';
-import PostFeed from "./PostFeed";
+import PostFeed from "../features/posts/PostFeed.tsx";
 import DataState from "../DataState";
 import PageNotFound from "./PageNotFound";
 import useUserById from '../../hooks/useUserById';

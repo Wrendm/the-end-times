@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../api/authApi";
+import { registerUser } from "../../api/authApi";
 
 export default function Register() {
     const [form, setForm] = useState({

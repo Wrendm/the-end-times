@@ -1,11 +1,11 @@
 import { useState, useContext, useEffect } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
-import { updatePost } from "../api/postApi";
-import DataState from "./DataState";
-import { AuthContext } from "../context/authcontext";
-import useAxiosFetch from "../hooks/useAxiosFetch";
-import usePostById from '../hooks/usePostById';
-import type { CategoryType } from "../types/index";
+import { updatePost } from "../../../api/postApi";
+import DataState from "../../DataState";
+import { AuthContext } from "../../../context/authcontext";
+import useAxiosFetch from "../../../hooks/useAxiosFetch";
+import usePostById from '../../../hooks/usePostById';
+import type { CategoryType } from "../../../types/index";
 
 type EditPostProps = {
   id: string;

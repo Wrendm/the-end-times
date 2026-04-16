@@ -1,6 +1,6 @@
-import DataState from "./DataState";
+import DataState from "../DataState";
 import { useParams, Link } from "react-router-dom";
-import usePostById from '../hooks/usePostById';
+import usePostById from '../../hooks/usePostById';
 
 const PostPage = () => {
   const { id } = useParams<{ id: string }>();

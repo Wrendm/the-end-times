@@ -1,7 +1,8 @@
-import PostFeed from "./PostFeed";
+import PostFeed from "../features/posts/PostFeed.tsx";
 import type { PostType } from '../../types/index';
 import useAxiosFetch from '../../hooks/useAxiosFetch';
 import DataState from '../DataState';
+import SideBar from "../layout/Sidebar.tsx";
 
 const Home = () => {
   // Fetch posts directly
@@ -18,6 +19,7 @@ const Home = () => {
       emptyMessage="No posts to display. You should make one!"
     >
       <PostFeed posts={posts} />
+      <SideBar />
     </DataState>
   );
 };

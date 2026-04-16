@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Link } from 'react-router-dom';
 import { AuthContext } from "../../context/authcontext";
-import PostFeed from "./PostFeed";
+import PostFeed from "../features/posts/PostFeed.tsx";
 import DataState from "../DataState";
 import useAxiosFetch from "../../hooks/useAxiosFetch";
 import type { PostType } from "../../types/index";

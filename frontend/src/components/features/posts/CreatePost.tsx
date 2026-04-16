@@ -1,9 +1,9 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { createPost } from "../api/postApi";
-import { AuthContext } from "../context/authcontext";
-import useAxiosFetch from "../hooks/useAxiosFetch";
-import type { CategoryType } from "../types/index";
+import { createPost } from "../../../api/postApi";
+import { AuthContext } from "../../../context/authcontext";
+import useAxiosFetch from "../../../hooks/useAxiosFetch";
+import type { CategoryType } from "../../../types/index";
 
 export default function CreatePost() {
     const [form, setForm] = useState({

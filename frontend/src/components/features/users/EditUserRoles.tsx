@@ -1,9 +1,9 @@
 import { useState, useContext, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import DataState from "./DataState";
-import { AuthContext } from "../context/authcontext";
-import useUserById from "../hooks/useUserById";
-import { updateUserRoles } from "../api/userApi";
+import DataState from "../../DataState";
+import { AuthContext } from "../../../context/authcontext";
+import useUserById from "../../../hooks/useUserById";
+import { updateUserRoles } from "../../../api/userApi";
 type EditUserProps = {
   id: string;
 };
