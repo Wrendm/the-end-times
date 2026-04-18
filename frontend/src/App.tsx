@@ -11,6 +11,7 @@ import Login from './components/pages/Login';
 
 import Dashboard from './components/pages/AccountDashboard';
 import AdminDashboard from './components/pages/AdminDashboard';
+import EditUser from './components/features/users/EditUser';
 
 import PostPage from './components/pages/PostPage';
 import CreatePost from './components/features/posts/CreatePost';
@@ -64,6 +65,11 @@ function App() {
           <Route path="users">
             <Route index element={<PageNotFound />} />
             <Route path=":id" element={<ProfilePage />} />
+            <Route path=":id/edit" element={
+            <ProtectedRoute>
+              <EditUser id=":id"/>
+            </ProtectedRoute>
+          } />
           </Route>
 
           {/* Dashboard */}

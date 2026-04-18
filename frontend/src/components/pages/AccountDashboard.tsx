@@ -5,6 +5,8 @@ import PostFeed from "../features/posts/PostFeed.tsx";
 import DataState from "../DataState";
 import useAxiosFetch from "../../hooks/useAxiosFetch";
 import type { PostType } from "../../types/index";
+import { MdOutlineEditNote, MdOutlineAdminPanelSettings, MdLogout } from "react-icons/md";
+import { BsBrush } from "react-icons/bs";
 
 const Dashboard = () => {
     const auth = useContext(AuthContext);
@@ -28,13 +30,20 @@ const Dashboard = () => {
         <div className="ProfilePage">
             <div className="ProfileHeader">
                 <h1>Welcome, {auth.user.name}</h1>
-                <h2><Link to={`/users/${userId}/edit`}>Edit Account</Link></h2>
-                <h2><Link to="/posts/create">Create a Post</Link></h2>
-                {auth.user.roles.includes("Admin") && (
-                    <h3>
-                        <Link to="/admin">Admin Dashboard</Link>
-                    </h3>
-                )}
+                <div className="ProfileActionsWrapper">
+                    <h2 className='AccountAction'><Link to={`/users/${userId}/edit`}><MdOutlineEditNote />Edit Account</Link></h2>
+                    <h2 className='AccountAction'><Link to="/posts/create"><BsBrush />Create a Post</Link></h2>
+                    {auth.user.roles.includes("Admin") && (
+                        <h2 className='AccountAction'>
+                            <Link to="/admin"><MdOutlineAdminPanelSettings />Admin Dashboard</Link>
+                        </h2>
+                    )}
+                    <div className="AccountAction">
+                        <button onClick={auth.logout} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                            <MdLogout />Logout
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <DataState
@@ -47,11 +56,6 @@ const Dashboard = () => {
                     <PostFeed posts={posts} />
                 </div>
             </DataState>
-            <div>
-                <button className="btn" onClick={auth.logout}>
-                    Logout
-                </button>
-            </div>
         </div>
     );
 };

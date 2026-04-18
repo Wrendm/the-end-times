@@ -10,6 +10,7 @@ import { categoryColumns } from "../../types/categoryColumns";
 import { deletePost } from "../../api/postApi";
 import { deleteUser } from "../../api/userApi";
 import { deleteCategory } from "../../api/categoryApi";
+import { Link } from "react-router-dom";
 
 type TabType = "users" | "posts" | "categories";
 
@@ -111,10 +112,11 @@ const AdminDashboard = () => {
                     columns={postColumns(handleDeletePost)}
                 />
                 }
-                {tab === "categories" && 
-                <div>
-                    <a href={`admin/categories/create`}>New Category</a>
-                </div>
+                {tab === "categories" &&
+                    <h4 className='AccountAction' style={{margin: "20px 80px"}}>
+                        <Link to={`admin/categories/create`}>
+                        New Category</Link>
+                    </h4>
                 }
                 {tab === "categories" && <DataTable<CategoryType>
                     dataset={categories}

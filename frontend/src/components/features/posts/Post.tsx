@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../../../context/authcontext';
 import type { PostType } from '../../../types/index';
 import EditPost from './EditPost';
+import PostOptionsMenu from './PostOptionsMenu';
 import { deletePost } from "../../../api/postApi";
 import Popup from '../../ui/Popup';
 
@@ -52,12 +53,8 @@ const Post = ({ post, onDelete }: PostProps) => {
       )}
       {(auth?.user?.id === post.user.id) && (
         <div className="OptionRow">
-          <p>{post.published !== true ? 'Draft' : 'Published'}</p>
-          <p>{new Date(post.createdAt).toLocaleDateString()}</p>
-          <div className="ButtonRow">
-            <button className="btn EditButton" onClick={()=> setEditPopup(true)}>Edit</button>
-            <button className="btn DeleteButton" onClick={handleDelete}>Delete</button>
-          </div>
+          <p>{post.published !== true ? 'Draft' : 'Published'} {new Date(post.createdAt).toLocaleDateString()}</p>
+          <PostOptionsMenu onEdit={() => setEditPopup(true)} onDelete={() => handleDelete} />
         </div>
       )}
 
@@ -99,7 +96,7 @@ const Post = ({ post, onDelete }: PostProps) => {
           </>
         )}
         <Popup trigger={editPopup} setTrigger={setEditPopup}>
-          <EditPost id={post.id}/>
+          <EditPost id={post.id} />
         </Popup>
       </div>
     </>
