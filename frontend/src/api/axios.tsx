@@ -50,7 +50,7 @@ api.interceptors.response.use(
         return api(prevRequest);
       } catch {
         setAccessToken(null);
-        redirectToLogin();
+        return Promise.reject(error);
       }
     }
 

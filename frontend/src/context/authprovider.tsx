@@ -31,33 +31,46 @@ export const AuthProvider = ({ children }: Props) => {
     }
   };
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const storedToken = localStorage.getItem("token");
+useEffect(() => {
+  const initializeAuth = async () => {
+    try {
+      const storedToken = localStorage.getItem("token");
 
-        if (!storedToken) {
-          setLoading(false);
-          return;
-        }
-
-        setToken(storedToken);
-
-        const { data } = await api.get("/auth/me");
-
-        setUser(data.data);
-      } catch (err) {
-        console.error("Auth initialization failed", err);
-        setUser(null);
-        setToken(null);
-        localStorage.removeItem("token");
-      } finally {
+      if (!storedToken) {
         setLoading(false);
+        return;
       }
-    };
 
-    initializeAuth();
-  }, []);
+      setToken(storedToken);
+
+      try {
+        const { data } = await api.get("/auth/me");
+        setUser(data.data);
+      } catch {
+        // Token invalid → try refresh
+        try {
+          const res = await api.get("/auth/refresh");
+          const newToken = res.data.data.token;
+
+          localStorage.setItem("token", newToken);
+          setToken(newToken);
+
+          const { data } = await api.get("/auth/me");
+          setUser(data.data);
+        } catch {
+          // Fully unauthenticated → stay guest
+          setUser(null);
+          setToken(null);
+          localStorage.removeItem("token");
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  initializeAuth();
+}, []);
 
   return (
     <AuthContext.Provider value={{ user, token, loading, login, logout }}>
