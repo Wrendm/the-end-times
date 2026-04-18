@@ -35,6 +35,25 @@ a:hover {
   color: var(--color-dark);
 }
 
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* switch at breakpoint */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+}
+
 /* =========================
    LAYOUT
    ========================= */
@@ -132,6 +151,13 @@ a:hover {
   cursor: pointer;
 }
 
+.SideNav ul {
+  list-style-type: none;
+  background-color: #fff;
+  padding: 5px;
+  margin-top: 20px;
+}
+
 .active,
 .pending {
   color: var(--color-light) !important;
@@ -167,7 +193,7 @@ a:hover {
   align-items: flex-end;
 }
 
-.AccountAction{
+.AccountAction {
   background-color: var(--color-light);
   padding: 0.25rem;
   margin-left: 1rem;
@@ -178,6 +204,14 @@ a:hover {
   border-radius: 8px;
   width: fit-content;
 }
+
+@media (max-width: 768px) {
+  .AccountAction {
+    flex-direction: column;
+    margin: 10px 0;
+  }
+}
+
 .AccountAction a {
   padding: 0.25rem;
   display: flex;
@@ -210,6 +244,37 @@ a:hover {
 
 .AccountAction button:hover {
   color: var(--color-dark);
+}
+
+/* =========================
+   PROFILE
+   ========================= */
+.ProfileHeader {
+  padding: 30px 60px 30px 40px;
+  background-color: var(--color-dark);
+  color: #fafafa;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ProfileActionsWrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 768px) {
+  .ProfileHeader {
+    flex-direction: column;
+  }
+
+  .ProfileActionsWrapper {
+    flex-direction: column;
+    margin: 20px 0;
+  }
+}
+
+.ProfilePage {
+  min-height: 75vh;
 }
 
 /* =========================
@@ -482,25 +547,7 @@ td {
   animation: spin 2s linear infinite;
 }
 
-/* =========================
-   PROFILE
-   ========================= */
-.ProfileHeader {
-  padding: 30px 60px 30px 40px;
-  background-color: var(--color-dark);
-  color: #fafafa;
-  display: flex;
-  justify-content: space-between;
-}
 
-.ProfileActionsWrapper{
-  display: flex;
-  flex-direction: row;
-}
-
-.ProfilePage{
-  min-height: 75vh;
-}
 
 /* =========================
    ANIMATIONS
