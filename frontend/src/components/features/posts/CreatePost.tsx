@@ -120,7 +120,6 @@ export default function CreatePost() {
                 <label>Title</label>
                 <input name="title" value={form.title} onChange={handleChange} />
                 <label>Category</label>
-                <Link to={`/categories/create`} className='readmore'><p>Is something missing? Submit an option!</p></Link>
                 <select
                     name="postCategory"
                     value={form.postCategory}
@@ -134,6 +133,7 @@ export default function CreatePost() {
                         </option>
                     ))}
                 </select>
+                <Link to={`/categories/create`} className='readmore'><p>Is something missing? Submit an option!</p></Link>
                 <label>Image</label>
                 <input type="file" onChange={handleFileChange} />
                 <label>Post Content</label>
@@ -141,6 +141,7 @@ export default function CreatePost() {
                     name="postContent"
                     value={form.postContent}
                     onChange={handleChange}
+                    rows={5}
                 />
                 <label>Published</label>
                 <div className="radio-group">

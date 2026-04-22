@@ -78,18 +78,18 @@ const Post = ({ post, onDelete }: PostProps) => {
         {post.postCategory.type === 'Image' && (
           <p className='imagecontent'>
             <Link to={`/posts/${post.id}`}>
-              <img src={post.imgSrc} width="400px" />
+              <img src={post.imgSrc} />
             </Link>
           </p>
         )}
         {post.postCategory.name === 'Poetry' && (
-          <p className='textcontent' style={{ width: "400px" }}>
+          <p className='textcontent'>
             {post.postContent}
           </p>
         )}
         {post.postCategory.name === 'Essay' && post.postContent && (
           <>
-            <p className='textcontent' style={{ width: "400px" }}>
+            <p className='textcontent'>
               {post.postContent.slice(0, 270)}
             </p>
             <Link to={`/posts/${post.id}`} className='readmore'><p>Continue reading...</p></Link>

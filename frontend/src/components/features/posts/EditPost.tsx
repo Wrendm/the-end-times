@@ -139,7 +139,7 @@ export default function EditPost({ id }: EditPostProps) {
           <label>Image</label>
           <input type="file" onChange={handleFileChange} />
           <label>Post Content</label>
-          <textarea name="postContent" value={form.postContent} onChange={handleChange} />
+          <textarea name="postContent" value={form.postContent} onChange={handleChange} rows={5}/>
           <label>Published</label>
           <div className="radio-group">
             <label>

@@ -107,7 +107,7 @@ export default function CreateCategory() {
             <form onSubmit={handleSubmit}>
                 <label>Medium Name</label>
                 <input name="name" value={form.name} onChange={handleChange} />
-                <label>Category</label>
+                <label>Medium Format</label>
                 <select
                     name="type"
                     value={form.type}

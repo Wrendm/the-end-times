@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './context/authprovider';
 
@@ -66,10 +66,10 @@ function App() {
             <Route index element={<PageNotFound />} />
             <Route path=":id" element={<ProfilePage />} />
             <Route path=":id/edit" element={
-            <ProtectedRoute>
-              <EditUser id=":id"/>
-            </ProtectedRoute>
-          } />
+              <ProtectedRoute>
+                <EditUser id=":id" />
+              </ProtectedRoute>
+            } />
           </Route>
 
           {/* Dashboard */}
@@ -80,17 +80,13 @@ function App() {
           } />
 
           {/* Admin */}
-          <Route path="admin">
-            <Route index element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="categories/create" element={
-              <ProtectedRoute allowedRoles={['Admin']}>
-                <CreateCategory />
-              </ProtectedRoute>
-            } />
+          <Route path="admin" element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <Outlet />
+            </ProtectedRoute>
+          }>
+            <Route index element={<AdminDashboard />} />
+            <Route path="categories/create" element={<CreateCategory />} />
           </Route>
 
           {/* Catch all */}
