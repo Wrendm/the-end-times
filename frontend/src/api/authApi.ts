@@ -1,5 +1,4 @@
 import api from "./axios";
-import { setAccessToken } from "./tokenStorage";
 
 export const loginUser = async (formData: { username: string; password: string }) => {
   try {

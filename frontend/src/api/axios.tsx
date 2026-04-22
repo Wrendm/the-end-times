@@ -1,56 +1,86 @@
-import axios from "axios";
-import { setAccessToken } from "./tokenStorage";
-import { getAccessToken } from "./tokenStorage";
-import { redirectToLogin } from "../utils/redirect";
+import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
 
-const api = axios.create({
+type RefreshResponse = {
+  data: {
+    token: string;
+  };
+};
+
+interface RetryConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
+const api: AxiosInstance = axios.create({
   baseURL: "/api",
-  withCredentials: true
+  withCredentials: true,
 });
 
+let accessToken: string | null = null;
+let isRefreshing = false;
+let queue: Array<(token: string) => void> = [];
 
-api.interceptors.request.use(
-  (config) => {
-    const token = getAccessToken();
+// expose setter for login
+export const setAccessToken = (token: string | null) => {
+  accessToken = token;
+};
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+// attach token
+api.interceptors.request.use((config) => {
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+});
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
+// refresh logic
 api.interceptors.response.use(
   (res) => res,
-  async (error) => {
-    const prevRequest = error.config;
+  async (error: AxiosError) => {
+    const config = error.config as RetryConfig;
 
-    if (
-      error.response?.status === 401 &&
-      !prevRequest._retry &&
-      !prevRequest.url?.includes("/auth/refresh") &&
-      !prevRequest.url?.includes("/auth/login") &&
-      !prevRequest.url?.includes("/auth/register")
-    ) {
-      prevRequest._retry = true;
+    if (!config || !error.response) {
+      return Promise.reject(error);
+    }
+
+    const is401 = error.response.status === 401;
+    const isAuthRoute = config.url?.includes("/auth/");
+
+    if (is401 && !config._retry && !isAuthRoute) {
+      config._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          queue.push((token: string) => {
+            config.headers.Authorization = `Bearer ${token}`;
+            resolve(api(config));
+          });
+        });
+      }
+
+      isRefreshing = true;
 
       try {
-        const res = await api.get("/auth/refresh");
+        const res = await axios.get<RefreshResponse>(
+          "/api/auth/refresh",
+          { withCredentials: true }
+        );
+
         const newToken = res.data.data.token;
 
-        setAccessToken(newToken);
+        accessToken = newToken;
 
-        prevRequest.headers = {
-          ...prevRequest.headers,
-          Authorization: `Bearer ${newToken}`
-        };
+        queue.forEach((cb) => cb(newToken));
+        queue = [];
 
-        return api(prevRequest);
-      } catch {
-        setAccessToken(null);
-        return Promise.reject(error);
+        config.headers.Authorization = `Bearer ${newToken}`;
+
+        return api(config);
+      } catch (err) {
+        queue = [];
+        accessToken = null;
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
 

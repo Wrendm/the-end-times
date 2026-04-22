@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../../api/authApi";
 import { AuthContext } from "../../context/authcontext";
+import { setAccessToken } from "../../api/axios";
 
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -19,35 +20,40 @@ export default function Login() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const res = await loginUser(form);
+  e.preventDefault();
 
-      auth.login(res.data.user, res.data.token);
-      setSuccess(true);
-      setError("");
-      setForm({ username: "", password: "" });
-      navigate("/dashboard");
-    } catch (err: any) {
-      if (err.response) {
-        const res = err.response.data;
+  try {
+    const res = await loginUser(form);
 
-        setError(res.message || "Login failed");
+    const { user, token } = res.data;
 
-        if (res.errors && Array.isArray(res.errors)) {
-          setErrors(res.errors);
-        } else {
-          setErrors([]);
-        }
-      } else if (err.request) {
-        setError("No response from server");
-        setErrors([]);
-      } else {
-        setError("Network error");
-        setErrors([]);
-      }
+    // ONLY give token to Axios (single source of truth)
+    setAccessToken(token);
+
+    // Context only stores user
+    auth.login(user);
+
+    setSuccess(true);
+    setError("");
+    setForm({ username: "", password: "" });
+
+    navigate("/dashboard");
+  } catch (err: any) {
+    if (err.response) {
+      const res = err.response.data;
+
+      setError(res.message || "Login failed");
+
+      setErrors(Array.isArray(res.errors) ? res.errors : []);
+    } else if (err.request) {
+      setError("No response from server");
+      setErrors([]);
+    } else {
+      setError("Network error");
+      setErrors([]);
     }
-  };
+  }
+};
 
   return (
     <div className="Form">
