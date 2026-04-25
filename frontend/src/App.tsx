@@ -1,6 +1,6 @@
 import { Outlet, Route, Routes } from 'react-router-dom';
 import './App.css';
-import { AuthProvider } from './context/authprovider';
+import { AuthProvider } from './context/authcontext';
 
 import Layout from './components/layout/Layout';
 import Home from './components/pages/Home';
@@ -67,7 +67,7 @@ function App() {
             <Route path=":id" element={<ProfilePage />} />
             <Route path=":id/edit" element={
               <ProtectedRoute>
-                <EditUser id=":id" />
+                <EditUser />
               </ProtectedRoute>
             } />
           </Route>
