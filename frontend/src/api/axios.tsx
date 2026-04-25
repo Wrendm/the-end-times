@@ -43,7 +43,10 @@ api.interceptors.response.use(
     }
 
     const is401 = error.response.status === 401;
-    const isAuthRoute = config.url?.includes("/auth/");
+    const isAuthRoute =
+      config.url?.includes("/auth/login") ||
+      config.url?.includes("/auth/register") ||
+      config.url?.includes("/auth/logout");
 
     if (is401 && !config._retry && !isAuthRoute) {
       config._retry = true;
