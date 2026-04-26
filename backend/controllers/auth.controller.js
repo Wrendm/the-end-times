@@ -1,9 +1,11 @@
 const User = require('../models/User')
+const { mapUser } = require("../utils/mappers/userMapper")
 const createError = require('../utils/createError')
 const sendResponse = require('../utils/sendResponse')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
+
 
 // @desc Register new user
 // @route POST /auth/register
@@ -80,7 +82,7 @@ const loginUser = asyncHandler(async (req, res) => {
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '1d' } //1d
     )
-    
+
 
     const hashedToken = await bcrypt.hash(refreshToken, 10)
 
@@ -98,12 +100,7 @@ const loginUser = asyncHandler(async (req, res) => {
         message: 'Login successful',
         data: {
             token,
-            user: {
-                id: user._id,
-                username: user.username,
-                name: user.name,
-                roles: user.roles
-            }
+            user: mapUser(user)
         }
     })
 })
@@ -213,13 +210,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
     return sendResponse(res, {
         message: 'Current user fetched',
-        data: {
-            id: user._id,
-            username: user.username,
-            roles: user.roles,
-            name: user.name,
-            email: user.email
-        }
+        data: mapUser(user)
     })
 })
 

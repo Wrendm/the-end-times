@@ -13,6 +13,7 @@ const createUserSchema = Joi.object({
 
 const updateUserPutSchema = Joi.object({
   name: Joi.string().trim().min(1).required(),
+  bio: Joi.string().trim().max(90),
   username: Joi.string().trim().min(4).max(25).required(),
   email: Joi.string().trim().email({ tlds: { allow: false } }).required(),
   password: Joi.string().min(8).required()
@@ -21,6 +22,7 @@ const updateUserPutSchema = Joi.object({
 
 const updateUserPatchSchema = Joi.object({
   name: Joi.string().trim().min(1),
+  bio: Joi.string().trim().max(90),
   username: Joi.string().trim().min(4).max(25),
   email: Joi.string().trim().email({ tlds: { allow: false } }),
   password: Joi.string().min(8)

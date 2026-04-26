@@ -4,6 +4,7 @@ interface UserType {
   id: string;
   name: string;
   username: string;
+  bio: string;
   roles: string[];
 }
 interface PostType {

@@ -4,6 +4,7 @@ export interface UserFormData {
   name?: string;
   username?: string;
   password?: string;
+  bio?: string;
 };
 
 export interface UpdateRolesPayload {

@@ -4,6 +4,7 @@ import DataState from "../../DataState";
 import { AuthContext } from "../../../context/authcontext";
 import useUserById from "../../../hooks/useUserById";
 import { updateUser } from "../../../api/userApi";
+import api from "../../../api/axios";
 
 export default function EditUser() {
     const { id } = useParams();
@@ -11,14 +12,20 @@ export default function EditUser() {
     const [form, setForm] = useState({
         name: "",
         username: "",
-        password: ""
+        password: "",
+        bio: ""
     });
     const [error, setError] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const [success, setSuccess] = useState(false);
 
     const auth = useContext(AuthContext)!;
-    const { user, isLoading, fetchError } = useUserById(id!);
+
+    const {
+        user: selectedUser,
+        isLoading,
+        fetchError
+    } = useUserById(id!);
 
     const navigate = useNavigate();
 
@@ -27,13 +34,14 @@ export default function EditUser() {
     }, [fetchError]);
 
     useEffect(() => {
-        if (!user) return;
+        if (!selectedUser) return;
         setForm({
-            name: user.name,
-            username: user.username,
-            password: ""
+            name: selectedUser.name,
+            username: selectedUser.username,
+            password: "",
+            bio: selectedUser.bio || ""
         });
-    }, [user]);
+    }, [selectedUser]);
 
     useEffect(() => {
         if (success) {
@@ -45,9 +53,9 @@ export default function EditUser() {
         }
     }, [success, navigate]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        setForm({ ...form, [name]: value });
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,11 +65,20 @@ export default function EditUser() {
         const payload = {
             name: form.name,
             username: form.username,
+            bio: form.bio,
             ...(form.password ? { password: form.password } : {})
         };
 
         try {
             await updateUser(id!, payload);
+            const me = await api.get("/auth/me");
+            auth.login(me.data.data);
+            setForm((prev) => ({
+                ...prev,
+                bio: payload.bio,
+                name: payload.name,
+                username: payload.username
+            }));
             setSuccess(true);
             setError("");
             setErrors([]);
@@ -74,14 +91,14 @@ export default function EditUser() {
 
     if (auth.loading || isLoading) return <div className="loader" />;
     if (!auth.user) return <div>Not authenticated</div>;
-    if (!user && !isLoading && !fetchError) return <div>User not found</div>;
-    if (auth.user.id !== user?.id && !auth.user?.roles.includes("Admin")) return <Navigate to="/" replace />;
+    if (!selectedUser && !isLoading && !fetchError) return <div>User not found</div>;
+    if (auth.user.id !== selectedUser?.id && !auth.user?.roles.includes("Admin")) return <Navigate to="/" replace />;
 
     return (
         <DataState
             isLoading={isLoading}
             error={fetchError}
-            isEmpty={!user && !isLoading && !fetchError}
+            isEmpty={!selectedUser && !isLoading && !fetchError}
             emptyMessage="That user fell in the void!"
         >
             <div className="Form">
@@ -104,12 +121,22 @@ export default function EditUser() {
                 {success && (
                     <div className="success">
                         <h2>Account Updated!</h2>
+                        {form.bio}
+                        {form.name}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit}>
                     <label className="label">Name</label>
                     <input className="input" type="text" name="name" value={form.name} onChange={handleChange} />
+
+                    <label className="label">Bio</label>
+                    <textarea
+                        name="bio"
+                        value={form.bio}
+                        onChange={handleChange}
+                        rows={4}
+                    />
 
                     <label className="label">Username</label>
                     <input className="input" type="text" name="username" value={form.username} onChange={handleChange} />

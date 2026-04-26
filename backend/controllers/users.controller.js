@@ -62,7 +62,7 @@ const createNewUser = asyncHandler(async (req, res) => {
 // @route PUT /users/:id 
 const updateUser = asyncHandler(async (req, res) => {
     const { id } = req.validated.params
-    const { username, name, email, password } = req.validated.body
+    const { username, name, email, password, bio } = req.validated.body
 
     const user = await User.findById(id)
     if (!user) {
@@ -88,9 +88,10 @@ const updateUser = asyncHandler(async (req, res) => {
     if (username !== undefined) user.username = username
     if (name !== undefined) user.name = name
     if (email !== undefined) user.email = email
+    if (bio !== undefined) user.bio = bio.trim()
 
     const updatedUser = await user.save()
-
+    console.log("BIO RECEIVED:", req.validated.body.bio);
     return sendResponse(res, {
         message: 'User updated',
         data: mapUser(updatedUser)
@@ -123,7 +124,7 @@ const updateUserPartial = asyncHandler(async (req, res) => {
         updates.password = await bcrypt.hash(updates.password, 10)
     }
 
-    const allowedUpdates = ['username', 'name', 'email', 'password']
+    const allowedUpdates = ['username', 'name', 'email', 'password', 'bio']
     allowedUpdates.forEach(field => {
         if (updates[field] !== undefined) {
             user[field] = updates[field]
@@ -131,7 +132,6 @@ const updateUserPartial = asyncHandler(async (req, res) => {
     })
 
     const updatedUser = await user.save()
-
     return sendResponse(res, {
         message: 'User updated',
         data: mapUser(updatedUser)

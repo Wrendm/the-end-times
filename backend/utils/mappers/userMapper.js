@@ -5,6 +5,7 @@ const mapUser = (user) => {
     id: user._id.toString(),
     name: user.name,
     username: user.username,
+    bio: user.bio,
     roles: user.roles,
   };
 };
