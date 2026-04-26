@@ -26,6 +26,7 @@ const Dashboard = () => {
 
     const posts: PostType[] = postsData ?? [];
 
+
     return (
         <div className="ProfilePage">
             <div className="ProfileHeader">
@@ -39,11 +40,19 @@ const Dashboard = () => {
                         </h2>
                     )}
                     <div className="AccountAction">
-                        <button onClick={auth.logout} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                        <button onClick={auth.logout} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                             <MdLogout />Logout
                         </button>
                     </div>
                 </div>
+            </div>
+            <div className="ProfileInfo">
+                <h4>@{auth.user.username}</h4>
+                {auth.user.bio && (
+                    <div><p className='bio'>
+                        {auth.user.bio}
+                    </p></div>
+                )}
             </div>
 
             <DataState

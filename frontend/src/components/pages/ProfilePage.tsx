@@ -34,9 +34,12 @@ const ProfilePage = () => {
     >
       {user && (
         <div className="ProfilePage">
-          <div className="ProfileHeader">
+          <div className="ProfileInfo">
             <h1>{user.username}</h1>
             <h4>{user.name}</h4>
+          </div>
+          <div className="ProfileInfo">
+            {user.bio && <p>{user.bio}</p>}
           </div>
 
           <DataState
