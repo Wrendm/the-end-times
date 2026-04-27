@@ -4,6 +4,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import Nav from "./Nav";
 import SideNav from './SideNav';
 import { AuthContext } from "../../context/authcontext";
+import SearchBar from './SearchBar';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -60,6 +61,9 @@ const Header = () => {
       </div>
       <div className='desktop-only'>
         <Nav />
+      </div>
+      <div>
+        <SearchBar />
       </div>
     </div>
   )

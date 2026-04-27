@@ -13,11 +13,11 @@ app.get(['/', '/index', '/index.html'], (req, res) => {
     res.send('API is running...');
 });
 
-app.use('/users', require('./routes/user.routes.js'))
-app.use('/posts', require('./routes/post.routes.js'))
-app.use('/categories', require('./routes/category.routes.js'))
-app.use('/auth', require('./routes/auth.routes.js'))
-app.use('/admin', require('./routes/admin.routes.js'))
+app.use('/api/users', require('./routes/user.routes.js'));
+app.use('/api/posts', require('./routes/post.routes.js'));
+app.use('/api/categories', require('./routes/category.routes.js'));
+app.use('/api/auth', require('./routes/auth.routes.js'));
+app.use('/api/admin', require('./routes/admin.routes.js'));
 
 app.use((req, res) => {
   res.status(404).json({ message: `Route ${req.originalUrl} not found` })

@@ -22,8 +22,8 @@ import CreateCategory from './components/features/categories/CreateCategory';
 
 import ProfilePage from './components/pages/ProfilePage';
 
-
 import ProtectedRoute from './components/ProtectedRoute';
+import SearchResults from './components/layout/SearchResults';
 
 
 function App() {
@@ -33,6 +33,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Home */}
           <Route index element={<Home />} />
+          <Route path="search" element={<SearchResults />} />
 
           {/* Auth */}
           <Route path="register" element={<Register />} />
