@@ -16,6 +16,7 @@ router.route('/')
   .get(getLimiter, optionalJWT, validate(postQuerySchema, 'query'), postsController.getAllPosts)
   .post(postLimiter, verifyJWT, uploadImage.single('image'), validate(createPostSchema), postsController.createNewPost)
 
+router.get('/search', getLimiter, postsController.searchPosts)
 
 router.route('/:id')
   .get(

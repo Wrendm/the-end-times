@@ -241,6 +241,35 @@ const deletePost = asyncHandler(async (req, res) => {
     })
 })
 
+const searchPosts = async (req, res) => {
+  const { q } = req.query;
+
+  if (!q) {
+    return res.status(400).json({ message: 'Query is required' });
+  }
+
+  try {
+    const results = await Post.find({
+      $or: [
+        { title: { $regex: q, $options: 'i' } },
+        { postContent: { $regex: q, $options: 'i' } }
+      ]
+    })
+    .populate('user')
+    .populate('postCategory')
+    .lean();
+
+    const formatted = results.map(post => ({
+      ...post,
+      id: post._id.toString(),
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    res.status(500).json({ message: 'Search failed' });
+  }
+};
+
 module.exports = {
     getAllPosts,
     getAllPostsAdmin,
@@ -248,5 +277,6 @@ module.exports = {
     createNewPost,
     updatePost,
     updatePostPartial,
-    deletePost
+    deletePost,
+    searchPosts
 }

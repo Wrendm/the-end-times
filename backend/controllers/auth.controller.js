@@ -57,8 +57,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const user = await User.findOne({ username }).select('+refreshToken')
     if (!user) {
-        throw createError(`Invalid username or password`, 401)
+        throw createError('Invalid username or password', 401)
     }
+
     const match = await bcrypt.compare(password, user.password)
     if (!match) {
         throw createError('Invalid username or password', 401)
@@ -70,36 +71,34 @@ const loginUser = asyncHandler(async (req, res) => {
         name: user.name,
         roles: user.roles
     }
-
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
         payload,
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1h' } //1h
+        { expiresIn: '1h' }
     )
-
     const refreshToken = jwt.sign(
         { id: user._id },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '1d' } //1d
+        { expiresIn: '1d' }
     )
-
 
     const hashedToken = await bcrypt.hash(refreshToken, 10)
 
-    user.refreshToken = hashedToken;
-    await user.save();
+    user.refreshToken = hashedToken
+    await user.save()
 
+    // SAME-SITE DEV COOKIE CONFIG
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
+        sameSite: "lax",
         maxAge: 24 * 60 * 60 * 1000
     })
 
     return sendResponse(res, {
         message: 'Login successful',
         data: {
-            token,
+            token: accessToken,
             user: mapUser(user)
         }
     })
@@ -124,13 +123,11 @@ const refreshUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findById(decoded.id).select('+refreshToken')
-
     if (!user || !user.refreshToken) {
         throw createError('Unauthorized', 401)
     }
 
     const isMatch = await bcrypt.compare(refreshToken, user.refreshToken)
-
     if (!isMatch) {
         throw createError('Forbidden: Token mismatch', 403)
     }
@@ -142,7 +139,7 @@ const refreshUser = asyncHandler(async (req, res) => {
             roles: user.roles
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '1h' } //1h
+        { expiresIn: '1h' }
     )
 
     return sendResponse(res, {
@@ -155,44 +152,44 @@ const refreshUser = asyncHandler(async (req, res) => {
 // @route POST /auth/logout
 // @access Public - just to clear cookie if exists
 const logoutUser = asyncHandler(async (req, res) => {
-    const cookies = req.cookies;
-
+    const cookies = req.cookies
     if (!cookies?.jwt) {
-        return res.sendStatus(204);
+        return res.sendStatus(204)
     }
 
-    const refreshToken = cookies.jwt;
+    const refreshToken = cookies.jwt
+
     let decoded
+
     try {
         decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-    } catch (err) {
+    } catch {
         res.clearCookie('jwt', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
+            secure: false,
+            sameSite: "lax"
         })
         return res.sendStatus(204)
     }
 
     const user = await User.findById(decoded.id).select('+refreshToken')
-
     if (user) {
         const isMatch = await bcrypt.compare(refreshToken, user.refreshToken || '')
         if (isMatch) {
-            user.refreshToken = null;
-            await user.save();
+            user.refreshToken = null
+            await user.save()
         }
     }
 
+    // SAME-SITE CLEAR COOKIE
     res.clearCookie('jwt', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
+        secure: false,
+        sameSite: "lax"
     })
 
     res.sendStatus(204)
 })
-
 
 // @desc Get current logged-in user
 // @route GET /auth/me
