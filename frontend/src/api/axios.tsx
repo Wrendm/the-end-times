@@ -46,6 +46,7 @@ api.interceptors.response.use(
     const isAuthRoute =
       config.url?.includes("/auth/login") ||
       config.url?.includes("/auth/register") ||
+      config.url?.includes("/auth/refresh") ||
       config.url?.includes("/auth/logout");
 
     if (is401 && !config._retry && !isAuthRoute) {
