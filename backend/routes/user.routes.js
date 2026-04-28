@@ -13,6 +13,8 @@ router.route('/')
   .get(getLimiter, validate(usersQuerySchema, 'query'), usersController.getAllUsers)
   .post(signupLimiter, validate(createUserSchema), usersController.createNewUser)
 
+router.get('/search', getLimiter, usersController.searchUsers)
+
 router.route('/:id')
   .get(
     getLimiter,

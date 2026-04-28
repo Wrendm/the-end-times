@@ -178,6 +178,35 @@ const deleteUser = asyncHandler(async (req, res) => {
     })
 })
 
+const searchUsers = async (req, res) => {
+  const { q } = req.query;
+
+  if (!q) {
+    return res.status(400).json({ message: 'Query is required' });
+  }
+
+  try {
+    const results = await User.find({
+      $or: [
+        { username: { $regex: q, $options: 'i' } },
+        { name: { $regex: q, $options: 'i' } }
+      ]
+    })
+    .populate('username')
+    .populate('name')
+    .lean();
+
+    const formatted = results.map(user => ({
+      ...user,
+      id: user._id.toString(),
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    res.status(500).json({ message: 'Search failed' });
+  }
+};
+
 module.exports = {
     getAllUsers,
     getAllUsersAdmin,
@@ -186,5 +215,6 @@ module.exports = {
     updateUser,
     updateUserPartial,
     updateRoles,
-    deleteUser
+    deleteUser,
+    searchUsers
 }

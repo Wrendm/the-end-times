@@ -2,15 +2,17 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../../api/axios';
 
-import type { PostType } from '../../types';
+import type { PostType, UserType } from '../../types';
 import Post from '../features/posts/Post';
+import UserCard from '../features/users/UserCard';
 
 const SearchResults = () => {
   const location = useLocation();
 
   const q = new URLSearchParams(location.search).get('q') ?? '';
 
-  const [results, setResults] = useState<PostType[]>([]);
+  const [postResults, setPostResults] = useState<PostType[]>([]);
+  const [userResults, setUserResults] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,11 +24,17 @@ const SearchResults = () => {
         setLoading(true);
         setError(null);
 
-        const res = await api.get<PostType[]>('/posts/search', {
+        const postRes = await api.get<PostType[]>('/posts/search', {
           params: { q }
         });
 
-        setResults(res.data);
+        setPostResults(postRes.data);
+
+        const userRes = await api.get<UserType[]>('/users/search', {
+          params: { q }
+        });
+
+        setUserResults(userRes.data);
       } catch {
         setError('Failed to fetch results');
       } finally {
@@ -38,19 +46,28 @@ const SearchResults = () => {
   }, [q]);
 
   return (
-    <div>
-      <h2>Results for "{q}"</h2>
-
+    <div className='ContentArea'>
+      <h2>User Results for "{q}"</h2>
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
+      <div className="UserFeed">
+        {!loading && userResults.length === 0 && <p>No users found.</p>}
 
-      {!loading && results.length === 0 && <p>No results found.</p>}
+        {userResults.map((user) => (
+          <UserCard key={user.id} user={user} />
+        ))}
+      </div>
+      <h2>Post Results for "{q}"</h2>
+      {loading && <p>Loading...</p>}
+      <div className="PostFeed">
+        {!loading && postResults.length === 0 && <p>No posts found.</p>}
 
-      {results.map((post) => (
-        <div key={post.id} className="PostCard">
-          <Post post={post} />
-        </div>
-      ))}
+        {postResults.map((post) => (
+          <div className="PostCard">
+            <Post key={post.id} post={post} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

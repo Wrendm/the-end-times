@@ -20,14 +20,14 @@ function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
+    <form onSubmit={handleSubmit} className='SearchBar'>
+      <input className='SearchBarInput'
         type="text"
-        placeholder="Search posts..."
+        placeholder="Search posts and users"
         value={query}
         onChange={handleChange}
       />
-      <button type="submit">Search</button>
+      <button type="submit" className='btn'>Search</button>
     </form>
   );
 }
