@@ -144,7 +144,7 @@ export default function EditUser() {
                     <label className="label">Password</label>
                     <input className="input" type="password" name="password" value={form.password} onChange={handleChange} placeholder="Leave blank to keep current password" />
 
-                    <button className="btn" type="submit">Submit</button>
+                    <button className="fullWidth-btn" type="submit">Submit</button>
                 </form>
             </div>
         </DataState>

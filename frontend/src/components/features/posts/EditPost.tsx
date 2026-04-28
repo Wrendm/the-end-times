@@ -163,7 +163,7 @@ export default function EditPost({ id }: EditPostProps) {
               False
             </label>
           </div>
-          <button className="btn" type="submit">
+          <button className="fullWidth-btn" type="submit">
             Save Edits
           </button>
         </form>

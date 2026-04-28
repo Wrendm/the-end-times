@@ -78,7 +78,7 @@ export default function Login() {
         <input name="username" value={form.username} onChange={handleChange} />
         <label>Password</label>
         <input name="password" type="password" value={form.password} onChange={handleChange} />
-        <button className="btn" type="submit">Login</button>
+        <button className="fullWidth-btn" type="submit">Login</button>
       </form>
       <p>No Account?</p>
       <button className="btn-secondary"><Link to='/register'>Register</Link></button>

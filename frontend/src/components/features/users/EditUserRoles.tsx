@@ -129,7 +129,7 @@ export default function EditUserRoles({ id }: EditUserProps) {
                         </label>
                     ))}
 
-                    <button className="btn" type="submit">Submit</button>
+                    <button className="fullWidth-btn" type="submit">Submit</button>
                 </form>
             </div>
         </DataState>

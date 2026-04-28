@@ -167,7 +167,7 @@ export default function CreatePost() {
                     </label>
                 </div>
 
-                <button className="btn" type="submit">Create Post</button>
+                <button className="fullWidth-btn" type="submit">Create Post</button>
             </form>
         </div>
     );

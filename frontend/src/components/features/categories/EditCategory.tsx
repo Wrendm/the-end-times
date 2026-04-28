@@ -136,7 +136,7 @@ export default function EditCategory({ id }: EditCategoryProps) {
                         </label>
                     </div>
 
-                    <button className="btn" type="submit">Submit</button>
+                    <button className="fullWidth-btn" type="submit">Submit</button>
                 </form>
             </div>
         </DataState>

@@ -316,6 +316,28 @@ a:hover {
 }
 
 /* =========================
+   CONTENT / USERS
+   ========================= */
+
+.UserFeed {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 90%;
+}
+
+.UserCard {
+  margin: 2%;
+  padding: 15px;
+  background-color: var(--color-light);
+  width: 200px;
+}
+.UserCard a p:hover{
+  color:#000;
+}
+
+/* =========================
    CONTENT / POSTS
    ========================= */
 .PostFeed {
@@ -330,21 +352,23 @@ a:hover {
   margin: 2%;
   padding: 15px;
   background-color: var(--color-light);
+  max-width: fit-content;
 }
 
 @media (max-width: 500px) {
   .textcontent,
   .imagecontent,
-  .imagecontent a img  {
+  .imagecontent a img {
     width: 100%;
   }
 
-  img{
+  img {
     max-width: 100%;
   }
 }
 
 @media (min-width: 500px) {
+
   .textcontent,
   .imagecontent,
   .imagecontent a img {
@@ -403,10 +427,11 @@ a:hover {
   max-width: 640px;
   background-color: #fff;
 }
+
 @media (max-width: 768px) {
-.popup-inner {
-  width: 80%;
-}
+  .popup-inner {
+    width: 80%;
+  }
 }
 
 .popup-inner .close-btn {
@@ -418,7 +443,7 @@ a:hover {
 /* =========================
    BUTTONS
    ========================= */
-.btn{
+.fullWidth-btn {
   width: 100%;
   padding: 14px;
   margin: 8px 0;
@@ -435,7 +460,7 @@ a:hover {
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  padding:10px;
+  padding: 10px;
 }
 
 .btn-secondary a {

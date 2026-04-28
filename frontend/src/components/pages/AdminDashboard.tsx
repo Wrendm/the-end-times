@@ -124,7 +124,7 @@ const AdminDashboard = () => {
                 />}
             </DataState>
             <div>
-                <button className="btn" onClick={auth.logout}>
+                <button className="fullWidth-btn" onClick={auth.logout}>
                     Logout
                 </button>
             </div>

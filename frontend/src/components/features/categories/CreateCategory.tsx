@@ -149,7 +149,7 @@ export default function CreateCategory() {
                     </>
                 )}
 
-                <button className="btn" type="submit">Submit Category</button>
+                <button className="fullWidth-btn" type="submit">Submit Category</button>
             </form>
         </div>
     );

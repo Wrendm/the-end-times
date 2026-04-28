@@ -115,7 +115,7 @@ export default function Register() {
                 <label className="label">Password</label>
                 <input className="input" type="password" name="password" value={form.password} onChange={handleChange} />
 
-                <button className="btn" type="submit">Submit</button>
+                <button className="fullWidth-btn" type="submit">Submit</button>
             </form>
         </div>
     );
