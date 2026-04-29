@@ -4,7 +4,7 @@ import PostActions from "../components/table/table-actions/PostActions";
 
 export const postColumns = (
   handleDeletePost: (id: string) => void
-): Column<"posts">[] => [
+): Column<PostType>[] => [
   ...postColumnsBase,
   {
     key: "id",

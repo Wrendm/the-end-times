@@ -32,12 +32,10 @@ export type DataMap = {
   categories: CategoryType;
 };
 
-export type Column<T extends keyof DataMap> = {
-  [K in keyof DataMap[T] & string]: {
-    key: K;
-    label?: string;
-    render?: (value: DataMap[T][K], row: DataMap[T]) => ReactNode;
-  };
-}[keyof DataMap[T] & string];
+export type Column<T> = {
+  key: keyof T & string;
+  label?: string;
+  render?: (value: any, row: T) => ReactNode;
+};
 
 export type { UserType, PostType, CategoryType };
