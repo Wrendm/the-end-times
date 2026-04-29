@@ -8,20 +8,23 @@ const createPostSchema = Joi.object({
   postCategory: objectId.required(),
   title: Joi.string().required(),
   postContent: Joi.string().allow('').optional(),
+  videoSrc: Joi.string().allow('').optional(),
   published: Joi.boolean().required()
 }).unknown(false)
 
 const updatePostPutSchema = Joi.object({
   postCategory: objectId.required(),
   title: Joi.string().required(),
-  postContent: Joi.string().allow('').required(),
+  postContent: Joi.string().allow('').optional(),
+  videoSrc: Joi.string().allow('').optional(),
   published: Joi.boolean().required()
 }).unknown(false)
 
 const updatePostPatchSchema = Joi.object({
   postCategory: objectId,
   title: Joi.string(),
-  postContent: Joi.string().allow(''),
+  postContent: Joi.string().allow('').optional(),
+  videoSrc: Joi.string().allow('').optional(),
   published: Joi.boolean()
 })
 .min(1)

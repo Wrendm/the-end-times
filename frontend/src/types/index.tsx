@@ -14,6 +14,7 @@ interface PostType {
   title: string,
   imgSrc?: string;
   postContent?: string;
+  videoSrc?: string;
   published: boolean;
   createdAt: string;
   updatedAt: string;

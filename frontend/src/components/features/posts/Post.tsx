@@ -19,10 +19,7 @@ const Post = ({ post, onDelete }: PostProps) => {
   const [success, setSuccess] = useState(false);
   const [editPopup, setEditPopup] = useState(false);
 
-  const handleDelete = async (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    // Confirmation popup
+  const handleDelete = async () => {
     const confirmed = window.confirm("Are you sure you want to delete this post?");
     if (!confirmed) return;
 
@@ -30,7 +27,7 @@ const Post = ({ post, onDelete }: PostProps) => {
       await deletePost(post.id);
       setSuccess(true);
       setError("");
-      onDelete?.(post.id); // notify parent to remove the post
+      onDelete?.(post.id);
     } catch (err: any) {
       const res = err.response?.data;
       setError(res?.message || "Delete failed");
@@ -54,7 +51,10 @@ const Post = ({ post, onDelete }: PostProps) => {
       {(auth?.user?.id === post.user.id) && (
         <div className="OptionRow">
           <p>{post.published !== true ? 'Draft' : 'Published'} {new Date(post.createdAt).toLocaleDateString()}</p>
-          <PostOptionsMenu onEdit={() => setEditPopup(true)} onDelete={() => handleDelete} />
+          <PostOptionsMenu
+            onEdit={() => setEditPopup(true)}
+            onDelete={handleDelete}
+          />
         </div>
       )}
 
@@ -76,11 +76,16 @@ const Post = ({ post, onDelete }: PostProps) => {
           </h4></Link>
         )}
         {post.postCategory.type === 'Image' && (
-          <p className='imagecontent'>
+          <div className='imagecontent'>
             <Link to={`/posts/${post.id}`}>
               <img src={post.imgSrc} />
             </Link>
-          </p>
+          </div>
+        )}
+        {post.postCategory.type === 'Video' && (
+          <div className='videocontent'>
+            <iframe width="400" height="300" src={post.videoSrc}></iframe>
+          </div>
         )}
         {post.postCategory.name === 'Poetry' && (
           <p className='textcontent'>

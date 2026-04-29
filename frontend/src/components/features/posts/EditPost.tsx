@@ -12,7 +12,13 @@ type EditPostProps = {
 };
 
 export default function EditPost({ id }: EditPostProps) {
-  const [form, setForm] = useState({ title: "", postCategory: "", postContent: "", published: false });
+      const [form, setForm] = useState({
+        title: "",
+        postCategory: "",
+        postContent: "",
+        videoSrc: "",
+        published: false,
+    });
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
@@ -40,6 +46,7 @@ export default function EditPost({ id }: EditPostProps) {
       title: post.title,
       postCategory: post.postCategory.id,
       postContent: post.postContent || "",
+      videoSrc: post.videoSrc || "",
       published: post.published,
     });
   }, [post]);
@@ -69,6 +76,7 @@ export default function EditPost({ id }: EditPostProps) {
     formData.append("title", form.title);
     formData.append("postCategory", form.postCategory);
     formData.append("postContent", form.postContent);
+    formData.append("videoSrc", form.videoSrc);
     formData.append("published", String(form.published));
     if (file) formData.append("image", file);
 
@@ -140,6 +148,8 @@ export default function EditPost({ id }: EditPostProps) {
           <input type="file" onChange={handleFileChange} />
           <label>Post Content</label>
           <textarea name="postContent" value={form.postContent} onChange={handleChange} rows={5}/>
+          <label>YouTube Video Source Link</label>
+          <input name="videoSrc" value={form.videoSrc} onChange={handleChange} />
           <label>Published</label>
           <div className="radio-group">
             <label>

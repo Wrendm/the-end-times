@@ -10,6 +10,7 @@ export default function CreatePost() {
         title: "",
         postCategory: "",
         postContent: "",
+        videoSrc: "",
         published: false,
     });
     const [file, setFile] = useState<File | null>(null);
@@ -78,6 +79,7 @@ export default function CreatePost() {
             formData.append("title", form.title);
             formData.append("postCategory", form.postCategory);
             formData.append("postContent", form.postContent);
+            formData.append("videoSrc", form.videoSrc);
             formData.append("published", String(form.published));
             if (file) formData.append("image", file);
 
@@ -86,7 +88,7 @@ export default function CreatePost() {
 
             setSuccess(true);
             setError("");
-            setForm({ title: "", postCategory: "", postContent: "", published: false });
+            setForm({ title: "", postCategory: "", postContent: "", videoSrc: "", published: false });
             setFile(null);
         } catch (err: any) {
             const res = err.response?.data;
@@ -143,6 +145,8 @@ export default function CreatePost() {
                     onChange={handleChange}
                     rows={5}
                 />
+                <label>YouTube Video Source Link</label>
+                <input name="videoSrc" value={form.videoSrc} onChange={handleChange} />
                 <label>Published</label>
                 <div className="radio-group">
                     <label>

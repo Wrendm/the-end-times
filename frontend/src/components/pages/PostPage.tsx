@@ -41,8 +41,14 @@ const PostPage = () => {
           <div className="ContentRow">
             {post.imgSrc ? (
               <p className="imagecontent">
-                <img src={post.imgSrc}/>
+                <img src={post.imgSrc} />
               </p>
+            ) : <br />}
+
+            {post.videoSrc ? (
+              <div className='videocontent'>
+                <iframe width="400" height="300" src={post.videoSrc}></iframe>
+              </div>
             ) : <br />}
 
             {post.postContent ? (

@@ -5,9 +5,10 @@ const Category = require('../models/Category')
 const { mapPost } = require('../utils/mappers/postMapper')
 const createError = require('../utils/createError')
 const sendResponse = require('../utils/sendResponse')
+const getYouTubeEmbedUrl = require('../utils/getYouTubeEmbedLink')
 const validatePostByCategory = require('../utils/validatePostByCategory')
-const {uploadToCloudinary} = require('../utils/cloudinaryUpload')
-const {deleteFromCloudinary} = require('../utils/cloudinaryDelete')
+const { uploadToCloudinary } = require('../utils/cloudinaryUpload')
+const { deleteFromCloudinary } = require('../utils/cloudinaryDelete')
 
 
 // @desc -> all posts
@@ -97,6 +98,7 @@ const getSinglePost = asyncHandler(async (req, res) => {
 //	POST /posts -> create post
 const createNewPost = asyncHandler(async (req, res) => {
     const { postCategory, title, postContent, published } = req.validated.body
+    let { videoSrc } = req.validated.body
 
     const dbUser = await User.findById(req.user.id)
     if (!dbUser) {
@@ -114,12 +116,18 @@ const createNewPost = asyncHandler(async (req, res) => {
         imgSrc = await uploadToCloudinary(req.file, 'posts')
     }
 
+    if (videoSrc) {
+        videoSrc = getYouTubeEmbedUrl(videoSrc)
+        if (!videoSrc) throw createError('Invalid YouTube URL', 400)
+    }
+
     const post = await Post.create({
         user: req.user.id,
         postCategory,
         title,
         imgSrc,
         postContent,
+        videoSrc,
         published
     })
 
@@ -138,6 +146,7 @@ const createNewPost = asyncHandler(async (req, res) => {
 const updatePost = asyncHandler(async (req, res) => {
     const { id } = req.validated.params
     const { postCategory, title, postContent, published } = req.validated.body
+    let { videoSrc } = req.validated.body
 
     const post = await Post.findById(id)
     if (!post) {
@@ -151,13 +160,21 @@ const updatePost = asyncHandler(async (req, res) => {
     validatePostByCategory(category, req.validated.body, req.file)
 
     if (req.file) {
-        if (post.imgSrc) await deleteFromCloudinary(post.imgSrc) 
-        post.imgSrc = await uploadToCloudinary(req.file, 'posts') 
+        if (post.imgSrc) await deleteFromCloudinary(post.imgSrc)
+        post.imgSrc = await uploadToCloudinary(req.file, 'posts')
+    }
+
+    if (videoSrc) {
+        videoSrc = getYouTubeEmbedUrl(videoSrc)
+        if (!videoSrc) {
+            throw createError('Invalid YouTube URL', 400)
+        }
     }
 
     post.postCategory = postCategory
     post.title = title
     post.postContent = postContent
+    post.videoSrc = videoSrc
     post.published = published
 
     const updatedPost = await post.save()
@@ -179,7 +196,7 @@ const updatePostPartial = asyncHandler(async (req, res) => {
         throw createError(`Post not found`, 404)
     }
 
-    const allowedFields = ['postCategory', 'title', 'imgSrc', 'postContent', 'published']
+    const allowedFields = ['postCategory', 'title', 'postContent', 'videoSrc', 'published']
 
     let category = null
 
@@ -199,11 +216,21 @@ const updatePostPartial = asyncHandler(async (req, res) => {
     validatePostByCategory(category, mergedData, req.file)
 
     if (updates.imgSrc === null && post.imgSrc) {
-        await deleteFromCloudinary(post.imgSrc) 
-        post.imgSrc = null 
+        await deleteFromCloudinary(post.imgSrc)
+        post.imgSrc = null
     } else if (req.file) {
-        if (post.imgSrc) await deleteFromCloudinary(post.imgSrc) 
-        post.imgSrc = await uploadToCloudinary(req.file, 'posts') 
+        if (post.imgSrc) await deleteFromCloudinary(post.imgSrc)
+        post.imgSrc = await uploadToCloudinary(req.file, 'posts')
+    }
+
+    if (updates.videoSrc !== undefined) {
+        if (updates.videoSrc === null) {
+            updates.videoSrc = null
+        } else {
+            const embed = getYouTubeEmbedUrl(updates.videoSrc)
+            if (!embed) throw createError('Invalid YouTube URL', 400)
+            updates.videoSrc = embed
+        }
     }
 
     Object.keys(updates).forEach(key => {
@@ -230,7 +257,7 @@ const deletePost = asyncHandler(async (req, res) => {
     }
 
     if (post.imgSrc) {
-        await deleteFromCloudinary(post.imgSrc) 
+        await deleteFromCloudinary(post.imgSrc)
     }
 
     await post.deleteOne()
@@ -242,32 +269,32 @@ const deletePost = asyncHandler(async (req, res) => {
 })
 
 const searchPosts = async (req, res) => {
-  const { q } = req.query;
+    const { q } = req.query;
 
-  if (!q) {
-    return res.status(400).json({ message: 'Query is required' });
-  }
+    if (!q) {
+        return res.status(400).json({ message: 'Query is required' });
+    }
 
-  try {
-    const results = await Post.find({
-      $or: [
-        { title: { $regex: q, $options: 'i' } },
-        { postContent: { $regex: q, $options: 'i' } }
-      ]
-    })
-    .populate('user')
-    .populate('postCategory')
-    .lean();
+    try {
+        const results = await Post.find({
+            $or: [
+                { title: { $regex: q, $options: 'i' } },
+                { postContent: { $regex: q, $options: 'i' } }
+            ]
+        })
+            .populate('user')
+            .populate('postCategory')
+            .lean();
 
-    const formatted = results.map(post => ({
-      ...post,
-      id: post._id.toString(),
-    }));
+        const formatted = results.map(post => ({
+            ...post,
+            id: post._id.toString(),
+        }));
 
-    res.json(formatted);
-  } catch (err) {
-    res.status(500).json({ message: 'Search failed' });
-  }
+        res.json(formatted);
+    } catch (err) {
+        res.status(500).json({ message: 'Search failed' });
+    }
 };
 
 module.exports = {

@@ -57,6 +57,8 @@ const AdminDashboard = () => {
     }, [categoryData]);
 
     const handleDeletePost = async (id: string) => {
+        const confirmed = window.confirm("Are you sure you want to delete this post?");
+        if (!confirmed) return;
         try {
             await deletePost(id);
             setPosts(prev => prev.filter(p => p.id !== id));
@@ -64,6 +66,8 @@ const AdminDashboard = () => {
     };
 
     const handleDeleteUser = async (id: string) => {
+        const confirmed = window.confirm("Are you sure you want to delete this user?");
+        if (!confirmed) return;
         try {
             await deleteUser(id);
             setUsers(prev => prev.filter(u => u.id !== id));
@@ -71,6 +75,8 @@ const AdminDashboard = () => {
     };
 
     const handleDeleteCategory = async (id: string) => {
+        const confirmed = window.confirm("Are you sure you want to delete this category?");
+        if (!confirmed) return;
         try {
             await deleteCategory(id);
             setCategories(prev => prev.filter(c => c.id !== id));
@@ -113,9 +119,9 @@ const AdminDashboard = () => {
                 />
                 }
                 {tab === "categories" &&
-                    <h4 className='AccountAction' style={{margin: "20px 80px"}}>
-                        <Link to={`admin/categories/create`}>
-                        New Category</Link>
+                    <h4 className='AccountAction' style={{ margin: "20px 80px" }}>
+                        <Link to={`categories/create`}>
+                            New Category</Link>
                     </h4>
                 }
                 {tab === "categories" && <DataTable<CategoryType>
