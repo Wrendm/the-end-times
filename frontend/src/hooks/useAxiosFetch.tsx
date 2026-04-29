@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AxiosError } from 'axios';
 import type { AxiosRequestConfig } from 'axios';
 import api from '../api/axios';
@@ -14,60 +14,53 @@ const useAxiosFetch = <T,>(
   const [fetchError, setFetchError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!url) return;
 
-    let isMounted = true;
-    const controller = new AbortController();
+    setIsLoading(true);
 
-    const fetchData = async () => {
-      setIsLoading(true);
+    try {
+      const response = await api.get(url, {
+        ...config,
+        params,
+      });
 
-      try {
-        const response = await api.get(url, {
-          ...config,
-          params,
-          signal: controller.signal,
-        });
+      setData(response.data.data);
+      setFetchError('');
+    } catch (err: unknown) {
+      setData(null);
 
-        if (isMounted) {
-          setData(response.data.data);
-          setFetchError('');
-        }
-      } catch (err: unknown) {
-        if (!isMounted) return;
+      if (err instanceof AxiosError) {
+        const response = err.response?.data;
+        const message = response?.message || err.message;
+        const errors = response?.errors;
 
-        if (err instanceof AxiosError) {
-          const response = err.response?.data;
-          const message = response?.message || err.message;
-          const errors = response?.errors;
-
-          if (errors && Array.isArray(errors)) {
-            setFetchError(`${message}\n${errors.join('\n')}`);
-          } else {
-            setFetchError(message);
-          }
-        } else if (err instanceof Error) {
-          setFetchError(err.message);
+        if (errors && Array.isArray(errors)) {
+          setFetchError(`${message}\n${errors.join('\n')}`);
         } else {
-          setFetchError('Unknown error');
+          setFetchError(message);
         }
-
-        setData(null);
-      } finally {
-        if (isMounted) setIsLoading(false);
+      } else if (err instanceof Error) {
+        setFetchError(err.message);
+      } else {
+        setFetchError('Unknown error');
       }
-    };
+    } finally {
+      setIsLoading(false);
+    }
+  }, [url, config, params]);
 
+  // initial fetch
+  useEffect(() => {
     fetchData();
+  }, [fetchData]);
 
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [url, config, params]); 
+  // manual refetch trigger
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
 
-  return { data, fetchError, isLoading };
+  return { data, fetchError, isLoading, refetch };
 };
 
 export default useAxiosFetch;

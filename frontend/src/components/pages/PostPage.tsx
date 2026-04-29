@@ -40,9 +40,7 @@ const PostPage = () => {
 
           <div className="ContentRow">
             {post.imgSrc ? (
-              <p className="imagecontent">
-                <img src={post.imgSrc} />
-              </p>
+              <img src={post.imgSrc} className="imagecontent"/>
             ) : <br />}
 
             {post.videoSrc ? (

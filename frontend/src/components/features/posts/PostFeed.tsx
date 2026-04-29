@@ -7,10 +7,8 @@ interface PostFeedProps {
 }
 
 const PostFeed = ({ posts }: PostFeedProps) => {
-  // Convert posts prop to state so we can update it on deletion
-  const [postList, setPostList] = useState<PostType[]>([...posts]);
+  const [postList, setPostList] = useState<PostType[]>(() => [...posts]);
 
-  // Callback to remove a post when deleted
   const handleDeletePost = (id: string) => {
     setPostList(prev => prev.filter(post => post.id !== id));
   };
@@ -19,7 +17,10 @@ const PostFeed = ({ posts }: PostFeedProps) => {
     <div className="PostFeed">
       {postList.toReversed().map(post => (
         <div className="PostCard" key={post.id}>
-          <Post post={post} onDelete={handleDeletePost} />
+          <Post
+            post={post}
+            onDelete={handleDeletePost}
+          />
         </div>
       ))}
     </div>

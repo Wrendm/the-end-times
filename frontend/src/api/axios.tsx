@@ -1,4 +1,8 @@
-import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+} from "axios";
 
 type RefreshResponse = {
   data: {
@@ -32,31 +36,60 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// refresh logic
+// response interceptor
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
     const config = error.config as RetryConfig;
+
+    // ✅ IMPORTANT: ignore aborted requests (prevents fake errors)
+    if (error.code === "ERR_CANCELED") {
+      return Promise.reject(error);
+    }
+
+    // optional safe logging (only real errors)
+    if (error.response) {
+      console.log("API ERROR:", {
+        url: config?.url,
+        method: config?.method,
+        status: error.response.status,
+        data: error.response.data,
+      });
+    }
 
     if (!config || !error.response) {
       return Promise.reject(error);
     }
 
     const is401 = error.response.status === 401;
+
     const isAuthRoute =
       config.url?.includes("/auth/login") ||
       config.url?.includes("/auth/register") ||
       config.url?.includes("/auth/refresh") ||
       config.url?.includes("/auth/logout");
 
+    const isDeleteRequest = config.method?.toLowerCase() === "delete";
+
     if (is401 && !config._retry && !isAuthRoute) {
       config._retry = true;
 
       if (isRefreshing) {
+        if (isDeleteRequest) {
+          return Promise.reject(error);
+        }
+
         return new Promise((resolve) => {
           queue.push((token: string) => {
-            config.headers.Authorization = `Bearer ${token}`;
-            resolve(api(config));
+            const retryConfig = {
+              ...config,
+              headers: {
+                ...config.headers,
+                Authorization: `Bearer ${token}`,
+              },
+            };
+
+            resolve(api(retryConfig));
           });
         });
       }
@@ -67,15 +100,20 @@ api.interceptors.response.use(
         const res = await api.get<RefreshResponse>("/auth/refresh");
 
         const newToken = res.data.data.token;
-
         accessToken = newToken;
 
         queue.forEach((cb) => cb(newToken));
         queue = [];
 
-        config.headers.Authorization = `Bearer ${newToken}`;
+        const retryConfig = {
+          ...config,
+          headers: {
+            ...config.headers,
+            Authorization: `Bearer ${newToken}`,
+          },
+        };
 
-        return api(config);
+        return api(retryConfig);
       } catch (err) {
         queue = [];
         accessToken = null;

@@ -16,7 +16,6 @@ const Post = ({ post, onDelete }: PostProps) => {
   const auth = useContext(AuthContext);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
-  const [success, setSuccess] = useState(false);
   const [editPopup, setEditPopup] = useState(false);
 
   const handleDelete = async () => {
@@ -25,7 +24,6 @@ const Post = ({ post, onDelete }: PostProps) => {
 
     try {
       await deletePost(post.id);
-      setSuccess(true);
       setError("");
       onDelete?.(post.id);
     } catch (err: any) {
@@ -34,9 +32,6 @@ const Post = ({ post, onDelete }: PostProps) => {
       setErrors(Array.isArray(res?.errors) ? res.errors : []);
     }
   };
-
-  // Hide post if successfully deleted
-  if (success) return null;
 
   return (
     <>
