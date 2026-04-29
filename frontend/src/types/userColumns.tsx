@@ -4,7 +4,7 @@ import UserActions from "../components/table/table-actions/UserActions";
 
 export const userColumns = (
   handleDeleteUser: (id: string) => void
-): Column<"users">[] => [
+): Column<UserType>[] => [
   ...userColumnsBase,
   {
     key: "id",

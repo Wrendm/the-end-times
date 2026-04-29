@@ -4,7 +4,7 @@ import CategoryActions from "../components/table/table-actions/CategoryActions";
 
 export const categoryColumns = (
   handleDeleteCategory: (id: string) => void
-): Column<"categories">[] => [
+): Column<CategoryType>[] => [
   ...categoryColumnsBase,
   {
     key: "id",

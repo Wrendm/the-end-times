@@ -1,15 +1,12 @@
 import { useState, useContext, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import DataState from "../../DataState";
 import { AuthContext } from "../../../context/authcontext";
 import useCategoryById from "../../../hooks/useCategoryById";
 import { updateCategory } from "../../../api/categoryApi";
 
-type EditCategoryProps = {
-  id: string;
-};
-
-export default function EditCategory({ id }: EditCategoryProps) {
+export default function EditCategory() {
+    const { id } = useParams();
     const [form, setForm] = useState({
         name: "",
         published: false

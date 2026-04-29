@@ -1,15 +1,12 @@
 import { useState, useContext, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import DataState from "../../DataState";
 import { AuthContext } from "../../../context/authcontext";
 import useUserById from "../../../hooks/useUserById";
 import { updateUserRoles } from "../../../api/userApi";
-type EditUserProps = {
-  id: string;
-};
 
-
-export default function EditUserRoles({ id }: EditUserProps) {
+export default function EditUserRoles() {
+    const { id } = useParams();
     const [form, setForm] = useState<{
         roles: string[];
     }>({

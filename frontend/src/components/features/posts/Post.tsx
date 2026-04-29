@@ -96,7 +96,7 @@ const Post = ({ post, onDelete }: PostProps) => {
           </>
         )}
         <Popup trigger={editPopup} setTrigger={setEditPopup}>
-          <EditPost id={post.id} />
+          <EditPost />
         </Popup>
       </div>
     </>

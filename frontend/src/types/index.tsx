@@ -26,12 +26,6 @@ interface CategoryType {
   published: boolean;
 }
 
-export type DataMap = {
-  users: UserType;
-  posts: PostType;
-  categories: CategoryType;
-};
-
 export type Column<T> = {
   key: keyof T & string;
   label?: string;

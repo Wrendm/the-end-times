@@ -1,19 +1,17 @@
-import type { DataMap, Column } from "../../types/index.tsx";
+import type { Column } from "../../types/index.tsx";
 import DataColumn from "./DataColumn.tsx";
 
-type DataRowProps<T extends keyof DataMap> = {
-  row: DataMap[T];
+type DataRowProps<T> = {
+  row: T;
   columns: Column<T>[];
 };
 
-const DataRow = <T extends keyof DataMap>({
-  row,
-  columns,
-}: DataRowProps<T>) => {
+const DataRow = <T,>({ row, columns }: DataRowProps<T>) => {
   return (
     <tr>
       {columns.map((col) => {
-        const value = row[col.key];
+        const value = row[col.key as keyof T];
+
         return (
           <DataColumn
             key={String(col.key)}

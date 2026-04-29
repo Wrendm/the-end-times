@@ -14,7 +14,7 @@ const PostActions = ({ id, handleDeletePost }: PostActionsProps) => {
       <button className="admin-btn" onClick={() => setOpen(true)}>Edit</button>
       <button className="admin-btn" onClick={() => handleDeletePost(id)}>Delete</button>
             <Popup trigger={open} setTrigger={setOpen}>
-        <EditPost id={id} />
+        <EditPost />
       </Popup>
     </div>
   );
