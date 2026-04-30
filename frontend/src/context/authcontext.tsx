@@ -84,18 +84,16 @@ export const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // 1. get new access token from refresh cookie
         const refreshRes = await api.get("/auth/refresh");
         const token = refreshRes.data.data.token;
 
         setAccessToken(token);
 
-        // 2. fetch current user
         const res = await api.get("/auth/me");
         setUser(res.data.data);
       } catch (err) {
-        console.log("INIT AUTH ERROR:", err);
         setUser(null);
+        setAccessToken(null);
       } finally {
         setLoading(false);
       }
