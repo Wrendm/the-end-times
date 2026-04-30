@@ -89,7 +89,10 @@ export default function EditUser() {
         }
     };
 
-    if (auth.loading || isLoading) return <div className="loader" />;
+    if (auth.loading || isLoading) return <div className="loader">
+        <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+        <p>Tell enough of your friends and maybe I'll start paying for it</p>
+    </div>;
     if (!auth.user) return <div>Not authenticated</div>;
     if (!selectedUser && !isLoading && !fetchError) return <div>User not found</div>;
     if (auth.user.id !== selectedUser?.id && !auth.user?.roles.includes("Admin")) return <Navigate to="/" replace />;

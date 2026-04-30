@@ -26,7 +26,10 @@ export default function CreatePost() {
     if (!auth) throw new Error("AuthContext not found");
 
     if (auth.loading) {
-        return <div className="loader"></div>;
+        return <div className="loader">
+            <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+            <p>Tell enough of your friends and maybe I'll start paying for it</p>
+        </div>;
     }
 
     if (!auth.user) {
@@ -116,6 +119,8 @@ export default function CreatePost() {
             )}
             {loading && (
                 <div className="loader">
+                    <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+                    <p>Tell enough of your friends and maybe I'll start paying for it</p>
                 </div>
             )}
             <form onSubmit={handleSubmit}>

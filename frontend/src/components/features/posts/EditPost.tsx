@@ -8,14 +8,14 @@ import usePostById from '../../../hooks/usePostById';
 import type { CategoryType } from "../../../types/index";
 
 
-export default function EditPost({id}:{id:string}) {
-      const [form, setForm] = useState({
-        title: "",
-        postCategory: "",
-        postContent: "",
-        videoSrc: "",
-        published: false,
-    });
+export default function EditPost({ id }: { id: string }) {
+  const [form, setForm] = useState({
+    title: "",
+    postCategory: "",
+    postContent: "",
+    videoSrc: "",
+    published: false,
+  });
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
@@ -89,7 +89,10 @@ export default function EditPost({id}:{id:string}) {
   };
 
   if (auth.loading || isLoadingPost) {
-    return <div className="loader" />;
+    return <div className="loader">
+      <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+      <p>Tell enough of your friends and maybe I'll start paying for it</p>
+    </div>;
   }
 
   if (!auth.user) {
@@ -127,7 +130,10 @@ export default function EditPost({id}:{id:string}) {
             )}
           </div>
         )}
-        {loading && <div className="loader" />}
+        {loading && <div className="loader">
+          <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+          <p>Tell enough of your friends and maybe I'll start paying for it</p>
+        </div>}
         <form onSubmit={handleSubmit}>
           <label>Title</label>
           <input name="title" value={form.title} onChange={handleChange} />
@@ -144,7 +150,7 @@ export default function EditPost({id}:{id:string}) {
           <label>Image</label>
           <input type="file" onChange={handleFileChange} />
           <label>Post Content</label>
-          <textarea name="postContent" value={form.postContent} onChange={handleChange} rows={5}/>
+          <textarea name="postContent" value={form.postContent} onChange={handleChange} rows={5} />
           <label>YouTube Video Source Link</label>
           <input name="videoSrc" value={form.videoSrc} onChange={handleChange} />
           <label>Published</label>
