@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { Navigate, useNavigate, Link, useParams } from "react-router-dom";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 import { updatePost } from "../../../api/postApi";
 import DataState from "../../DataState";
 import { AuthContext } from "../../../context/authcontext";

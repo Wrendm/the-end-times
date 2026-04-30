@@ -33,12 +33,6 @@ if (!MONGO_URI) {
 
 // Debug logs (safe for server startup troubleshooting)
 console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('MONGO_URI_PROD exists:', !!process.env.MONGO_URI_PROD);
-console.log('MONGO_URI_TEST exists:', !!process.env.MONGO_URI_TEST);
-console.log('MONGO_URI_DEV exists:', !!process.env.MONGO_URI_DEV);
-console.log('Mongo URI selected:', 'set');
-console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log("Using DB:", MONGO_URI);
 
 /**
  * Connect to MongoDB
@@ -48,7 +42,6 @@ mongoose
     .then(() => {
         console.log('Connected to MongoDB');
         console.log('Database name:', mongoose.connection.db.databaseName);
-        console.log('Host:', mongoose.connection.host);
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
