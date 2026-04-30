@@ -8,8 +8,7 @@ import usePostById from '../../../hooks/usePostById';
 import type { CategoryType } from "../../../types/index";
 
 
-export default function EditPost() {
-  const { id } = useParams();
+export default function EditPost({id}:{id:string}) {
       const [form, setForm] = useState({
         title: "",
         postCategory: "",

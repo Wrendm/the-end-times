@@ -18,7 +18,7 @@ const CategoryActions = ({ id, handleDeleteCategory }: CategoryActionsProps) => 
       </button>
 
       <Popup trigger={open} setTrigger={setOpen}>
-        <EditCategory />
+        <EditCategory id={id}/>
       </Popup>
     </div>
   );

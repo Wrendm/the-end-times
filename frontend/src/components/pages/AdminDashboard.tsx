@@ -98,7 +98,7 @@ const AdminDashboard = () => {
     return (
         <div className="ProfilePage">
             <div className="ProfileHeader">
-                <h1>Welcome, {auth.user.roles.join(', ')} {auth.user.name}</h1>
+                <h1>Welcome, {auth.user.name}</h1>
             </div>
             <div className="AdminSubNav">
                 <ul className='tabs'>
@@ -108,6 +108,12 @@ const AdminDashboard = () => {
                 </ul>
             </div>
 
+            {tab === "categories" &&
+                <h4 className='AccountAction' style={{ margin: "20px 80px" }}>
+                    <Link to={`categories/create`}>New Category</Link>
+                </h4>
+            }
+            
             <DataState isLoading={isLoading} error={error} isEmpty={isEmpty} emptyMessage="No data to display">
                 {tab === "users" && <DataTable<UserType>
                     dataset={users}
@@ -118,22 +124,12 @@ const AdminDashboard = () => {
                     columns={postColumns(handleDeletePost)}
                 />
                 }
-                {tab === "categories" &&
-                    <h4 className='AccountAction' style={{ margin: "20px 80px" }}>
-                        <Link to={`categories/create`}>
-                            New Category</Link>
-                    </h4>
-                }
+
                 {tab === "categories" && <DataTable<CategoryType>
                     dataset={categories}
                     columns={categoryColumns(handleDeleteCategory)}
                 />}
             </DataState>
-            <div>
-                <button className="fullWidth-btn" onClick={auth.logout}>
-                    Logout
-                </button>
-            </div>
         </div>
     );
 };

@@ -5,8 +5,7 @@ import { AuthContext } from "../../../context/authcontext";
 import useCategoryById from "../../../hooks/useCategoryById";
 import { updateCategory } from "../../../api/categoryApi";
 
-export default function EditCategory() {
-    const { id } = useParams();
+export default function EditCategory({id}:{id:string}) {
     const [form, setForm] = useState({
         name: "",
         published: false
