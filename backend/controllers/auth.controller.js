@@ -5,6 +5,7 @@ const sendResponse = require('../utils/sendResponse')
 const bcrypt = require('bcrypt')
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
+const isProd = process.env.NODE_ENV === 'production'
 
 
 // @desc Register new user
