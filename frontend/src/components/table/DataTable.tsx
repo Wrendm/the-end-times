@@ -16,7 +16,7 @@ const DataTable = <T extends { id: string; [key: string]: any }>({
       <thead>
         <tr>
           {columns.map((col) => (
-            <th key={String(col.key)}>
+            <th key={`${col.key}-${Math.random()}`}>
               {col.label || String(col.key)}
             </th>
           ))}
@@ -31,7 +31,7 @@ const DataTable = <T extends { id: string; [key: string]: any }>({
                 col.key in datum ? (datum as any)[col.key] : undefined;
 
               return (
-                <td key={`${col.key}-${datum.id}`}>
+                <td key={`${datum.id}-${col.key}-${Math.random()}`}>
                   {col.render ? col.render(value, datum) : String(value ?? "")}
                 </td>
               );

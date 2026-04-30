@@ -6,7 +6,10 @@ type DataRowProps<T> = {
   columns: Column<T>[];
 };
 
-const DataRow = <T,>({ row, columns }: DataRowProps<T>) => {
+const DataRow = <T extends { id: string },>({
+  row,
+  columns,
+}: DataRowProps<T>) => {
   return (
     <tr>
       {columns.map((col) => {
@@ -14,7 +17,7 @@ const DataRow = <T,>({ row, columns }: DataRowProps<T>) => {
 
         return (
           <DataColumn
-            key={String(col.key)}
+            key={`${String(col.key)}-${row.id}`}
             data={col.render ? col.render(value, row) : value}
           />
         );
