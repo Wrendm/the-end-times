@@ -4,9 +4,12 @@ const app = require('./app')
 
 const PORT = process.env.PORT || 3500
 
-const MONGO_URI = process.env.NODE_ENV === 'test'
-  ? process.env.MONGO_URI_TEST
-  : process.env.MONGO_URI_DEV
+const MONGO_URI =
+  process.env.NODE_ENV === 'test'
+    ? process.env.MONGO_URI_TEST
+    : process.env.NODE_ENV === 'production'
+      ? process.env.MONGO_URI_PROD
+      : process.env.MONGO_URI_DEV;
 
 mongoose.connect(MONGO_URI)
     .then(() => {
