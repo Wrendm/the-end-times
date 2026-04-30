@@ -15,7 +15,7 @@ interface RetryConfig extends InternalAxiosRequestConfig {
 }
 
 const api: AxiosInstance = axios.create({
-  baseURL: "/api",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -42,7 +42,6 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const config = error.config as RetryConfig;
 
-    // ✅ IMPORTANT: ignore aborted requests (prevents fake errors)
     if (error.code === "ERR_CANCELED") {
       return Promise.reject(error);
     }
