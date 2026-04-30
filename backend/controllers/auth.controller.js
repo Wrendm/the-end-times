@@ -87,13 +87,12 @@ const loginUser = asyncHandler(async (req, res) => {
     user.refreshToken = hashedToken
     await user.save()
 
-    // SAME-SITE DEV COOKIE CONFIG
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge: 24 * 60 * 60 * 1000
-    })
+    });
 
     return sendResponse(res, {
         message: 'Login successful',
@@ -164,11 +163,11 @@ const logoutUser = asyncHandler(async (req, res) => {
     try {
         decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
     } catch {
-        res.clearCookie('jwt', {
+        res.clearCookie("jwt", {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax"
-        })
+            secure: isProd,
+            sameSite: isProd ? "none" : "lax"
+        });
         return res.sendStatus(204)
     }
 
@@ -181,12 +180,11 @@ const logoutUser = asyncHandler(async (req, res) => {
         }
     }
 
-    // SAME-SITE CLEAR COOKIE
-    res.clearCookie('jwt', {
+    res.clearCookie("jwt", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
-    })
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax"
+    });
 
     res.sendStatus(204)
 })
