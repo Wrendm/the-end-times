@@ -1,6 +1,6 @@
 const createError = require('./createError')
 
-const validatePostByCategory = (category, data, file) => {
+const validatePostByCategory = (category, data, file, options = {}) => {
   const { imgSrc, postContent, audioSrc, videoSrc } = data
 
   switch (category.type) {
@@ -11,8 +11,10 @@ const validatePostByCategory = (category, data, file) => {
       break
 
     case 'Image':
-      if (!imgSrc && !file) {
-        throw createError('Image posts require imgSrc or uploaded file', 400);
+      const hasExisting = isUpdate && existingPost?.imgSrc
+
+      if (!imgSrc && !file && !hasExisting) {
+        throw createError('Image posts require an image', 400)
       }
       break
 
