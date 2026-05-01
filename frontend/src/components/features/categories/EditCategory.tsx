@@ -74,7 +74,7 @@ export default function EditCategory({id}:{id:string}) {
       <p>Tell enough of your friends and maybe I'll start paying for it</p>
     </div>;
     if (!auth.user) return <div>Not authenticated</div>;
-    if (!category && !isLoading && !fetchError) return <div>User not found</div>;
+    if (!category && !isLoading && !fetchError) return <div>Category not found</div>;
     if (!auth.user?.roles.includes("Admin")) return <Navigate to="/" replace />;
 
     return (
@@ -85,7 +85,7 @@ export default function EditCategory({id}:{id:string}) {
             emptyMessage="That category fell in the void!"
         >
             <div className="Form">
-                <h1>Edit Account</h1>
+                <h1>Edit Category</h1>
 
                 {error && (
                     <div className="error">
@@ -103,7 +103,7 @@ export default function EditCategory({id}:{id:string}) {
 
                 {success && (
                     <div className="success">
-                        <h2>Account Updated!</h2>
+                        <h2>Category Updated!</h2>
                     </div>
                 )}
 

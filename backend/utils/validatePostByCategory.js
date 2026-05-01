@@ -2,6 +2,7 @@ const createError = require('./createError')
 
 const validatePostByCategory = (category, data, file, options = {}) => {
   const { imgSrc, postContent, audioSrc, videoSrc } = data
+  const { isUpdate = false, existingPost } = options
 
   switch (category.type) {
     case 'Text':

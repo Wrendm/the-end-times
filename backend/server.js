@@ -1,10 +1,6 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const app = require('./app');
-
-// Load env only in non-production environments
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
 
 const PORT = process.env.PORT || 3500;
 
