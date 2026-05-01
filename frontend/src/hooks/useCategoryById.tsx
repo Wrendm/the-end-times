@@ -5,7 +5,7 @@ const useCategoryById = (categoryId?: string) => {
   const shouldFetch = !!categoryId;
 
   const { data, isLoading, fetchError } = useAxiosFetch<CategoryType>(
-    shouldFetch ? `/categorys/${categoryId}` : null
+    shouldFetch ? `/categories/${categoryId}` : null
   );
 
   return {
