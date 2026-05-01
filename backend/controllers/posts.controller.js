@@ -109,7 +109,9 @@ const createNewPost = asyncHandler(async (req, res) => {
     if (!category || !category.published) {
         throw createError('Invalid category', 400)
     }
-    validatePostByCategory(category, req.validated.body, req.file)
+    validatePostByCategory(category, req.validated.body, req.file, {
+        isUpdate: false
+    })
 
     let imgSrc = null
     if (req.file) {
@@ -157,7 +159,10 @@ const updatePost = asyncHandler(async (req, res) => {
     if (!category || !category.published) {
         throw createError('Invalid category', 400)
     }
-    validatePostByCategory(category, req.validated.body, req.file)
+    validatePostByCategory(category, req.validated.body, req.file, {
+        isUpdate: true,
+        existingPost: post
+    })
 
     if (req.file) {
         if (post.imgSrc) await deleteFromCloudinary(post.imgSrc)
@@ -213,7 +218,10 @@ const updatePostPartial = asyncHandler(async (req, res) => {
         ...post.toObject(),
         ...updates
     }
-    validatePostByCategory(category, mergedData, req.file)
+    validatePostByCategory(category, mergedData, req.file, {
+        isUpdate: true,
+        existingPost: post
+    })
 
     if (updates.imgSrc === null && post.imgSrc) {
         await deleteFromCloudinary(post.imgSrc)
