@@ -284,10 +284,16 @@ const searchPosts = async (req, res) => {
     }
 
     try {
+        // Escape regex special characters
+        const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        // Whole-word, case-insensitive search
+        const regex = new RegExp(`\\b${escapedQuery}\\b`, 'i');
+
         const results = await Post.find({
             $or: [
-                { title: { $regex: q, $options: 'i' } },
-                { postContent: { $regex: q, $options: 'i' } }
+                { title: regex },
+                { postContent: regex }
             ]
         })
             .populate('user')
