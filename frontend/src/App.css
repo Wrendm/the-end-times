@@ -178,6 +178,7 @@ a:hover {
 .SideNav ul li a {
   display: flex;
   align-items: center;
+  color: var(--color-light);
 }
 
 .SideNav ul li button {
@@ -497,7 +498,7 @@ a:hover {
   font-weight: bold;
   cursor: pointer;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 14px;
   height: min-content;
   border: solid var(--color-muted) medium;
   border-radius: 8px;
@@ -529,6 +530,7 @@ a:hover {
   border-radius: 4px;
   cursor: pointer;
   background-color: inherit;
+  color: var(--color-light);
 }
 
 /* Delete */
