@@ -35,7 +35,7 @@ const ProfilePage = () => {
       {user && (
         <div className="ProfilePage">
           <div className="ProfileInfo">
-            <h1>@{user.username}</h1>
+            <h3>@{user.username}</h3>
             <h4>{user.name}</h4>
           </div>
           <div className="ProfileInfo">
