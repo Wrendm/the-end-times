@@ -89,11 +89,12 @@ export default function EditPost({ id }: { id: string }) {
   };
 
   if (auth.loading || isLoadingPost) {
-    return <div>
-      <div className="loader"></div>
-      <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
-      <p>Tell enough of your friends and maybe I'll start paying for it</p>
-    </div>;
+    return (
+      <div className="loader-wrapper">
+        <div className="loader"></div>
+        <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+        <p>Tell enough of your friends and maybe I'll start paying for it</p>
+      </div>);
   }
 
   if (!auth.user) {
@@ -131,10 +132,12 @@ export default function EditPost({ id }: { id: string }) {
             )}
           </div>
         )}
-        {loading && <div className="loader">
-          <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
-          <p>Tell enough of your friends and maybe I'll start paying for it</p>
-        </div>}
+        {loading && (
+          <div className="loader-wrapper">
+            <div className="loader"></div>
+            <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+            <p>Tell enough of your friends and maybe I'll start paying for it</p>
+          </div>)}
         <form onSubmit={handleSubmit}>
           <label>Title</label>
           <input name="title" value={form.title} onChange={handleChange} />

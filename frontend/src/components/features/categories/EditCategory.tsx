@@ -5,7 +5,7 @@ import { AuthContext } from "../../../context/authcontext";
 import useCategoryById from "../../../hooks/useCategoryById";
 import { updateCategory } from "../../../api/categoryApi";
 
-export default function EditCategory({id}:{id:string}) {
+export default function EditCategory({ id }: { id: string }) {
     const [form, setForm] = useState({
         name: "",
         published: false
@@ -69,12 +69,12 @@ export default function EditCategory({id}:{id:string}) {
         }
     };
 
-    if (auth.loading || isLoading) return     
-    <div>
-      <div className="loader"></div>
-      <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
-      <p>Tell enough of your friends and maybe I'll start paying for it</p>
-    </div>;
+    if (auth.loading || isLoading) return (
+    <div className="loader-wrapper">
+        <div className="loader"></div>
+        <p>Don't worry, it'll load, it just takes a second because I'm on the free tier :P</p>
+        <p>Tell enough of your friends and maybe I'll start paying for it</p>
+    </div>);
     if (!auth.user) return <div>Not authenticated</div>;
     if (!category && !isLoading && !fetchError) return <div>Category not found</div>;
     if (!auth.user?.roles.includes("Admin")) return <Navigate to="/" replace />;
