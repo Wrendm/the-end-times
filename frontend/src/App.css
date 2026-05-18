@@ -298,7 +298,7 @@ a:hover {
 }
 
 .AccountAction button:hover {
-  color: var(--color-dark);
+  color: var(--color-light);
 }
 
 /* =========================
