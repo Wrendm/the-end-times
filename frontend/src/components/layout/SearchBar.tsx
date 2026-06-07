@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { RiSearchLine } from "react-icons/ri";
 
 function SearchBar() {
   const [query, setQuery] = useState<string>('');
@@ -22,12 +23,13 @@ function SearchBar() {
   return (
     <form onSubmit={handleSubmit} className='SearchBar'>
       <input className='SearchBarInput'
+        id='search'
         type="text"
         placeholder="Search posts and users"
         value={query}
         onChange={handleChange}
       />
-      <button type="submit" className='btn'>Search</button>
+      <button type="submit" className='btn'><RiSearchLine /></button>
     </form>
   );
 }

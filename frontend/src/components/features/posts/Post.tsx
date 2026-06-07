@@ -53,22 +53,14 @@ const Post = ({ post, onDelete }: PostProps) => {
         </div>
       )}
 
-      {(auth?.user?.id !== post.user.id) && (
-        <div className="TopRow">
-          <div>
-            <Link to={`/users/${post.user.id}`}><p>{post.user.username}</p></Link>
-          </div>
-          <div>
-            <p>{new Date(post.createdAt).toLocaleDateString()}</p>
-          </div>
-        </div>
-      )}
-
       <div className="ContentRow">
         {post.title && (
           <Link to={`/posts/${post.id}`} className='title'><h4>
             {post.title}
           </h4></Link>
+        )}
+        {(auth?.user?.id !== post.user.id) && (
+            <Link to={`/users/${post.user.id}`}><p>{post.user.username}</p></Link>
         )}
         {post.postCategory.type === 'Image' && (
           <div className='imagecontent'>
@@ -96,7 +88,7 @@ const Post = ({ post, onDelete }: PostProps) => {
           </>
         )}
         <Popup trigger={editPopup} setTrigger={setEditPopup}>
-          <EditPost id={post.id}/>
+          <EditPost id={post.id} />
         </Popup>
       </div>
     </>

@@ -39,22 +39,13 @@ const Header = () => {
   return (
     <div className="Header">
       <div className='TopRow'>
-        <h1>
-          <Link to='/'>The End Times</Link>
-        </h1>
-
-        <div className='mobile-only'>
-          <button
-            className="btn-minimal"
-            onClick={() => setOpen(prev => !prev)}
-            style={{ fontSize: "25px" }}
-            id="sidenav-toggle"
-          >
-            <RxHamburgerMenu />
-          </button>
+        <div className='left desktop-only'>
+          <SearchBar />
         </div>
-
-        <div className='desktop-only'>
+        <div className='middle'>
+          <h1><Link to='/'>The End Times</Link></h1>
+        </div>
+        <div className='right desktop-only'>
           {auth.user ? (
             <div className='AccountActionNav desktop-only'>
               {auth.user?.roles.includes("Admin") && (
@@ -83,19 +74,25 @@ const Header = () => {
             </div>
           )}
         </div>
-      </div>
+        <div className='right mobile-only mobile-only-flex'>
+          <button
+            className="btn-minimal"
+            onClick={() => setOpen(prev => !prev)}
+            style={{ fontSize: "25px" }}
+            id="sidenav-toggle"
+          >
+            <RxHamburgerMenu />
+          </button>
+        </div>
 
+      </div>
+      <div className='desktop-only'>
+        <Nav />
+      </div>
       <div className='mobile-only' ref={menuRef}>
         {open && <SideNav />}
       </div>
 
-      <div className='desktop-only'>
-        <Nav />
-      </div>
-
-      <div>
-        <SearchBar />
-      </div>
     </div>
   );
 };

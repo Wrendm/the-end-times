@@ -35,7 +35,15 @@ const Dashboard = () => {
     return (
         <div className="ProfilePage">
             <div className="ProfileHeader">
-                <h1>Welcome, {auth.user.name}</h1>
+                <div className="ProfileInfo">
+                    <h1>Welcome, {auth.user.name}</h1>
+                    <h4>@{auth.user.username}</h4>
+                    {auth.user.bio && (
+                        <div><p className='bio'>
+                            {auth.user.bio}
+                        </p></div>
+                    )}
+                </div>
                 <div className="ProfileActionsWrapper">
                     <h2 className='AccountAction'><Link to={`/users/${userId}/edit`}><MdOutlineEditNote />Edit Account</Link></h2>
                     <h2 className='AccountAction'><Link to="/posts/create"><BsBrush />Create a Post</Link></h2>
@@ -51,14 +59,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-            <div className="ProfileInfo">
-                <h4>@{auth.user.username}</h4>
-                {auth.user.bio && (
-                    <div><p className='bio'>
-                        {auth.user.bio}
-                    </p></div>
-                )}
-            </div>
+
 
             <DataState
                 isLoading={isPostsLoading}

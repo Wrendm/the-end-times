@@ -34,12 +34,12 @@ const ProfilePage = () => {
     >
       {user && (
         <div className="ProfilePage">
-          <div className="ProfileInfo">
-            <h3>@{user.username}</h3>
-            <h4>{user.name}</h4>
-          </div>
-          <div className="ProfileInfo">
-            {user.bio && <p>{user.bio}</p>}
+          <div className="ProfileHeader">
+            <div className="ProfileInfo">
+              <h1>{user.name}</h1>
+              <h4>@{user.username}</h4>
+              {user.bio && <p>{user.bio}</p>}
+            </div>
           </div>
 
           <DataState
