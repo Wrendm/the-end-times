@@ -371,12 +371,14 @@ a:hover {
   justify-content: center;
   align-items: flex-start;
   min-height: 90%;
+  background-image: url(./paper2.jpg);
+  background-blend-mode: lighten;
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .PostCard {
   margin: 2%;
   padding: 15px;
-  background-color: var(--color-light);
   max-width: fit-content;
 }
 
@@ -530,7 +532,7 @@ a:hover {
   border-radius: 4px;
   cursor: pointer;
   background-color: inherit;
-  color: var(--color-light);
+  color: var(--color-dark);
 }
 
 /* Delete */
