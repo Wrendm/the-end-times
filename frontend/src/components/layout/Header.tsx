@@ -50,7 +50,7 @@ const Header = () => {
             <div className='AccountActionNav desktop-only'>
               {auth.user?.roles.includes("Admin") && (
                 <h3 className='AccountAction'>
-                  <Link to="/admin">Admin Dashboard</Link>
+                  <Link to="/admin">Admin</Link>
                 </h3>
               )}
 
