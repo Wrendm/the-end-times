@@ -3,7 +3,7 @@ const cors = require('cors')
 const allowedOrigins = [
   'http://localhost:5173',       // dev
   'https://the-end-times.onrender.com',
-  'https://graceful-longma-d2fa65.netlify.app' // production
+  'https://the-end-is-nigh.netlify.app' // production
 ]
 
 const corsOptions = {
